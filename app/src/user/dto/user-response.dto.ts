@@ -1,4 +1,4 @@
-import { SuccessResponse } from 'src/commmon/dto/success-response.dto';
+import { SuccessResponse } from '../../commmon/dto/success-response.dto';
 import { User } from '../entities/user.entity';
 
 export class CreateUserResponseDto extends SuccessResponse {
