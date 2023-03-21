@@ -34,7 +34,7 @@ export class User {
   nickname: string;
 
   @Prop({ required: true, unique: true })
-  user_id: string;
+  username: string;
 
   @Prop({ required: false, default: '' })
   email: string;
