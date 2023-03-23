@@ -1,0 +1,33 @@
+service: refri-be-lambda
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: ap-northeast-2
+  runtime: nodejs18.x
+  memorySize: 10240
+  timeout: 3
+  logs:
+    restApi: true
+  environment:
+    DATABASE_URI: ${param:DB}
+
+package:
+  individually: true
+
+functions:
+  mono_lambda:
+    handler: dist/apps/mono_lambda/main.handler
+    package:
+      patterns:
+        - '!**/*'
+        - dist/apps/mono_lambda/main.js
+    events:
+      - http:
+          path: '/'
+          method: any
+          cors: true
+      - http:
+          path: '{proxy+}'
+          method: any
+          cors: true

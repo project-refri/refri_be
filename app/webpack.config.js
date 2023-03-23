@@ -1,14 +1,19 @@
-import TerserPlugin from 'terser-webpack-plugin';
+const TerserPlugin = require('terser-webpack-plugin');
 
-export default (options, webpack) => {
+module.exports = (options, webpack) => {
   const lazyImports = [
     '@nestjs/microservices/microservices-module',
     '@nestjs/websockets/socket-module',
+    'class-transformer/storage',
   ];
 
   return {
     ...options,
     externals: [],
+    output: {
+      ...options.output,
+      libraryTarget: 'commonjs2',
+    },
     optimization: {
       minimizer: [
         new TerserPlugin({
@@ -17,10 +22,6 @@ export default (options, webpack) => {
           },
         }),
       ],
-    },
-    output: {
-      ...options.output,
-      libraryTarget: 'commonjs2',
     },
     plugins: [
       ...options.plugins,
