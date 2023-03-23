@@ -1,29 +1,9 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import {
-  HydratedDocument,
-  Schema as MongooseSchema,
-  ToObjectOptions,
-} from 'mongoose';
+import { schemaOptions } from '@app/common/schema-option';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Diet } from '../types/diet.enum';
 
 export type UserDocument = HydratedDocument<User>;
-
-const toObjectOptions: ToObjectOptions = {
-  virtuals: true,
-  transform: (doc, ret) => {
-    delete ret._id;
-    delete ret.__v;
-  },
-};
-
-const schemaOptions: SchemaOptions = {
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-  },
-  toObject: toObjectOptions,
-  toJSON: toObjectOptions,
-};
 
 @Schema(schemaOptions)
 export class User {
