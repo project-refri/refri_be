@@ -1,6 +1,7 @@
 name: Api server serverless Build
 
 on:
+  workflow_dispatch:
   push:
     paths: 'app/**'
   pull_request:
@@ -13,6 +14,9 @@ jobs:
   buildAndTest:
     name: buildAndTest
     runs-on: ubuntu-latest
+    defaults:
+       run:
+         working-directory: ./app/
 
     strategy:
       matrix:
@@ -20,11 +24,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          cache-dependency-path: app/package-lock.json
 
       - name: install dependency
         run: npm ci
