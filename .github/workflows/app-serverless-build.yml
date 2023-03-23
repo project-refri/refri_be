@@ -1,7 +1,6 @@
 name: Api server serverless Build
 
 on:
-  workflow_dispatch
   push:
     paths: 'app/**'
   pull_request:
