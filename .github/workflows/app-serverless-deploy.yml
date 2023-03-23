@@ -1,6 +1,7 @@
 name: Api server serverless Deploy
 
 on:
+  workflow_dispatch:
   push:
     branches: [master]
     paths: 'app/**'
