@@ -28,6 +28,12 @@ export class User {
     default: Diet.NOMARL,
   })
   diet: Diet;
+
+  @Prop({ required: false })
+  created_at: Date;
+
+  @Prop({ required: false })
+  updated_at: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
