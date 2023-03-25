@@ -19,5 +19,11 @@ export const handler: Handler = async (
   callback: Callback,
 ) => {
   server = server ?? (await bootstrap());
+  if (event.path === '/api') {
+    event.path = '/api/';
+  }
+  event.path = event.path.includes('swagger-ui')
+    ? `/api${event.path}`
+    : event.path;
   return server(event, context, callback);
 };
