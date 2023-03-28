@@ -15,7 +15,7 @@ provider:
     DATABASE_URI: ${env:DATABASE_URI}
     JWT_SECRET: ${env:JWT_SECRET}
     JWT_EXPIRES_IN: ${env:JWT_EXPIRES_IN}
-    JWT_REFRESH_EXPIERES_IN: ${env:JWT_REFRESH_EXPIERES_IN}
+    JWT_REFRESH_EXPIRES_IN: ${env:JWT_REFRESH_EXPIRES_IN}
 
 package:
   individually: true

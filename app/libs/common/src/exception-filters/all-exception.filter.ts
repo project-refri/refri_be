@@ -26,6 +26,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : { message: 'Internal server error' };
 
+    console.error(exception);
+
     const responseBody = {
       success: false,
       statusCode: httpStatus,

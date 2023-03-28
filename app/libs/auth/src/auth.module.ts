@@ -13,6 +13,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { UserModule } from '@app/user/user.module';
 import { HttpModule } from '@nestjs/axios';
+import { JwtRegisterStrategy } from './strategies/jwt-register.strategy';
 
 @Module({
   imports: [
@@ -22,7 +23,9 @@ import { HttpModule } from '@nestjs/axios';
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: configService.get<number>('JWT_EXPIRES_IN') },
+        signOptions: {
+          expiresIn: parseInt(configService.get<string>('JWT_EXPIRES_IN')),
+        },
       }),
       inject: [ConfigService],
     }),
@@ -35,6 +38,7 @@ import { HttpModule } from '@nestjs/axios';
     AuthRepository,
     JwtStrategy,
     JwtRefreshStrategy,
+    JwtRegisterStrategy,
     { provide: 'REFRESH_TOKEN_SCHEMA', useValue: RefreshTokenSchema },
   ],
   exports: [

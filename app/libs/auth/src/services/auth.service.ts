@@ -50,7 +50,9 @@ export class AuthService extends CommonService<
       uuid,
     };
     const refreshToken = this.jwtService.sign(jwtRefreshPayload, {
-      expiresIn: this.configService.get<number>('JWT_REFRESH_EXPIRES_IN'),
+      expiresIn: parseInt(
+        this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
+      ),
     });
     await this.authRepository.create({
       refresh_token: refreshToken,
