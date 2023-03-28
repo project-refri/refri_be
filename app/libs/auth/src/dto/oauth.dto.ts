@@ -18,4 +18,5 @@ export class OAuthLoginTokenAndUserDto {
   is_exist: boolean;
   token?: LoginTokensDto;
   user?: User;
+  register_token?: string;
 }

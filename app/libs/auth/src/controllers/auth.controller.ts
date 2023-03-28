@@ -1,12 +1,22 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { GoogleLoginDto, KakaoLoginDto } from '../dto/oauth.dto';
 import { ApiPostOk } from '@app/common/decorators/http-method.decorator';
 import { User } from '@app/user/entities/user.entity';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { CreateUserDto } from '@app/user/dto/modify-user.dto';
-import { RefreshAuth } from '@app/common/decorators/auth.decorator';
+import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/modify-user.dto';
+import {
+  RefreshAuth,
+  RegisterAuth,
+} from '@app/common/decorators/auth.decorator';
 import {
   LogoutResponseDto,
   OAuthLoginResponseDto,
@@ -23,12 +33,16 @@ export class AuthController {
    * ## Register
    *
    * Create User with given dto and return token, user info.
-   * `email`, `username` is unique.
+   * Auth header as Bearer token(OAuthLogin response) is required.
+   * `username` is unique.
    */
   @ApiPostOk(RegisterResponseDto)
+  @RegisterAuth()
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  async register(@Body() createUserDto: CreateUserDto) {
+  async register(@Body() createUserApiDto: CreateUserApiDto, @Req() req) {
+    const email: string = req.user;
+    const createUserDto: CreateUserDto = { ...createUserApiDto, email };
     return await this.authService.register(createUserDto);
   }
 
@@ -36,8 +50,8 @@ export class AuthController {
    * ## Google Login
    *
    * Login User with given access_token of google.
-   * If user is not registered, response's `if_exist` is `false` and token, user is null.
-   * If user is registered, response's `if_exist` is `true` and token, user is valid.
+   * If user is not registered, response's `if_exist` is `false` and `register_token` response.
+   * If user is registered, response's `if_exist` is `true` and `token`, `user` response.
    */
   @ApiPostOk(OAuthLoginResponseDto)
   @HttpCode(HttpStatus.OK)
@@ -50,8 +64,8 @@ export class AuthController {
    * ## Kakao Login
    *
    * Login User with given access_token of kakao.
-   * If user is not registered, response's `if_exist` is `false` and token, user is null.
-   * If user is registered, response's `if_exist` is `true` and token, user is valid.
+   * If user is not registered, response's `if_exist` is `false` and `register_token` response.
+   * If user is registered, response's `if_exist` is `true` and `token`, `user` response.
    */
   @ApiPostOk(OAuthLoginResponseDto)
   @HttpCode(HttpStatus.OK)

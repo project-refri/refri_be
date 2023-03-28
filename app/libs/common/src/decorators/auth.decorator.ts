@@ -1,5 +1,9 @@
 import { RefreshDto } from '@app/auth/dto/token.dto';
-import { JwtAuthGuard, JwtRefreshAuthGuard } from '@app/auth/jwt-auth.guard';
+import {
+  JwtAuthGuard,
+  JwtRefreshAuthGuard,
+  JwtRegisterAuthGuard,
+} from '@app/auth/jwt-auth.guard';
 import { applyDecorators, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -20,6 +24,14 @@ export const RefreshAuth = () => {
   return applyDecorators(
     UseGuards(JwtRefreshAuthGuard),
     ApiBody({ type: RefreshDto }),
+    ApiUnauthorizedResponse({ type: UnauthorizedResponse }),
+  );
+};
+
+export const RegisterAuth = () => {
+  return applyDecorators(
+    UseGuards(JwtRegisterAuthGuard),
+    ApiBearerAuth(),
     ApiUnauthorizedResponse({ type: UnauthorizedResponse }),
   );
 };

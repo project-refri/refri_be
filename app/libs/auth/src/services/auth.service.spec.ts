@@ -6,10 +6,10 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@app/user/entities/user.entity';
 import { CreateUserDto } from '@app/user/dto/modify-user.dto';
-import { LoginResDto } from '../dto/token.dto';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import { Schema } from 'mongoose';
-import { OAuthLoginResDto } from '../dto/oauth.dto';
+import { OAuthLoginTokenAndUserDto } from '../dto/oauth.dto';
+import { LoginTokenAndUserDto } from '../dto/token.dto';
 
 jest.mock('uuid', () => ({
   v4: () => 'mock-uuid',
@@ -36,15 +36,16 @@ describe('AuthService', () => {
     it('should register a new user and return a login response', async () => {
       const createUserDto: CreateUserDto = new CreateUserDto();
       const user: User = new User();
-      const loginResDto: LoginResDto = new LoginResDto();
+      const loginTokenAndUserDto: LoginTokenAndUserDto =
+        new LoginTokenAndUserDto();
       userService.create.mockResolvedValue(user);
-      service.login = jest.fn().mockResolvedValue(loginResDto);
+      service.login = jest.fn().mockResolvedValue(loginTokenAndUserDto);
 
       const result = await service.register(createUserDto);
 
       expect(userService.create).toHaveBeenCalledWith(createUserDto);
       expect(service.login).toHaveBeenCalledWith(user);
-      expect(result).toEqual(loginResDto);
+      expect(result).toEqual(loginTokenAndUserDto);
     });
   });
 
@@ -62,7 +63,7 @@ describe('AuthService', () => {
         uuid: 'mock-uuid',
       };
       const expiresIn = 3600;
-      const loginResDto: LoginResDto = {
+      const loginTokenAndUserDto: LoginTokenAndUserDto = {
         token: {
           access_token: accessToken,
           refresh_token: refreshToken,
@@ -84,7 +85,7 @@ describe('AuthService', () => {
         refresh_token: refreshToken,
         uuid: jwtRefreshPayload.uuid,
       });
-      expect(result).toEqual(loginResDto);
+      expect(result).toEqual(loginTokenAndUserDto);
     });
   });
 
@@ -93,37 +94,40 @@ describe('AuthService', () => {
       const email = 'test@test.com';
       const user = new User();
       user.email = email;
-      const loginResDto: LoginResDto = {
+      const loginTokenAndUserDto: LoginTokenAndUserDto = {
         token: {
           access_token: 'access_token',
           refresh_token: 'refresh_token',
         },
         user,
       };
-      const oAuthLoginResDto: OAuthLoginResDto = {
+      const oAuthLoginTokenAndUserDto: OAuthLoginTokenAndUserDto = {
         is_exist: true,
-        ...loginResDto,
+        ...loginTokenAndUserDto,
       };
       userService.findByEmail.mockResolvedValue(user);
-      service.login = jest.fn().mockResolvedValue(loginResDto);
+      service.login = jest.fn().mockResolvedValue(loginTokenAndUserDto);
 
       const result = await service.OAuthLoginByEmail(email);
 
       expect(userService.findByEmail).toHaveBeenCalledWith(email);
       expect(service.login).toHaveBeenCalledWith(user);
-      expect(result).toEqual(oAuthLoginResDto);
+      expect(result).toEqual(oAuthLoginTokenAndUserDto);
     });
 
     it('should return whether user does not exist', async () => {
       const email = 'test@test.com';
       const expectedResponse = {
         is_exist: false,
+        register_token: 'register_token',
       };
+      jwtService.sign.mockReturnValue('register_token');
       userService.findByEmail.mockResolvedValue(undefined);
 
       const result = await service.OAuthLoginByEmail(email);
 
       expect(userService.findByEmail).toHaveBeenCalledWith(email);
+      expect(jwtService.sign).toHaveBeenCalledWith({ sub: email });
       expect(result).toEqual(expectedResponse);
     });
   });

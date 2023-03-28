@@ -65,11 +65,12 @@ export class AuthService extends CommonService<
     };
   }
 
-  async OAuthLoginByEmail(email: string) {
+  async OAuthLoginByEmail(email: string): Promise<OAuthLoginTokenAndUserDto> {
     const user = await this.userService.findByEmail(email);
     return {
       is_exist: !!user,
       ...(!!user ? await this.login(user) : {}),
+      register_token: !!user ? undefined : this.jwtService.sign({ sub: email }),
     };
   }
 

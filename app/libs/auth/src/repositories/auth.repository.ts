@@ -21,6 +21,6 @@ export class AuthRepository extends CommonRepository<
   }
 
   async deleteByUUID(uuid: string) {
-    return await this.refreshTokenModel.findOneAndDelete({ uuid });
+    return await this.refreshTokenModel.findOneAndDelete({ uuid }).exec();
   }
 }

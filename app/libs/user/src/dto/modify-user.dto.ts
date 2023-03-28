@@ -2,6 +2,14 @@ import { PartialType } from '@nestjs/mapped-types';
 import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { Diet } from '../types/diet.enum';
 
+export class CreateUserApiDto {
+  @IsString()
+  nickname: string;
+
+  @IsString()
+  username: string;
+}
+
 export class CreateUserDto {
   @IsString()
   nickname: string;

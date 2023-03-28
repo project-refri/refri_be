@@ -24,6 +24,7 @@ export class User {
 
   @Prop({
     required: true,
+    type: String,
     enum: Diet,
     default: Diet.NOMARL,
   })
