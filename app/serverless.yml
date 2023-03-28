@@ -10,10 +10,17 @@ provider:
   logs:
     restApi: true
   environment:
-    DATABASE_URI: ${param:DB}
+    DEV_HOST: ${env:DEV_HOST}
+    DEV_STAGE: ${env:DEV_STAGE}
+    DATABASE_URI: ${env:DATABASE_URI}
+    JWT_SECRET: ${env:JWT_SECRET}
+    JWT_EXPIRES_IN: ${env:JWT_EXPIRES_IN}
+    JWT_REFRESH_EXPIRES_IN: ${env:JWT_REFRESH_EXPIRES_IN}
 
 package:
   individually: true
+
+useDotenv: true
 
 functions:
   mono_lambda:

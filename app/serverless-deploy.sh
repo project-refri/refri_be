@@ -1,3 +1,3 @@
-DB_URI=$(grep "DATABASE_URI" .env.dev | cut -d "=" -f 2)
+npx nest build mono_lambda --webpack
 
-serverless deploy --aws-profile refri_serverless --param="DB=$DB_URI"
+serverless deploy --aws-profile refri_serverless

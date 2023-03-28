@@ -1,4 +1,14 @@
-import { Controller, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Param,
+  Post,
+  HttpCode,
+  Get,
+  Patch,
+  HttpStatus,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { UserService } from '../services/user.service';
@@ -9,11 +19,12 @@ import {
   UpdateUserResponseDto,
 } from '../dto/user-response.dto';
 import {
-  Delete,
-  Get,
-  Patch,
-  Post,
+  ApiDeleteNoContent,
+  ApiGet,
+  ApiPatch,
+  ApiPostCreated,
 } from '@app/common/decorators/http-method.decorator';
+import { Auth } from '@app/common/decorators/auth.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -21,48 +32,63 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   /**
-   * Create User.
+   * ## Create User.
    *
    * Don't use this API endpoint in production. Only for development and testing.
    */
-  @Post(CreateUserResponseDto)
+  @ApiPostCreated(CreateUserResponseDto)
+  @Auth()
+  @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
 
   /**
-   * Find all Users
+   * ## Find all Users
    *
    * TODO: add Query params for pagination and filtering
    */
-  @Get(FindAllUserResponseDto)
+  @Auth()
+  @ApiGet(FindAllUserResponseDto)
+  @Get()
   async findAll() {
     return await this.userService.findAll({});
   }
 
   /**
-   * Find one User By ID
+   * ## Find one User By ID
+   *
+   * Find one user by `id` and return user info.
    */
-  @Get(FindOneUserResponseDto, ':id')
+  @Auth()
+  @ApiGet(FindOneUserResponseDto)
+  @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.userService.findOne(id);
   }
 
   /**
-   * Update User By ID
+   * ## Update User By ID
+   *
+   * Update user by `id` and return updated user info.
    */
-  @Patch(UpdateUserResponseDto, ':id')
+  @Auth()
+  @ApiPatch(UpdateUserResponseDto)
+  @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return await this.userService.update(id, updateUserDto);
   }
 
   /**
-   * Delete User By ID
+   * ## Delete User By ID
    *
    * Don't use this API endpoint in production. Only for development and testing.
    *
    * TODO: add cascade delete
    */
+  @Auth()
+  @ApiDeleteNoContent()
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return await this.userService.delete(id);

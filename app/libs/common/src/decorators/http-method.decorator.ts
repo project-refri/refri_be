@@ -1,12 +1,4 @@
-import {
-  applyDecorators,
-  HttpCode,
-  HttpStatus,
-  Post as NestPost,
-  Get as NestGet,
-  Patch as NestPatch,
-  Delete as NestDelete,
-} from '@nestjs/common';
+import { applyDecorators, HttpCode } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -19,39 +11,51 @@ import {
   NotFoundResponse,
 } from '../dto/error-response.dto';
 
-export const Post = (responseType: any, path?: string) => {
+export const ApiPostCreated = (responseType: any) => {
   return applyDecorators(
-    NestPost(path),
-    HttpCode(HttpStatus.CREATED),
     ApiBadRequestResponse({ type: BadRequestResponse }),
     ApiCreatedResponse({ type: responseType }),
+    HttpCode(201),
   );
 };
 
-export const Get = (responseType: any, path?: string) => {
+export const ApiPostOk = (responseType: any) => {
   return applyDecorators(
-    NestGet(path),
-    HttpCode(HttpStatus.OK),
+    HttpCode(200),
+    ApiOkResponse({ type: responseType }),
+    ApiBadRequestResponse({ type: BadRequestResponse }),
+  );
+};
+
+export const ApiGet = (responseType: any) => {
+  return applyDecorators(
+    HttpCode(200),
     ApiNotFoundResponse({ type: NotFoundResponse }),
     ApiBadRequestResponse({ type: BadRequestResponse }),
     ApiOkResponse({ type: responseType }),
   );
 };
 
-export const Patch = (responseType: any, path?: string) => {
+export const ApiPatch = (responseType: any) => {
   return applyDecorators(
-    NestPatch(path),
-    HttpCode(HttpStatus.OK),
+    HttpCode(200),
     ApiNotFoundResponse({ type: NotFoundResponse }),
     ApiBadRequestResponse({ type: BadRequestResponse }),
     ApiOkResponse({ type: responseType }),
   );
 };
 
-export const Delete = (path?: string) => {
+export const ApiDeleteOk = (responseType: any) => {
   return applyDecorators(
-    NestDelete(path),
-    HttpCode(HttpStatus.NO_CONTENT),
+    HttpCode(200),
+    ApiNotFoundResponse({ type: NotFoundResponse }),
+    ApiOkResponse(responseType),
+  );
+};
+
+export const ApiDeleteNoContent = () => {
+  return applyDecorators(
+    HttpCode(204),
     ApiNotFoundResponse({ type: NotFoundResponse }),
     ApiNoContentResponse(),
   );

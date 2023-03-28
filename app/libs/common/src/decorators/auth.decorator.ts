@@ -1,15 +1,37 @@
-import { applyDecorators } from '@nestjs/common';
+import { RefreshDto } from '@app/auth/dto/token.dto';
+import {
+  JwtAuthGuard,
+  JwtRefreshAuthGuard,
+  JwtRegisterAuthGuard,
+} from '@app/auth/jwt-auth.guard';
+import { applyDecorators, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiForbiddenResponse,
+  ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { UnauthorizedResponse } from '../dto/error-response.dto';
 
 export const Auth = () => {
   return applyDecorators(
-    // UseGuards(AuthGuard('jwt')),
+    UseGuards(JwtAuthGuard),
     ApiBearerAuth(),
-    ApiUnauthorizedResponse({ description: 'Unauthorized' }),
-    ApiForbiddenResponse({}),
+    ApiUnauthorizedResponse({ type: UnauthorizedResponse }),
+  );
+};
+
+export const RefreshAuth = () => {
+  return applyDecorators(
+    UseGuards(JwtRefreshAuthGuard),
+    ApiBody({ type: RefreshDto }),
+    ApiUnauthorizedResponse({ type: UnauthorizedResponse }),
+  );
+};
+
+export const RegisterAuth = () => {
+  return applyDecorators(
+    UseGuards(JwtRegisterAuthGuard),
+    ApiBearerAuth(),
+    ApiUnauthorizedResponse({ type: UnauthorizedResponse }),
   );
 };

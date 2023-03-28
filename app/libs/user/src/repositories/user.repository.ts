@@ -19,4 +19,12 @@ export class UserRepository extends CommonRepository<
   ) {
     super(userModel);
   }
+
+  async findByEmail(email: string): Promise<User> {
+    return await this.userModel.findOne({ email }).exec();
+  }
+
+  async findByUsername(username: string): Promise<User> {
+    return await this.userModel.findOne({ username }).exec();
+  }
 }

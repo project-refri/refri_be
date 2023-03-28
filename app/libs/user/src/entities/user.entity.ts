@@ -1,29 +1,9 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import {
-  HydratedDocument,
-  Schema as MongooseSchema,
-  ToObjectOptions,
-} from 'mongoose';
+import { schemaOptions } from '@app/common/schema-option';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Diet } from '../types/diet.enum';
 
 export type UserDocument = HydratedDocument<User>;
-
-const toObjectOptions: ToObjectOptions = {
-  virtuals: true,
-  transform: (doc, ret) => {
-    delete ret._id;
-    delete ret.__v;
-  },
-};
-
-const schemaOptions: SchemaOptions = {
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-  },
-  toObject: toObjectOptions,
-  toJSON: toObjectOptions,
-};
 
 @Schema(schemaOptions)
 export class User {
@@ -36,7 +16,7 @@ export class User {
   @Prop({ required: true, unique: true })
   username: string;
 
-  @Prop({ required: false, default: '' })
+  @Prop({ required: false, default: '', unique: true })
   email: string;
 
   @Prop({ required: false, default: '' })
@@ -44,10 +24,17 @@ export class User {
 
   @Prop({
     required: true,
+    type: String,
     enum: Diet,
     default: Diet.NOMARL,
   })
   diet: Diet;
+
+  @Prop({ required: false })
+  created_at: Date;
+
+  @Prop({ required: false })
+  updated_at: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

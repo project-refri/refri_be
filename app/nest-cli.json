@@ -1,17 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/app/src",
   "monorepo": true,
-  "root": "apps/app",
+  "root": "apps/api",
+  "sourceRoot": "apps/api/src",
   "projects": {
-    "app": {
+    "api": {
       "type": "application",
-      "root": "apps/app",
+      "root": "apps/api",
       "entryFile": "main",
-      "sourceRoot": "apps/app/src",
+      "sourceRoot": "apps/api/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/app/tsconfig.app.json",
         "plugins": [
           {
             "name": "@nestjs/swagger",
@@ -19,7 +18,9 @@
               "introspectComments": true
             }
           }
-        ]
+        ],
+        "tsConfigPath": "apps/api/tsconfig.app.json",
+        "deleteOutDir": true
       }
     },
     "mono_lambda": {
@@ -29,14 +30,6 @@
       "sourceRoot": "apps/mono_lambda/src",
       "compilerOptions": {
         "tsConfigPath": "apps/mono_lambda/tsconfig.app.json",
-        "plugins": [
-          {
-            "name": "@nestjs/swagger",
-            "options": {
-              "introspectComments": true
-            }
-          }
-        ],
         "webpack": true
       }
     },
@@ -46,15 +39,7 @@
       "entryFile": "index",
       "sourceRoot": "libs/auth/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/auth/tsconfig.lib.json",
-        "plugins": [
-          {
-            "name": "@nestjs/swagger",
-            "options": {
-              "introspectComments": true
-            }
-          }
-        ]
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
       }
     },
     "user": {
@@ -63,15 +48,7 @@
       "entryFile": "index",
       "sourceRoot": "libs/user/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/user/tsconfig.lib.json",
-        "plugins": [
-          {
-            "name": "@nestjs/swagger",
-            "options": {
-              "introspectComments": true
-            }
-          }
-        ]
+        "tsConfigPath": "libs/user/tsconfig.lib.json"
       }
     },
     "common": {
@@ -80,15 +57,7 @@
       "entryFile": "index",
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/common/tsconfig.lib.json",
-        "plugins": [
-          {
-            "name": "@nestjs/swagger",
-            "options": {
-              "introspectComments": true
-            }
-          }
-        ]
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     }
   }

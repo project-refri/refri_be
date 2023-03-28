@@ -11,5 +11,9 @@ export const swaggerSetting = (app: INestApplication) => {
     .addServer('http://localhost:8000', 'Local Server')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup(process.env.DEV_STAGE + '/api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 };
