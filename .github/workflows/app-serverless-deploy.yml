@@ -69,7 +69,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bundled_dist
-          path: ./app/
+          path: ./app/dist
+          
+      - name: Display structure of downloaded files
+        run: ls -R
 
       - name: serverless deploy
         uses: serverless/github-action@v3.1
