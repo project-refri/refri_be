@@ -54,6 +54,7 @@ jobs:
   serverless_deploy:
     name: serverless_deploy
     runs-on: ubuntu-latest
+    environment: serverless-deploy
     defaults:
       run:
         working-directory: ./app/
