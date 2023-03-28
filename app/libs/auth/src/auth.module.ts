@@ -17,8 +17,23 @@ import { JwtRegisterStrategy } from './strategies/jwt-register.strategy';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: RefreshToken.name, schema: RefreshTokenSchema },
+    MongooseModule.forFeatureAsync([
+      {
+        name: RefreshToken.name,
+        useFactory: (configService: ConfigService) => {
+          const schema = RefreshTokenSchema;
+          schema.index(
+            { created_at: 1 },
+            {
+              expireAfterSeconds: parseInt(
+                configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
+              ),
+            },
+          );
+          return schema;
+        },
+        inject: [ConfigService],
+      },
     ]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({

@@ -15,7 +15,10 @@ export class RefreshToken {
   @Prop({ required: true })
   uuid: string;
 
-  @Prop({ required: false })
+  @Prop({
+    required: false,
+    type: Date,
+  })
   created_at: Date;
 
   @Prop({ required: false })
