@@ -36,6 +36,18 @@
       ],
       "@app/common/*": [
         "libs/common/src/*"
+      ],
+      "@app/ingredient": [
+        "libs/ingredient/src"
+      ],
+      "@app/ingredient/*": [
+        "libs/ingredient/src/*"
+      ],
+      "@app/image": [
+        "libs/image/src"
+      ],
+      "@app/image/*": [
+        "libs/image/src/*"
       ]
     }
   }

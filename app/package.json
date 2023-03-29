@@ -22,6 +22,7 @@
     "test:e2e": "jest --config ./apps/app/test/jest-e2e.json"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.301.0",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
@@ -53,6 +54,7 @@
     "@types/aws-lambda": "^8.10.114",
     "@types/express": "^4.17.13",
     "@types/jest": "28.1.4",
+    "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.8",
     "@types/supertest": "^2.0.11",
@@ -95,7 +97,9 @@
     "moduleNameMapper": {
       "^@app/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
       "^@app/user(|/.*)$": "<rootDir>/libs/user/src/$1",
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/ingredient(|/.*)$": "<rootDir>/libs/ingredient/src/$1",
+      "^@app/image(|/.*)$": "<rootDir>/libs/image/src/$1"
     }
   }
 }
