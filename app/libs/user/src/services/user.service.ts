@@ -18,11 +18,11 @@ export class UserService extends CommonService<
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { email, username } = createUserDto;
-    const [dup1, dup2] = await Promise.all([
+    const [dupEmail, dupUsername] = await Promise.all([
       this.userRepository.findByEmail(email),
       this.userRepository.findByUsername(username),
     ]);
-    if (dup1 || dup2) {
+    if (dupEmail || dupUsername) {
       throw new BadRequestException('Duplicated email or username.');
     }
     return await this.userRepository.create(createUserDto);
