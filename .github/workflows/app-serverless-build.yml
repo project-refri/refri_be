@@ -13,8 +13,8 @@ jobs:
     name: buildAndTest
     runs-on: ubuntu-latest
     defaults:
-       run:
-         working-directory: ./app/
+      run:
+        working-directory: ./app/
 
     strategy:
       matrix:

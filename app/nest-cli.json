@@ -4,6 +4,10 @@
   "monorepo": true,
   "root": "apps/api",
   "sourceRoot": "apps/api/src",
+  "compilerOptions": {
+    "tsConfigPath": "apps/api/tsconfig.app.json",
+    "deleteOutDir": true
+  },
   "projects": {
     "api": {
       "type": "application",
@@ -58,6 +62,24 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "ingredient": {
+      "type": "library",
+      "root": "libs/ingredient",
+      "entryFile": "index",
+      "sourceRoot": "libs/ingredient/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/ingredient/tsconfig.lib.json"
+      }
+    },
+    "image": {
+      "type": "library",
+      "root": "libs/image",
+      "entryFile": "index",
+      "sourceRoot": "libs/image/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/image/tsconfig.lib.json"
       }
     }
   }
