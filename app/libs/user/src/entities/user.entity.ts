@@ -26,7 +26,7 @@ export class User {
     required: true,
     type: String,
     enum: Diet,
-    default: Diet.NOMARL,
+    default: Diet.NORMAL,
   })
   diet: Diet;
 

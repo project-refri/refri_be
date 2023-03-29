@@ -1,6 +1,7 @@
 export enum Diet {
-  NOMARL = 'NOMARL',
+  NORMAL = 'NORMAL',
+  DIET = 'DIET',
   VEGAN = 'VEGAN',
-  KITO = 'KITO',
+  KETO = 'KETO',
   WORKOUT = 'WORKOUT',
 }
