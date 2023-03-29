@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -9,11 +10,15 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { GoogleLoginDto, KakaoLoginDto } from '../dto/oauth.dto';
-import { ApiPostOk } from '@app/common/decorators/http-method.decorator';
+import {
+  ApiGet,
+  ApiPostOk,
+} from '@app/common/decorators/http-method.decorator';
 import { User } from '@app/user/entities/user.entity';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/modify-user.dto';
 import {
+  Auth,
   RefreshAuth,
   RegisterAuth,
 } from '@app/common/decorators/auth.decorator';
@@ -23,11 +28,26 @@ import {
   RefreshResponseDto,
   RegisterResponseDto,
 } from '../dto/auth-response.dto';
+import { FindOneUserResponseDto } from '@app/user/dto/user-response.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  /**
+   * ## Me
+   *
+   * Return user info with given auth header bearer token.
+   * If token is valid and not expired, return user info.
+   * If token is invalid or expired, return `401`.
+   */
+  @ApiGet(FindOneUserResponseDto)
+  @Auth()
+  @Get('me')
+  async me(@ReqUser() user: User) {
+    return user;
+  }
 
   /**
    * ## Register
