@@ -92,8 +92,10 @@ describe('AuthService', () => {
   describe('OAuthLoginByEmail', () => {
     it('should return whether user exists and login result', async () => {
       const email = 'test@test.com';
+      const username = 'test';
       const user = new User();
       user.email = email;
+      user.username = username;
       const loginTokenAndUserDto: LoginTokenAndUserDto = {
         token: {
           access_token: 'access_token',
@@ -108,7 +110,7 @@ describe('AuthService', () => {
       userService.findByEmail.mockResolvedValue(user);
       service.login = jest.fn().mockResolvedValue(loginTokenAndUserDto);
 
-      const result = await service.OAuthLoginByEmail(email);
+      const result = await service.OAuthLoginByEmail({ email, username });
 
       expect(userService.findByEmail).toHaveBeenCalledWith(email);
       expect(service.login).toHaveBeenCalledWith(user);
@@ -117,6 +119,7 @@ describe('AuthService', () => {
 
     it('should return whether user does not exist', async () => {
       const email = 'test@test.com';
+      const username = 'test';
       const expectedResponse = {
         is_exist: false,
         register_token: 'register_token',
@@ -124,10 +127,10 @@ describe('AuthService', () => {
       jwtService.sign.mockReturnValue('register_token');
       userService.findByEmail.mockResolvedValue(undefined);
 
-      const result = await service.OAuthLoginByEmail(email);
+      const result = await service.OAuthLoginByEmail({ email, username });
 
       expect(userService.findByEmail).toHaveBeenCalledWith(email);
-      expect(jwtService.sign).toHaveBeenCalledWith({ sub: email });
+      expect(jwtService.sign).toHaveBeenCalledWith({ sub: email, username });
       expect(result).toEqual(expectedResponse);
     });
   });

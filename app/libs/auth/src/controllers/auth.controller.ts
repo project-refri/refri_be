@@ -29,6 +29,7 @@ import {
   RegisterResponseDto,
 } from '../dto/auth-response.dto';
 import { FindOneUserResponseDto } from '@app/user/dto/user-response.dto';
+import { UserInfo } from '../types/user-info.type';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -61,8 +62,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('register')
   async register(@Body() createUserApiDto: CreateUserApiDto, @Req() req) {
-    const email: string = req.user;
-    const createUserDto: CreateUserDto = { ...createUserApiDto, email };
+    const userInfo: UserInfo = req.user;
+    const createUserDto: CreateUserDto = { ...createUserApiDto, ...userInfo };
     return await this.authService.register(createUserDto);
   }
 

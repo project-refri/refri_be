@@ -16,6 +16,7 @@ import {
   GoogleApiResponseType,
   KakaoApiResponseType,
 } from '../types/oauth.type';
+import { UserInfo } from '../types/user-info.type';
 
 @Injectable()
 export class AuthService extends CommonService<
@@ -67,12 +68,17 @@ export class AuthService extends CommonService<
     };
   }
 
-  async OAuthLoginByEmail(email: string): Promise<OAuthLoginTokenAndUserDto> {
+  async OAuthLoginByEmail(
+    userInfo: UserInfo,
+  ): Promise<OAuthLoginTokenAndUserDto> {
+    const { email, username } = userInfo;
     const user = await this.userService.findByEmail(email);
     return {
       is_exist: !!user,
       ...(!!user ? await this.login(user) : {}),
-      register_token: !!user ? undefined : this.jwtService.sign({ sub: email }),
+      register_token: !!user
+        ? undefined
+        : this.jwtService.sign({ sub: email, username }),
     };
   }
 
@@ -89,8 +95,8 @@ export class AuthService extends CommonService<
           },
         },
       );
-    const { email } = data;
-    return await this.OAuthLoginByEmail(email);
+    const { email, name: username } = data;
+    return await this.OAuthLoginByEmail({ email, username } as UserInfo);
   }
 
   async kakaoLogin(
@@ -104,7 +110,8 @@ export class AuthService extends CommonService<
         },
       });
     const { email } = data.kakao_account;
-    return await this.OAuthLoginByEmail(email);
+    const { nickname: username } = data.kakao_account.profile;
+    return await this.OAuthLoginByEmail({ email, username } as UserInfo);
   }
 
   async refresh(user: User): Promise<LoginTokenAndUserDto> {
