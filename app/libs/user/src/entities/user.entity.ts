@@ -10,9 +10,6 @@ export class User {
   @Prop({ required: true, unique: true, auto: true })
   id: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true })
-  nickname: string;
-
   @Prop({ required: true, unique: true })
   username: string;
 
@@ -29,6 +26,12 @@ export class User {
     default: Diet.NORMAL,
   })
   diet: Diet;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
+  thumbnail: string;
 
   @Prop({ required: false })
   created_at: Date;
