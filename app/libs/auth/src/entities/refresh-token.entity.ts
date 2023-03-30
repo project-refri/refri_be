@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { schemaOptions } from '@app/common/schema-option';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import { ConfigService } from '@nestjs/config';
 
 export type RefreshTokenDocument = HydratedDocument<RefreshToken>;
 
@@ -26,3 +27,16 @@ export class RefreshToken {
 }
 
 export const RefreshTokenSchema = SchemaFactory.createForClass(RefreshToken);
+
+export const RefreshTokenSchemaFactory = (configService: ConfigService) => {
+  const schema = RefreshTokenSchema;
+  schema.index(
+    { created_at: 1 },
+    {
+      expireAfterSeconds: parseInt(
+        configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
+      ),
+    },
+  );
+  return schema;
+};
