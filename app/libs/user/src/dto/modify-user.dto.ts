@@ -1,4 +1,4 @@
-import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { IntersectionType, OmitType, PartialType } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { Diet } from '../types/diet.enum';
 
@@ -12,9 +12,7 @@ export class CreateUserDto extends CreateUserApiDto {
   email: string;
 }
 
-export class UpdateUserDto extends PartialType(
-  OmitType(CreateUserDto, ['email', 'username'] as const),
-) {
+class UpdateAdditionalDto {
   @IsString()
   thumbnail: string;
 
@@ -24,3 +22,9 @@ export class UpdateUserDto extends PartialType(
   @IsEnum(Diet)
   diet: Diet;
 }
+
+export class UpdateUserDto extends PartialType(
+  OmitType(IntersectionType(CreateUserDto, UpdateAdditionalDto), [
+    'email',
+  ] as const),
+) {}

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { User } from '../entities/user.entity';
@@ -30,5 +34,18 @@ export class UserService extends CommonService<
 
   async findByEmail(email: string): Promise<User> {
     return await this.userRepository.findByEmail(email);
+  }
+
+  async update(id: string, updateDto: UpdateUserDto): Promise<User> {
+    const { username } = updateDto;
+    const dupUsername = await this.userRepository.findByUsername(username);
+    if (dupUsername) {
+      throw new BadRequestException('Duplicated username.');
+    }
+    const ret = await this.userRepository.update(id, updateDto);
+    if (!ret) {
+      throw new NotFoundException('User not found.');
+    }
+    return ret;
   }
 }
