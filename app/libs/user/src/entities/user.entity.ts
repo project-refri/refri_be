@@ -1,4 +1,5 @@
 import { schemaOptions } from '@app/common/schema-option';
+import { ConfigService } from '@nestjs/config';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Diet } from '../types/diet.enum';
@@ -13,7 +14,7 @@ export class User {
   @Prop({ required: true, unique: true })
   username: string;
 
-  @Prop({ required: false, default: '', unique: true })
+  @Prop({ required: true, default: '', unique: true })
   email: string;
 
   @Prop({ required: false, default: '' })
@@ -28,7 +29,7 @@ export class User {
   diet: Diet;
 
   @Prop({
-    required: true,
+    required: false,
     type: String,
   })
   thumbnail: string;
@@ -41,3 +42,15 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+export const UserSchemaFactory = (configService: ConfigService) => {
+  const schema = UserSchema;
+  schema.path('thumbnail', {
+    require: true,
+    type: String,
+    default: `https://${configService.get<string>(
+      'AWS_S3_IMAGE_MAIN_BUCKET',
+    )}.s3.amazonaws.com/default-user-thumbnail.jpg`,
+  });
+  return schema;
+};

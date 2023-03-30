@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   RefreshToken,
   RefreshTokenSchema,
+  RefreshTokenSchemaFactory,
 } from './entities/refresh-token.entity';
 import { AuthRepository } from './repositories/auth.repository';
 import { JwtModule } from '@nestjs/jwt';
@@ -20,18 +21,7 @@ import { JwtRegisterStrategy } from './strategies/jwt-register.strategy';
     MongooseModule.forFeatureAsync([
       {
         name: RefreshToken.name,
-        useFactory: (configService: ConfigService) => {
-          const schema = RefreshTokenSchema;
-          schema.index(
-            { created_at: 1 },
-            {
-              expireAfterSeconds: parseInt(
-                configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
-              ),
-            },
-          );
-          return schema;
-        },
+        useFactory: RefreshTokenSchemaFactory,
         inject: [ConfigService],
       },
     ]),
