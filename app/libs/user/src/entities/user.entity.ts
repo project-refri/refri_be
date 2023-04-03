@@ -1,4 +1,4 @@
-import { schemaOptions } from '@app/common/schema-option';
+import { schemaOptions } from '@app/common/utils/schema-option';
 import { ConfigService } from '@nestjs/config';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
