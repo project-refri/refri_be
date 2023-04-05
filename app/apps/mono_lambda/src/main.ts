@@ -1,6 +1,6 @@
 import { Callback, Context, Handler } from 'aws-lambda';
 import serverlessExpress from '@vendia/serverless-express';
-import { setServer } from '@app/common/server-setting';
+import { setServer } from '@app/common/utils/server-setting';
 import { MonoLambdaModule } from './mono_lambda.module';
 
 let server: Handler;

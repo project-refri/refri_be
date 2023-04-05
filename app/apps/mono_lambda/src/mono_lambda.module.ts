@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { UserModule } from '@app/user/user.module';
 import { AuthModule } from '@app/auth/auth.module';
 import { ImageModule } from '@app/image/image.module';
+import { IngredientModule } from '@app/ingredient/ingredient.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ImageModule } from '@app/image/image.module';
     UserModule,
     AuthModule,
     ImageModule,
+    IngredientModule,
   ],
 })
 export class MonoLambdaModule {}
