@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AllExceptionsFilter } from './exception-filters/all-exception.filter';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { AllExceptionsFilter } from '../exception-filters/all-exception.filter';
+import { TransformInterceptor } from '../interceptors/transform.interceptor';
 import { swaggerSetting } from './swagger-setting';
 
 export async function setServer(appModule: any) {

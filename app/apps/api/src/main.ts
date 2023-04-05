@@ -1,4 +1,4 @@
-import { setServer } from '@app/common/server-setting';
+import { setServer } from '@app/common/utils/server-setting';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 

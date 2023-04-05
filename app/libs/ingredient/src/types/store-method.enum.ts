@@ -1,0 +1,5 @@
+export enum StoreMethod {
+  FREEZE = 'FREEZE',
+  REFRIGERATE = 'REFRIGERATE',
+  ROOM_TEMPERATURE = 'ROOM_TEMPERATURE',
+}
