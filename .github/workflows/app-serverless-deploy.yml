@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
-    paths: 'app/**'
+    paths: 'api/**'
 
 env:
   DEV_HOST: ${{ secrets.DEV_HOST }}
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./app/
+        working-directory: ./api/
 
     strategy:
       matrix:
@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: app/package-lock.json
+          cache-dependency-path: api/package-lock.json
 
       - name: install dependency
         run: npm ci
@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bundled_dist
-          path: ./app/dist
+          path: ./api/dist
 
       - name: run test
         run: npm test
@@ -61,7 +61,7 @@ jobs:
     environment: serverless-deploy
     defaults:
       run:
-        working-directory: ./app/
+        working-directory: ./api/
     needs: buildAndTest
 
     steps:
@@ -74,7 +74,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bundled_dist
-          path: ./app/dist
+          path: ./api/dist
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -82,7 +82,7 @@ jobs:
       - name: serverless deploy
         uses: serverless/github-action@v3.1
         with:
-          args: -c "cd ./app && serverless deploy"
+          args: -c "serverless deploy"
           entrypoint: /bin/sh
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
