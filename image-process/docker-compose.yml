@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  image-process:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+
+    # ports:
+    #   - '9988:9988'
+    # command:
+    #   - python serve.py
+    tty: true
+    volumes:
+      - ../:/refri_be/
