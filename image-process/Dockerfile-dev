@@ -1,0 +1,10 @@
+FROM python:3
+
+RUN apt-get update
+RUN apt-get install libzbar0 -y
+
+ENV PYTHONUNBUFFERED=0
+
+WORKDIR /refri_be/image-process
+ADD    ./requirements.txt   /refri_be/image-process/
+RUN    pip install -r requirements.txt

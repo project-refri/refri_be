@@ -1,0 +1,6 @@
+pytest
+pytest-cov
+grpcio
+grpcio-tools
+pillow
+pyzbar
