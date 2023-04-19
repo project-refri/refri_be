@@ -1,11 +1,11 @@
 import { TestBed } from '@automock/jest';
-import { IngredientService } from './ingredient.service';
+import { UserIngredientService } from './user-ingredient.service';
 
 describe('IngredientService', () => {
-  let service: IngredientService;
+  let service: UserIngredientService;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(IngredientService).compile();
+    const { unit, unitRef } = TestBed.create(UserIngredientService).compile();
 
     service = unit;
   });

@@ -11,7 +11,7 @@ import {
 import { FoodType } from '../types/food-type.enum';
 import { StoreMethod } from '../types/store-method.enum';
 
-export class FilterIngredientDto {
+export class FilterUserIngredientDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()

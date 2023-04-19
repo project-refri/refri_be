@@ -21,27 +21,27 @@ import {
 } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
-  CreateIngredientResponseDto,
-  FindAllIngredientResponseDto,
-  FindOneIngredientResponseDto,
-  UpdateIngredientResponseDto,
+  CreateUserIngredientResponseDto,
+  FindAllUserIngredientResponseDto,
+  FindOneUserIngredientResponseDto,
+  UpdateUserIngredientResponseDto,
 } from '../dto/ingredient-response.dto';
 import {
-  CreateIngredientDto,
-  UpdateIngredientDto,
+  CreateUserIngredientDto,
+  UpdateUserIngredientDto,
 } from '../dto/modify-ingredient.dto';
-import { IngredientService } from '../services/ingredient.service';
+import { UserIngredientService } from '../services/user-ingredient.service';
 import { FoodType } from '../types/food-type.enum';
 import { StoreMethod } from '../types/store-method.enum';
-import { FilterIngredientDto } from '../dto/filter-ingredient.dto';
+import { FilterUserIngredientDto } from '../dto/filter-ingredient.dto';
 import { queryBuilder } from '@app/common/utils/query-builder';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { User } from '@app/user/entities/user.entity';
 
 @ApiTags('Ingredient')
 @Controller('ingredient')
-export class IngredientController {
-  constructor(private readonly ingredientService: IngredientService) {}
+export class UserIngredientController {
+  constructor(private readonly ingredientService: UserIngredientService) {}
 
   /**
    * ## Create Ingredient
@@ -49,10 +49,10 @@ export class IngredientController {
    * Create a new ingredient with given dto.
    */
   @Auth()
-  @ApiPostCreated(CreateIngredientResponseDto)
+  @ApiPostCreated(CreateUserIngredientResponseDto)
   @Post()
   async create(
-    @Body() createIngredientDto: CreateIngredientDto,
+    @Body() createIngredientDto: CreateUserIngredientDto,
     @ReqUser() user: User,
   ) {
     createIngredientDto.user_id = user.id.toString();
@@ -79,7 +79,7 @@ export class IngredientController {
     required: false,
   })
   @Auth()
-  @ApiGet(FindAllIngredientResponseDto)
+  @ApiGet(FindAllUserIngredientResponseDto)
   @Get()
   async findAll(
     @Query(
@@ -96,7 +96,7 @@ export class IngredientController {
     store_method: StoreMethod,
     @ReqUser() user: User,
   ) {
-    const filterIngredientDto: FilterIngredientDto = queryBuilder({
+    const filterIngredientDto: FilterUserIngredientDto = queryBuilder({
       food_type,
       store_method,
       user_id: user.id.toString(),
@@ -110,7 +110,7 @@ export class IngredientController {
    * Find one ingredient with given id.
    */
   @Auth()
-  @ApiGet(FindOneIngredientResponseDto)
+  @ApiGet(FindOneUserIngredientResponseDto)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.ingredientService.findOne(id);
@@ -122,11 +122,11 @@ export class IngredientController {
    * Update ingredient with given id and dto.
    */
   @Auth()
-  @ApiPatch(UpdateIngredientResponseDto)
+  @ApiPatch(UpdateUserIngredientResponseDto)
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateIngredientDto: UpdateIngredientDto,
+    @Body() updateIngredientDto: UpdateUserIngredientDto,
   ) {
     return this.ingredientService.update(id, updateIngredientDto);
   }
