@@ -99,7 +99,8 @@
       "^@app/user(|/.*)$": "<rootDir>/libs/user/src/$1",
       "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@app/ingredient(|/.*)$": "<rootDir>/libs/ingredient/src/$1",
-      "^@app/image(|/.*)$": "<rootDir>/libs/image/src/$1"
+      "^@app/image(|/.*)$": "<rootDir>/libs/image/src/$1",
+      "^@app/recipe(|/.*)$": "<rootDir>/libs/recipe/src/$1"
     }
   }
 }
