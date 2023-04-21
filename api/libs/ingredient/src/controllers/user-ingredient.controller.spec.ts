@@ -1,11 +1,13 @@
 import { TestBed } from '@automock/jest';
-import { IngredientController } from './ingredient.controller';
+import { UserIngredientController } from './user-ingredient.controller';
 
 describe('IngredientController', () => {
-  let controller: IngredientController;
+  let controller: UserIngredientController;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(IngredientController).compile();
+    const { unit, unitRef } = TestBed.create(
+      UserIngredientController,
+    ).compile();
 
     controller = unit;
   });

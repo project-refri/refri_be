@@ -12,10 +12,15 @@ import {
 import { FoodType } from '../types/food-type.enum';
 import { StoreMethod } from '../types/store-method.enum';
 
-export class CreateIngredientDto {
+export class CreateUserIngredientDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsMongoId()
+  @IsNotEmpty()
+  @IsOptional()
+  ingredient_id?: string;
 
   @IsMongoId()
   @IsNotEmpty()
@@ -40,4 +45,6 @@ export class CreateIngredientDto {
   days_before_expiration: number;
 }
 
-export class UpdateIngredientDto extends PartialType(CreateIngredientDto) {}
+export class UpdateUserIngredientDto extends PartialType(
+  CreateUserIngredientDto,
+) {}

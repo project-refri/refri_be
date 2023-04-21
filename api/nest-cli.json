@@ -4,10 +4,6 @@
   "monorepo": true,
   "root": "apps/api",
   "sourceRoot": "apps/api/src",
-  "compilerOptions": {
-    "tsConfigPath": "apps/api/tsconfig.app.json",
-    "deleteOutDir": true
-  },
   "projects": {
     "api": {
       "type": "application",
@@ -80,6 +76,15 @@
       "sourceRoot": "libs/image/src",
       "compilerOptions": {
         "tsConfigPath": "libs/image/tsconfig.lib.json"
+      }
+    },
+    "recipe": {
+      "type": "library",
+      "root": "libs/recipe",
+      "entryFile": "index",
+      "sourceRoot": "libs/recipe/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/recipe/tsconfig.lib.json"
       }
     }
   }

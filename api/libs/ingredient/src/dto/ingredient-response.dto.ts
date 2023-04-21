@@ -2,20 +2,20 @@ import {
   CreatedResponse,
   OkResponse,
 } from '@app/common/dto/success-response.dto';
-import { Ingredient } from '../entities/ingredient.entity';
+import { UserIngredient } from '../entities/user-ingredient.entity';
 
-export class CreateIngredientResponseDto extends CreatedResponse {
-  data: Ingredient;
+export class CreateUserIngredientResponseDto extends CreatedResponse {
+  data: UserIngredient;
 }
 
-export class FindAllIngredientResponseDto extends OkResponse {
-  data: Ingredient[];
+export class FindAllUserIngredientResponseDto extends OkResponse {
+  data: UserIngredient[];
 }
 
-export class FindOneIngredientResponseDto extends OkResponse {
-  data: Ingredient;
+export class FindOneUserIngredientResponseDto extends OkResponse {
+  data: UserIngredient;
 }
 
-export class UpdateIngredientResponseDto extends OkResponse {
-  data: Ingredient;
+export class UpdateUserIngredientResponseDto extends OkResponse {
+  data: UserIngredient;
 }

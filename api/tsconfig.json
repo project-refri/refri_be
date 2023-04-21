@@ -48,6 +48,12 @@
       ],
       "@app/image/*": [
         "libs/image/src/*"
+      ],
+      "@app/recipe": [
+        "libs/recipe/src"
+      ],
+      "@app/recipe/*": [
+        "libs/recipe/src/*"
       ]
     }
   }

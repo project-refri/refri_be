@@ -1,11 +1,13 @@
 import { TestBed } from '@automock/jest';
-import { IngredientRepository } from './ingredient.repository';
+import { UserIngredientRepository } from './user-ingredient.repository';
 
 describe('IngredientRepository', () => {
-  let repository: IngredientRepository;
+  let repository: UserIngredientRepository;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(IngredientRepository).compile();
+    const { unit, unitRef } = TestBed.create(
+      UserIngredientRepository,
+    ).compile();
 
     repository = unit;
   });

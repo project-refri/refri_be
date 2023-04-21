@@ -1,26 +1,26 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { IngredientController } from './controllers/ingredient.controller';
+import { UserIngredientController } from './controllers/user-ingredient.controller';
 import {
-  Ingredient,
-  IngredientSchemaFactory,
-} from './entities/ingredient.entity';
-import { IngredientRepository } from './repositories/ingredient.repository';
-import { IngredientService } from './services/ingredient.service';
+  UserIngredient,
+  UserIngredientSchemaFactory,
+} from './entities/user-ingredient.entity';
+import { UserIngredientRepository } from './repositories/user-ingredient.repository';
+import { UserIngredientService } from './services/user-ingredient.service';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     MongooseModule.forFeatureAsync([
       {
-        name: Ingredient.name,
-        useFactory: IngredientSchemaFactory,
+        name: UserIngredient.name,
+        useFactory: UserIngredientSchemaFactory,
         inject: [ConfigService],
       },
     ]),
   ],
-  controllers: [IngredientController],
-  providers: [IngredientService, IngredientRepository],
-  exports: [IngredientService, IngredientRepository],
+  controllers: [UserIngredientController],
+  providers: [UserIngredientService, UserIngredientRepository],
+  exports: [UserIngredientService, UserIngredientRepository],
 })
 export class IngredientModule {}

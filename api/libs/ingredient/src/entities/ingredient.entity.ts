@@ -1,42 +1,29 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
-import { FoodType } from '../types/food-type.enum';
-import { StoreMethod } from '../types/store-method.enum';
 import { schemaOptions } from '@app/common/utils/schema-option';
-import { User } from '@app/user/entities/user.entity';
-import { ConfigService } from '@nestjs/config';
+import { Prop, Schema } from '@nestjs/mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
 export type IngredientDocument = HydratedDocument<Ingredient>;
 
 @Schema(schemaOptions)
 export class Ingredient {
-  @Prop({ required: true, unique: true, auto: true })
-  id: MongooseSchema.Types.ObjectId;
-
-  @Prop({ required: true })
-  name: string;
-
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId })
-  user_id: MongooseSchema.Types.ObjectId;
-
-  @Prop({ required: true, type: String, enum: FoodType, default: FoodType.ETC })
-  food_type: FoodType;
-
   @Prop({
     required: true,
-    type: String,
-    enum: StoreMethod,
-    default: StoreMethod.REFRIGERATE,
+    unique: true,
+    auto: true,
+    type: MongooseSchema.Types.ObjectId,
   })
-  store_method: StoreMethod;
+  id: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true, type: Number, default: 0 })
-  count: number;
+  @Prop({ required: true, unique: true })
+  name: string;
 
-  @Prop({ required: true, type: Number, default: 0 })
-  days_before_expiration: number;
+  @Prop({ required: true })
+  description: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: true })
+  thumbnail: string;
+
+  @Prop({ required: true })
   icon: string;
 
   @Prop({ required: false })
@@ -45,24 +32,3 @@ export class Ingredient {
   @Prop({ required: false })
   updated_at: Date;
 }
-
-export const IngredientSchema = SchemaFactory.createForClass(Ingredient);
-
-IngredientSchema.virtual('user', {
-  ref: User.name,
-  localField: 'user_id',
-  foreignField: 'id',
-  justOne: true,
-});
-
-export const IngredientSchemaFactory = (configService: ConfigService) => {
-  const schema = IngredientSchema;
-  schema.path('icon', {
-    require: true,
-    type: String,
-    default: `https://${configService.get(
-      'AWS_S3_IMAGE_MAIN_BUCKET',
-    )}.s3.ap-northeast-2.amazonaws.com/ingredient-default-icon.svg`,
-  });
-  return schema;
-};
