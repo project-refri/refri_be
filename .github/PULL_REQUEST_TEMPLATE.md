@@ -1,6 +1,6 @@
 ## Done
 
-- #0
+- close #0
 
 ### Doing
 
