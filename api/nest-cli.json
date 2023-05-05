@@ -23,6 +23,16 @@
         "deleteOutDir": true
       }
     },
+    "api-bundled": {
+      "type": "application",
+      "root": "apps/api-bundled",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-bundled/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-bundled/tsconfig.app.json",
+        "webpack": true
+      }
+    },
     "mono_lambda": {
       "type": "application",
       "root": "apps/mono_lambda",
