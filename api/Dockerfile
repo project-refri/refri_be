@@ -1,0 +1,13 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+ENV DATABASE_URI=${DATABASE_URI} \
+    JWT_SECRET=${JWT_SECRET} \ 
+    JWT_EXPIRES_IN=${JWT_EXPIRES_IN} \ 
+    JWT_REFRESH_EXPIRES_IN=${JWT_REFRESH_EXPIRES_IN} \ 
+    AWS_S3_IMAGE_MAIN_BUCKET=${AWS_S3_IMAGE_MAIN_BUCKET} 
+
+COPY ./dist/apps/api-bundled/main.js .
+
+CMD ["node", "main.js"]
