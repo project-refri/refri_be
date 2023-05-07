@@ -14,6 +14,18 @@ variable "aws_s3_image_main_bucket_name" {
 
 # gcp
 
+variable "gcp_project_id" {
+  description = "GCP project id"
+  type        = string
+  sensitive   = true
+}
+
+variable "gcp_region" {
+  description = "GCP region"
+  type        = string
+  sensitive   = true
+}
+
 variable "cloud_run_image_name" {
   type      = string
   sensitive = true

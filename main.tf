@@ -19,8 +19,8 @@ provider "aws" {
 }
 
 provider "google" {
-  project = "poetic-torch-381606"
-  region  = "asia-northeast3"
+  project = var.gcp_project_id
+  region  = var.gcp_region
 }
 
 resource "aws_s3_bucket" "image_main" {
