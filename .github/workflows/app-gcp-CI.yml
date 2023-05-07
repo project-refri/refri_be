@@ -64,7 +64,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: '{{defaultContext}}:api'
+          context: './api'
           push: true
           tags: '${{ secrets.DOCKER_IMAGE_TAG }}'
           cache-from: type=gha
