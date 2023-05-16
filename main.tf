@@ -92,6 +92,10 @@ resource "google_cloud_run_v2_service" "api_server" {
         name  = "AWS_S3_IMAGE_MAIN_BUCKET"
         value = var.AWS_S3_IMAGE_MAIN_BUCKET
       }
+      env {
+        name  = "AWS_REGION"
+        value = var.AWS_REGION
+      }
     }
   }
 }
