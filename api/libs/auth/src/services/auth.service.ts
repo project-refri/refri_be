@@ -1,15 +1,13 @@
-import { CommonService } from '@app/common/common.service';
 import { User } from '@app/user/entities/user.entity';
 import { UserService } from '@app/user/services/user.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RefreshToken } from '../entities/refresh-token.entity';
 import { AuthRepository } from '../repositories/auth.repository';
 import { JwtPayload, JwtRefreshPayload } from '../types/jwt-payload.type';
 import { v4 as uuid4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from '@app/user/dto/modify-user.dto';
-import { CreateRefreshTokenDto, LoginTokenAndUserDto } from '../dto/token.dto';
+import { LoginTokenAndUserDto } from '../dto/token.dto';
 import { HttpService } from '@nestjs/axios';
 import { GoogleLoginDto, OAuthLoginTokenAndUserDto } from '../dto/oauth.dto';
 import {
@@ -19,21 +17,14 @@ import {
 import { UserInfo } from '../types/user-info.type';
 
 @Injectable()
-export class AuthService extends CommonService<
-  RefreshToken,
-  CreateRefreshTokenDto,
-  any,
-  any
-> {
+export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) {
-    super(authRepository);
-  }
+  ) {}
 
   async register(createUserDto: CreateUserDto): Promise<LoginTokenAndUserDto> {
     const user = await this.userService.create(createUserDto);
