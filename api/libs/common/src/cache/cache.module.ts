@@ -20,8 +20,8 @@ import { MEMORY, MEMORY_CACHE } from './types/cache.constants';
       provide: MEMORY_CACHE,
       useFactory: (configService: ConfigService) => {
         return caching(MEMORY, {
-          ttl: configService.get<number>('MEMORY_CACHE_DEFAULT_TTL'),
-          max: configService.get<number>('MEMORY_CACHE_DEFAULT_MAX'),
+          ttl: parseInt(configService.get<string>('MEMORY_CACHE_DEFAULT_TTL')),
+          max: parseInt(configService.get<string>('MEMORY_CACHE_DEFAULT_MAX')),
         });
       },
       inject: [ConfigService],

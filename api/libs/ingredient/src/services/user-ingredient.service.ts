@@ -1,3 +1,4 @@
+import { Logable } from '@app/common/log/log.decorator';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FilterUserIngredientDto } from '../dto/filter-ingredient.dto';
 import {
@@ -7,6 +8,7 @@ import {
 import { UserIngredient } from '../entities/user-ingredient.entity';
 import { UserIngredientRepository } from '../repositories/user-ingredient.repository';
 
+@Logable()
 @Injectable()
 export class UserIngredientService {
   constructor(

@@ -9,7 +9,7 @@ export class LogAspectProvider implements IAspectProvider {
       const t = Date.now();
       console.log(
         'log start: ',
-        instance,
+        instance.constructor,
         '[',
         methodName,
         ']',

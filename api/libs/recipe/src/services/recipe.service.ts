@@ -1,9 +1,11 @@
+import { Logable } from '@app/common/log/log.decorator';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FilterRecipeDto } from '../dto/filter-recipe.dto';
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
 
+@Logable()
 @Injectable()
 export class RecipeService {
   constructor(private readonly recipeRepository: RecipeRepository) {}
