@@ -7,18 +7,12 @@ import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
-import { CommonService } from '@app/common/common.service';
+import { Logable } from '@app/common/log/log.decorator';
 
+@Logable()
 @Injectable()
-export class UserService extends CommonService<
-  User,
-  CreateUserDto,
-  UpdateUserDto,
-  FilterUserDto
-> {
-  constructor(private readonly userRepository: UserRepository) {
-    super(userRepository);
-  }
+export class UserService {
+  constructor(private readonly userRepository: UserRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { email, username } = createUserDto;
@@ -30,6 +24,18 @@ export class UserService extends CommonService<
       throw new BadRequestException('Duplicated email or username.');
     }
     return await this.userRepository.create(createUserDto);
+  }
+
+  async findAll(filterDto: any): Promise<User[]> {
+    return await this.userRepository.findAll(filterDto);
+  }
+
+  async findOne(id: string): Promise<User> {
+    const ret = await this.userRepository.findOne(id);
+    if (!ret) {
+      throw new NotFoundException('User not found.');
+    }
+    return ret;
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -47,5 +53,17 @@ export class UserService extends CommonService<
       throw new NotFoundException('User not found.');
     }
     return ret;
+  }
+
+  async deleteOne(id: string): Promise<User> {
+    const ret = await this.userRepository.deleteOne(id);
+    if (!ret) {
+      throw new NotFoundException('User not found.');
+    }
+    return ret;
+  }
+
+  async deleteAll(filterDto: FilterUserDto): Promise<any> {
+    return await this.userRepository.deleteAll(filterDto);
   }
 }

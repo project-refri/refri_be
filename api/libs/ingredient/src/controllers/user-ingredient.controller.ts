@@ -141,6 +141,6 @@ export class UserIngredientController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    return this.ingredientService.delete(id);
+    return this.ingredientService.deleteOne(id);
   }
 }
