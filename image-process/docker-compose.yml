@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: ./Dockerfile-dev
 
-    # ports:
-    #   - '9988:9988'
+    ports:
+      - '50051:50051'
     # command:
     #   - python serve.py
     tty: true
