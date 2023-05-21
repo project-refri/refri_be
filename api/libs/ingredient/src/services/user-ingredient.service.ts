@@ -1,5 +1,12 @@
 import { Logable } from '@app/common/log/log.decorator';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom, lastValueFrom, map, Observable } from 'rxjs';
 import { FilterUserIngredientDto } from '../dto/filter-ingredient.dto';
 import {
   CreateUserIngredientDto,
@@ -8,12 +15,32 @@ import {
 import { UserIngredient } from '../entities/user-ingredient.entity';
 import { UserIngredientRepository } from '../repositories/user-ingredient.repository';
 
+interface ImageProcessService {
+  getBarcodeInfoFromUrl(imageInfo: { image_url: string }): Observable<any>;
+}
+
 @Logable()
 @Injectable()
-export class UserIngredientService {
+export class UserIngredientService implements OnModuleInit {
+  private imageProcessService: ImageProcessService;
   constructor(
     private readonly userIngredientRepository: UserIngredientRepository,
+    @Inject('IMAGE_PROCESS_SERVICE') private readonly client: ClientGrpc,
   ) {}
+
+  onModuleInit() {
+    this.imageProcessService =
+      this.client.getService<ImageProcessService>('ImageProcess');
+  }
+
+  getIngredientInfoFromImage(imageUrl: string) {
+    console.log('image_url: ', imageUrl);
+    const ret = this.imageProcessService.getBarcodeInfoFromUrl({
+      image_url: imageUrl,
+    });
+    console.log('ret: ', ret);
+    return ret;
+  }
 
   async create(
     createUserIngredientDto: CreateUserIngredientDto,

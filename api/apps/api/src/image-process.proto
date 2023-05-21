@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package image_process;
+
+service ImageProcess {
+  rpc GetBarcodeInfoFromUrl(ImageInfo) returns (BarcodeInfos) {}
+}
+
+message ImageInfo {
+  string image_url = 1;
+}
+
+message BarcodeInfos {
+  message BarcodeInfo {
+    message Rect {
+      int32 left = 1;
+      int32 top = 2;
+      int32 width = 3;
+      int32 height = 4;
+    }
+    message Point {
+      int32 x = 1;
+      int32 y = 2;
+    }
+    string data = 1;
+    string type = 2;
+    Rect rect = 3;
+    repeated Point polygon = 4;
+    string orientation = 5;
+    int32 quality = 6;
+  }
+  repeated BarcodeInfo barcode_infos = 1;
+}
