@@ -6,6 +6,9 @@ import { AuthModule } from '@app/auth/auth.module';
 import { ImageModule } from '@app/image/image.module';
 import { IngredientModule } from '@app/ingredient/ingredient.module';
 import { RecipeModule } from '@app/recipe/recipe.module';
+import { AopModule } from '@app/common/aop/aop.module';
+import { CacheModule } from '@app/common/cache/cache.module';
+import { LogModule } from '@app/common/log/log.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { RecipeModule } from '@app/recipe/recipe.module';
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test.' : '.env.dev',
     }),
+    AopModule,
+    CacheModule,
+    LogModule,
     UserModule,
     AuthModule,
     ImageModule,

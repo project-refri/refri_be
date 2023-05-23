@@ -11,6 +11,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/api/src",
       "compilerOptions": {
+        "assets": ["**/*.proto"],
+        "watchAssets": true,
         "plugins": [
           {
             "name": "@nestjs/swagger",
@@ -29,6 +31,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/api-bundled/src",
       "compilerOptions": {
+        "assets": ["**/*.proto"],
+        "watchAssets": true,
         "tsConfigPath": "apps/api-bundled/tsconfig.app.json",
         "webpack": true
       }

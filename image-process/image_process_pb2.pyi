@@ -8,7 +8,7 @@ DESCRIPTOR: _descriptor.FileDescriptor
 class BarcodeInfos(_message.Message):
     __slots__ = ["barcode_infos"]
     class BarcodeInfo(_message.Message):
-        __slots__ = ["data", "orientation", "points", "quality", "rect", "type"]
+        __slots__ = ["data", "orientation", "polygon", "quality", "rect", "type"]
         class Point(_message.Message):
             __slots__ = ["x", "y"]
             X_FIELD_NUMBER: _ClassVar[int]
@@ -29,17 +29,17 @@ class BarcodeInfos(_message.Message):
             def __init__(self, left: _Optional[int] = ..., top: _Optional[int] = ..., width: _Optional[int] = ..., height: _Optional[int] = ...) -> None: ...
         DATA_FIELD_NUMBER: _ClassVar[int]
         ORIENTATION_FIELD_NUMBER: _ClassVar[int]
-        POINTS_FIELD_NUMBER: _ClassVar[int]
+        POLYGON_FIELD_NUMBER: _ClassVar[int]
         QUALITY_FIELD_NUMBER: _ClassVar[int]
         RECT_FIELD_NUMBER: _ClassVar[int]
         TYPE_FIELD_NUMBER: _ClassVar[int]
         data: str
         orientation: str
-        points: _containers.RepeatedCompositeFieldContainer[BarcodeInfos.BarcodeInfo.Point]
+        polygon: _containers.RepeatedCompositeFieldContainer[BarcodeInfos.BarcodeInfo.Point]
         quality: int
         rect: BarcodeInfos.BarcodeInfo.Rect
         type: str
-        def __init__(self, data: _Optional[str] = ..., type: _Optional[str] = ..., rect: _Optional[_Union[BarcodeInfos.BarcodeInfo.Rect, _Mapping]] = ..., points: _Optional[_Iterable[_Union[BarcodeInfos.BarcodeInfo.Point, _Mapping]]] = ..., orientation: _Optional[str] = ..., quality: _Optional[int] = ...) -> None: ...
+        def __init__(self, data: _Optional[str] = ..., type: _Optional[str] = ..., rect: _Optional[_Union[BarcodeInfos.BarcodeInfo.Rect, _Mapping]] = ..., polygon: _Optional[_Iterable[_Union[BarcodeInfos.BarcodeInfo.Point, _Mapping]]] = ..., orientation: _Optional[str] = ..., quality: _Optional[int] = ...) -> None: ...
     BARCODE_INFOS_FIELD_NUMBER: _ClassVar[int]
     barcode_infos: _containers.RepeatedCompositeFieldContainer[BarcodeInfos.BarcodeInfo]
     def __init__(self, barcode_infos: _Optional[_Iterable[_Union[BarcodeInfos.BarcodeInfo, _Mapping]]] = ...) -> None: ...

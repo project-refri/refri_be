@@ -14,8 +14,8 @@ class ImageProcessStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.getBarcodeInfo = channel.unary_unary(
-                '/ImageProcess/getBarcodeInfo',
+        self.GetBarcodeInfoFromUrl = channel.unary_unary(
+                '/image_process.ImageProcess/GetBarcodeInfoFromUrl',
                 request_serializer=image__process__pb2.ImageInfo.SerializeToString,
                 response_deserializer=image__process__pb2.BarcodeInfos.FromString,
                 )
@@ -24,7 +24,7 @@ class ImageProcessStub(object):
 class ImageProcessServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def getBarcodeInfo(self, request, context):
+    def GetBarcodeInfoFromUrl(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,14 +33,14 @@ class ImageProcessServicer(object):
 
 def add_ImageProcessServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'getBarcodeInfo': grpc.unary_unary_rpc_method_handler(
-                    servicer.getBarcodeInfo,
+            'GetBarcodeInfoFromUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBarcodeInfoFromUrl,
                     request_deserializer=image__process__pb2.ImageInfo.FromString,
                     response_serializer=image__process__pb2.BarcodeInfos.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'ImageProcess', rpc_method_handlers)
+            'image_process.ImageProcess', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -49,7 +49,7 @@ class ImageProcess(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def getBarcodeInfo(request,
+    def GetBarcodeInfoFromUrl(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,7 +59,7 @@ class ImageProcess(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ImageProcess/getBarcodeInfo',
+        return grpc.experimental.unary_unary(request, target, '/image_process.ImageProcess/GetBarcodeInfoFromUrl',
             image__process__pb2.ImageInfo.SerializeToString,
             image__process__pb2.BarcodeInfos.FromString,
             options, channel_credentials,
