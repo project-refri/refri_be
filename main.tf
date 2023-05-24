@@ -64,7 +64,7 @@ resource "google_cloud_run_v2_service" "api_server" {
     timeout = "30s"
 
     containers {
-      image = var.cloud_run_image_name
+      image = var.cloud_run_api_server_image
       resources {
         limits = {
           cpu    = "4"
@@ -103,6 +103,51 @@ resource "google_cloud_run_v2_service" "api_server" {
 resource "google_cloud_run_v2_service_iam_binding" "api_server_iam" {
   location = google_cloud_run_v2_service.api_server.location
   name     = google_cloud_run_v2_service.api_server.name
+  role     = "roles/run.invoker"
+  members = [
+    "allUsers"
+  ]
+}
+
+resource "google_cloud_run_v2_service" "image_process_server" {
+  name     = "image-process-server"
+  location = "asia-northeast3"
+  ingress  = "INGRESS_TRAFFIC_ALL"
+
+  template {
+    max_instance_request_concurrency = 80
+
+    scaling {
+      min_instance_count = 0
+      max_instance_count = 100
+    }
+
+    timeout = "30s"
+
+    containers {
+      image = var.cloud_run_image_process_server_image
+      resources {
+        limits = {
+          cpu    = "4"
+          memory = "4Gi"
+        }
+        cpu_idle = true
+      }
+      ports {
+        name           = "h2c"
+        container_port = 50051
+      }
+      env {
+        name  = "JWT_SECRET"
+        value = var.JWT_SECRET
+      }
+    }
+  }
+}
+
+resource "google_cloud_run_v2_service_iam_binding" "image_process_server_iam" {
+  location = google_cloud_run_v2_service.image_process_server.location
+  name     = google_cloud_run_v2_service.image_process_server.name
   role     = "roles/run.invoker"
   members = [
     "allUsers"

@@ -26,7 +26,12 @@ variable "gcp_region" {
   sensitive   = true
 }
 
-variable "cloud_run_image_name" {
+variable "cloud_run_api_server_image" {
+  type      = string
+  sensitive = true
+}
+
+variable "cloud_run_image_process_server_image" {
   type      = string
   sensitive = true
 }
@@ -59,3 +64,7 @@ variable "AWS_S3_IMAGE_MAIN_BUCKET" {
   sensitive = true
 }
 
+variable "AWS_REGION" {
+  type      = string
+  sensitive = true
+}
