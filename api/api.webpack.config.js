@@ -1,4 +1,6 @@
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+
 
 module.exports = (options, webpack) => {
   const lazyImports = [
@@ -17,6 +19,7 @@ module.exports = (options, webpack) => {
         ioredis: 'commonjs ioredis',
         amqplib: 'commonjs amqplib',
         'amqp-connection-manager': 'commonjs amqp-connection-manager',
+        '@fastify/static': 'commonjs @fastify/static',
       },
     ],
     output: {
@@ -34,6 +37,14 @@ module.exports = (options, webpack) => {
     },
     plugins: [
       ...options.plugins,
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: './node_modules/swagger-ui-dist/*.{js,css,ico,png}',
+            to: './apps/api/',
+          },
+        ],
+      }),
       new webpack.IgnorePlugin({
         checkResource(resource) {
           if (lazyImports.includes(resource)) {
