@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IAspectProvider } from '../aop/aop.interface';
-import { WrapParams } from '@toss/nestjs-aop';
+import { IAspectProvider, WrapParams } from '../aop/aop.interface';
 
 @Injectable()
 export class LogAspectProvider implements IAspectProvider {

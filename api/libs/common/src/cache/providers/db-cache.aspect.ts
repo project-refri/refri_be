@@ -1,8 +1,7 @@
-import { WrapParams } from '@toss/nestjs-aop';
 import { CacheOptions } from '../types/cache-options.type';
 import { CacheStrategyService } from './cache-strategy.service';
 import { QueryType } from '../types/query.type';
-import { IAspectProvider } from '../../aop/aop.interface';
+import { IAspectProvider, WrapParams } from '../../aop/aop.interface';
 import { Injectable } from '@nestjs/common';
 
 export const CACHE_ASPECT = Symbol('CACHE_ASPECT');
