@@ -22,7 +22,8 @@
           }
         ],
         "tsConfigPath": "apps/api/tsconfig.app.json",
-        "deleteOutDir": true
+        "webpack": true,
+        "webpackConfigPath": "api.webpack.config.js"
       }
     },
     "api-bundled": {

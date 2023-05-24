@@ -1,4 +1,4 @@
-name: CI
+name: api-CI
 
 on:
   workflow_dispatch:
@@ -6,8 +6,8 @@ on:
     paths: 'api/**'
 
 jobs:
-  CI:
-    name: CI
+  api-CI:
+    name: api-CI
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -66,6 +66,6 @@ jobs:
         with:
           context: './api'
           push: true
-          tags: '${{ secrets.DOCKER_IMAGE_TAG }}'
+          tags: '${{ secrets.DOCKER_IMAGE_API_TAG }}'
           cache-from: type=gha
           cache-to: type=gha,mode=max

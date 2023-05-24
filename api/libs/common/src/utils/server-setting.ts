@@ -1,11 +1,11 @@
 import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AllExceptionsFilter } from '../exception-filters/all-exception.filter';
 import { TransformInterceptor } from '../interceptors/transform.interceptor';
-import { swaggerSetting } from './swagger-setting';
 
 export async function setServer(appModule: any) {
-  const app = await NestFactory.create(appModule);
+  const app = await NestFactory.create<NestExpressApplication>(appModule);
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -17,8 +17,6 @@ export async function setServer(appModule: any) {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
-
-  swaggerSetting(app);
 
   return app;
 }

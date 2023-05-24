@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUrl,
   Max,
   Min,
 } from 'class-validator';
@@ -48,3 +49,10 @@ export class CreateUserIngredientDto {
 export class UpdateUserIngredientDto extends PartialType(
   CreateUserIngredientDto,
 ) {}
+
+export class GetIngredientInfoDto {
+  @IsString()
+  @IsUrl()
+  @IsNotEmpty()
+  image_url: string;
+}

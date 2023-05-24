@@ -1,4 +1,4 @@
-name: deploy
+name: api-CD
 
 on:
   workflow_dispatch:
@@ -8,11 +8,11 @@ on:
 
 env:
   REGION: ${{ secrets.REGION }}
-  SERVICE: ${{ secrets.CLOUD_RUN_SERVICE}}
+  SERVICE: ${{ secrets.CLOUD_RUN_API_SERVICE}}
 
 jobs:
-  deploy:
-    name: gcp-deploy
+  api-CD:
+    name: api-CD
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -47,7 +47,7 @@ jobs:
             JWT_REFRESH_EXPIRES_IN=${{ secrets.JWT_REFRESH_EXPIRES_IN }}
             AWS_REGION=${{ secrets.AWS_REGION }}
             AWS_S3_IMAGE_MAIN_BUCKET=${{ secrets.AWS_S3_IMAGE_MAIN_BUCKET }}
-          image: ${{ secrets.DOCKER_IMAGE_TAG }}
+          image: ${{ secrets.DOCKER_IMAGE_API_TAG }}
 
       # If required, use the Cloud Run url output in later steps
       - name: Show Output

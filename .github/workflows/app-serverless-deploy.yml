@@ -2,9 +2,9 @@ name: Api server serverless Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths: 'api/**'
+  # push:
+  #   branches: [master]
+  #   paths: 'api/**'
 
 env:
   DEV_HOST: ${{ secrets.DEV_HOST }}

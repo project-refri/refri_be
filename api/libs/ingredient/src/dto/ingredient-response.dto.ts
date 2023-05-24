@@ -2,6 +2,7 @@ import {
   CreatedResponse,
   OkResponse,
 } from '@app/common/dto/success-response.dto';
+import { BarcodeInfos } from 'proto/image_process/BarcodeInfos';
 import { UserIngredient } from '../entities/user-ingredient.entity';
 
 export class CreateUserIngredientResponseDto extends CreatedResponse {
@@ -18,4 +19,8 @@ export class FindOneUserIngredientResponseDto extends OkResponse {
 
 export class UpdateUserIngredientResponseDto extends OkResponse {
   data: UserIngredient;
+}
+
+export class GetIngredientInfoResponseDto extends OkResponse {
+  data: BarcodeInfos;
 }
