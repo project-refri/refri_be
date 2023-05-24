@@ -2,8 +2,8 @@ name: Api server serverless Build
 
 on:
   workflow_dispatch:
-  pull_request:
-    paths: 'api/**'
+  # pull_request:
+  #   paths: 'api/**'
 
 env:
   DATABASE_URI: ${{ secrets.DATABASE_URI }}
