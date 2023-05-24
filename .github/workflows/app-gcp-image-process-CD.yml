@@ -1,0 +1,49 @@
+name: image-process-CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths: 'image-process/**'
+
+env:
+  REGION: ${{ secrets.REGION }}
+  SERVICE: ${{ secrets.CLOUD_RUN_IMAGE_PROCESS_SERVICE}}
+
+jobs:
+  image-process-CD:
+    name: image-process-CD
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    environment: gcp-deploy
+    defaults:
+      run:
+        working-directory: ./image-process/
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}' # e.g. - projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider
+          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' # e.g. - my-service-account@my-project.iam.gserviceaccount.com
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          env_vars: |
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+          image: ${{ secrets.DOCKER_IMAGE_IMAGE_PROCESS_TAG }}
+
+      # If required, use the Cloud Run url output in later steps
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}

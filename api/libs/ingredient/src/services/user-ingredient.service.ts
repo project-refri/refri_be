@@ -1,12 +1,15 @@
 import { Logable } from '@app/common/log/log.decorator';
+import { Metadata } from '@grpc/grpc-js';
 import {
   Inject,
   Injectable,
   NotFoundException,
   OnModuleInit,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom, lastValueFrom, map, Observable } from 'rxjs';
+import { BarcodeInfos } from 'proto/image_process/BarcodeInfos';
+import { lastValueFrom, Observable } from 'rxjs';
 import { FilterUserIngredientDto } from '../dto/filter-ingredient.dto';
 import {
   CreateUserIngredientDto,
@@ -16,7 +19,10 @@ import { UserIngredient } from '../entities/user-ingredient.entity';
 import { UserIngredientRepository } from '../repositories/user-ingredient.repository';
 
 interface ImageProcessService {
-  getBarcodeInfoFromUrl(imageInfo: { image_url: string }): Observable<any>;
+  getBarcodeInfoFromUrl(
+    imageInfo: { image_url: string },
+    metadata: Metadata,
+  ): Observable<BarcodeInfos>;
 }
 
 @Logable()
@@ -25,6 +31,7 @@ export class UserIngredientService implements OnModuleInit {
   private imageProcessService: ImageProcessService;
   constructor(
     private readonly userIngredientRepository: UserIngredientRepository,
+    private readonly jwtService: JwtService,
     @Inject('IMAGE_PROCESS_SERVICE') private readonly client: ClientGrpc,
   ) {}
 
@@ -33,12 +40,21 @@ export class UserIngredientService implements OnModuleInit {
       this.client.getService<ImageProcessService>('ImageProcess');
   }
 
-  getIngredientInfoFromImage(imageUrl: string) {
-    console.log('image_url: ', imageUrl);
-    const ret = this.imageProcessService.getBarcodeInfoFromUrl({
-      image_url: imageUrl,
-    });
-    console.log('ret: ', ret);
+  async getIngredientInfoFromBarcode(
+    getIngredientInfoDto: { image_url: string },
+    cred: string,
+  ) {
+    const metadata = new Metadata();
+    metadata.add('Authorization', `${cred.split(' ')[1]}`);
+
+    const ret = await lastValueFrom(
+      this.imageProcessService.getBarcodeInfoFromUrl(
+        {
+          image_url: getIngredientInfoDto.image_url,
+        },
+        metadata,
+      ),
+    );
     return ret;
   }
 
