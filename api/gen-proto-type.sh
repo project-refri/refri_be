@@ -1,0 +1,1 @@
+node_modules/.bin/proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --keepCase --grpcLib=@grpc/grpc-js --outDir=proto/ ../protos/*.proto
