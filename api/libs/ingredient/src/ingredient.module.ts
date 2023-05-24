@@ -8,8 +8,9 @@ import {
 import { UserIngredientRepository } from './repositories/user-ingredient.repository';
 import { UserIngredientService } from './services/user-ingredient.service';
 import { ConfigService } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,21 +24,33 @@ import { join } from 'path';
     ClientsModule.registerAsync([
       {
         name: 'IMAGE_PROCESS_SERVICE',
-        useFactory: () => {
+        useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.GRPC,
             options: {
               package: 'image_process',
-              url: 'localhost:50051',
-              protoPath: join(__dirname, '../../../image-process.proto'),
+              url: configService.get<string>('IMAGE_PROCESS_SERVICE_URL'),
+              protoPath: join(__dirname, './image-process.proto'),
               loader: {
                 keepCase: true,
               },
             },
           };
         },
+        inject: [ConfigService],
       },
     ]),
+    JwtModule.registerAsync({
+      useFactory: async (configService: ConfigService) => {
+        return {
+          secret: configService.get<string>('JWT_SECRET'),
+          signOptions: {
+            expiresIn: configService.get<string>('JWT_EXPIRES_IN'),
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
   ],
   controllers: [UserIngredientController],
   providers: [UserIngredientService, UserIngredientRepository],

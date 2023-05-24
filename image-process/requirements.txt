@@ -4,3 +4,5 @@ grpcio
 grpcio-tools
 pillow
 pyzbar
+pyjwt
+python-dotenv

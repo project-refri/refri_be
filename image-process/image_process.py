@@ -1,4 +1,5 @@
-
+import os
+import dotenv
 from concurrent import futures
 import logging
 
@@ -9,13 +10,17 @@ import image_process_pb2_grpc
 from urllib.request import urlopen
 from PIL import Image
 from pyzbar.pyzbar import decode
+import jwt
+
+dotenv.load_dotenv('.env.dev')
+jwt_secret = os.getenv('JWT_SECRET')
+port = os.getenv('PORT')
 
 
 def get_barcode_info_from_url(url: str) -> list:
     img = Image.open(urlopen(url))
 
     detected_barcodes = decode(img)
-    print(detected_barcodes[0])
 
     return image_process_pb2.BarcodeInfos(barcode_infos=list(map(lambda barcode_info: image_process_pb2.BarcodeInfos.BarcodeInfo(
         data=barcode_info.data.decode('utf-8'),
@@ -36,9 +41,19 @@ class ImageProcessServicer(image_process_pb2_grpc.ImageProcessServicer):
         pass
 
     def GetBarcodeInfoFromUrl(self, request, context):
-        print('request: ', request)
-        if request:
-            print('not null, request.image_url: ', request.image_url)
+        token = None
+        for key, value in context.invocation_metadata():
+            try:
+                if key.lower() == 'authorization':
+                    token = jwt.decode(value, jwt_secret, algorithms=['HS256'])
+            except:
+                context.abort(grpc.StatusCode.UNAUTHENTICATED,
+                              'Invalid jwt token')
+                return None
+        if token is None:
+            context.abort(grpc.StatusCode.UNAUTHENTICATED, 'No jwt token')
+            return None
+
         barcode_infos = get_barcode_info_from_url(request.image_url)
 
         if len(barcode_infos.barcode_infos) == 0:
@@ -50,7 +65,7 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     image_process_pb2_grpc.add_ImageProcessServicer_to_server(
         ImageProcessServicer(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:{}'.format(port))
     server.start()
     server.wait_for_termination()
 
