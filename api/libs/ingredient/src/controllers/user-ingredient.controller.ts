@@ -4,6 +4,7 @@ import {
   ApiGet,
   ApiPatch,
   ApiPostCreated,
+  ApiPostOk,
 } from '@app/common/decorators/http-method.decorator';
 import {
   Body,
@@ -11,6 +12,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -19,15 +21,17 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiHeaders, ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
   CreateUserIngredientResponseDto,
   FindAllUserIngredientResponseDto,
   FindOneUserIngredientResponseDto,
+  GetIngredientInfoResponseDto,
   UpdateUserIngredientResponseDto,
 } from '../dto/ingredient-response.dto';
 import {
   CreateUserIngredientDto,
+  GetIngredientInfoDto,
   UpdateUserIngredientDto,
 } from '../dto/modify-ingredient.dto';
 import { UserIngredientService } from '../services/user-ingredient.service';
@@ -57,6 +61,24 @@ export class UserIngredientController {
   ) {
     createIngredientDto.user_id = user.id.toString();
     return this.ingredientService.create(createIngredientDto);
+  }
+
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {token}',
+    required: false,
+  })
+  @Auth()
+  @ApiPostOk(GetIngredientInfoResponseDto)
+  @Post('barcode')
+  async getIngredientInfoFromBarcode(
+    @Body() getIngredientInfoDto: GetIngredientInfoDto,
+    @Headers('Authorization') cred: string,
+  ) {
+    return await this.ingredientService.getIngredientInfoFromBarcode(
+      getIngredientInfoDto,
+      cred,
+    );
   }
 
   /**
