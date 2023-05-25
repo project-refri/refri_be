@@ -21,7 +21,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiHeader, ApiHeaders, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
   CreateUserIngredientResponseDto,
   FindAllUserIngredientResponseDto,

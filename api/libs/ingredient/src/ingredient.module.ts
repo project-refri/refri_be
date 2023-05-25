@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtModule } from '@nestjs/jwt';
+import * as grpc from '@grpc/grpc-js';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { JwtModule } from '@nestjs/jwt';
               loader: {
                 keepCase: true,
               },
+              credentials: grpc.credentials.createSsl(),
             },
           };
         },
