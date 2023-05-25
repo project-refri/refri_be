@@ -68,3 +68,19 @@ variable "AWS_REGION" {
   type      = string
   sensitive = true
 }
+
+variable "MEMORY_CACHE_DEFAULT_TTL" {
+  type      = number
+  sensitive = true
+}
+
+variable "MEMORY_CACHE_DEFAULT_MAX" {
+  type      = number
+  sensitive = true
+}
+
+variable "IMAGE_PROCESS_SERVICE_URL" {
+  type      = string
+  sensitive = true
+}
+
