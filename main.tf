@@ -72,6 +72,10 @@ resource "google_cloud_run_v2_service" "api_server" {
         }
         cpu_idle = true
       }
+      ports {
+        name           = "http1"
+        container_port = 8080
+      }
       env {
         name  = "DATABASE_URI"
         value = var.DATABASE_URI
@@ -95,6 +99,18 @@ resource "google_cloud_run_v2_service" "api_server" {
       env {
         name  = "AWS_REGION"
         value = var.AWS_REGION
+      }
+      env {
+        name  = "MEMORY_CACHE_DEFAULT_TTL"
+        value = var.MEMORY_CACHE_DEFAULT_TTL
+      }
+      env {
+        name  = "MEMORY_CACHE_DEFAULT_MAX"
+        value = var.MEMORY_CACHE_DEFAULT_MAX
+      }
+      env {
+        name  = "IMAGE_PROCESS_SERVICE_URL"
+        value = var.IMAGE_PROCESS_SERVICE_URL
       }
     }
   }
