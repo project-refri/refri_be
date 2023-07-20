@@ -7,9 +7,7 @@ import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
-import { Logable } from '@app/common/log/log.decorator';
 
-@Logable()
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
