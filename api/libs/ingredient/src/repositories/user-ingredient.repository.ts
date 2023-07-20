@@ -1,5 +1,4 @@
-import { UserIngredientCacheable } from '@app/common/cache/decorators/cache.decorator';
-import { QueryType } from '@app/common/cache/types/query.type';
+import { UserIngredientCacheable } from '@app/common/cache/cache.decorator';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -12,6 +11,7 @@ import {
   UserIngredient,
   UserIngredientDocument,
 } from '../entities/user-ingredient.entity';
+import { QueryType } from '@app/common/cache/db-cache.decorator';
 
 @Injectable()
 export class UserIngredientRepository {

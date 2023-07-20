@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { LogAspectProvider } from './log.aspect';
+import { LogDecorator } from './log.decorator';
 
 @Module({
-  providers: [LogAspectProvider],
+  providers: [LogDecorator],
 })
 export class LogModule {}

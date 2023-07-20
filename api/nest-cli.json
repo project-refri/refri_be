@@ -38,16 +38,6 @@
         "webpack": true
       }
     },
-    "mono_lambda": {
-      "type": "application",
-      "root": "apps/mono_lambda",
-      "entryFile": "main",
-      "sourceRoot": "apps/mono_lambda/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/mono_lambda/tsconfig.app.json",
-        "webpack": true
-      }
-    },
     "auth": {
       "type": "library",
       "root": "libs/auth",

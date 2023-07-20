@@ -1,4 +1,3 @@
-import { Logable } from '@app/common/log/log.decorator';
 import { Metadata } from '@grpc/grpc-js';
 import {
   Inject,
@@ -25,7 +24,6 @@ interface ImageProcessService {
   ): Observable<BarcodeInfos>;
 }
 
-@Logable()
 @Injectable()
 export class UserIngredientService implements OnModuleInit {
   private imageProcessService: ImageProcessService;
