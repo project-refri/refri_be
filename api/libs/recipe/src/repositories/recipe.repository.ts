@@ -1,11 +1,11 @@
-import { RecipeCacheable } from '@app/common/cache/decorators/cache.decorator';
-import { QueryType } from '@app/common/cache/types/query.type';
+import { RecipeCacheable } from '@app/common/cache/cache.decorator';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { FilterRecipeDto } from '../dto/filter-recipe.dto';
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe, RecipeDocument } from '../entities/recipe.entity';
+import { QueryType } from '@app/common/cache/db-cache.decorator';
 
 @Injectable()
 export class RecipeRepository {

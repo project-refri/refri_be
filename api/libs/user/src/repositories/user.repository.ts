@@ -4,8 +4,8 @@ import { Model } from 'mongoose';
 import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { User, UserDocument } from '../entities/user.entity';
-import { UserCacheable } from '@app/common/cache/decorators/cache.decorator';
-import { QueryType } from '@app/common/cache/types/query.type';
+import { UserCacheable } from '@app/common/cache/cache.decorator';
+import { QueryType } from '@app/common/cache/db-cache.decorator';
 
 @Injectable()
 export class UserRepository {

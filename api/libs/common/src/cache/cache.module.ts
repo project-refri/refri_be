@@ -1,21 +1,23 @@
 import { Module, Scope } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  UserCacheProvider,
-  IngredientCacheProvider,
-  RecipeCacheProvider,
-} from './providers/db-cache.aspect';
-import { CacheStrategyService } from './providers/cache-strategy.service';
+import { CacheStrategyService } from './cache-strategy.service';
 import { caching } from 'cache-manager';
-import { MEMORY, MEMORY_CACHE } from './types/cache.constants';
+import {
+  IngredientCacheDecorator,
+  RecipeCacheDecorator,
+  UserCacheDecorator,
+} from './cache.decorator';
+
+export const MEMORY_CACHE = Symbol('MEMORY_CACHE');
+export const MEMORY = 'memory';
 
 @Module({
   imports: [],
   providers: [
     CacheStrategyService,
-    UserCacheProvider,
-    IngredientCacheProvider,
-    RecipeCacheProvider,
+    UserCacheDecorator,
+    IngredientCacheDecorator,
+    RecipeCacheDecorator,
     {
       provide: MEMORY_CACHE,
       useFactory: (configService: ConfigService) => {
@@ -28,6 +30,5 @@ import { MEMORY, MEMORY_CACHE } from './types/cache.constants';
       scope: Scope.TRANSIENT,
     },
   ],
-  exports: [CacheStrategyService],
 })
 export class CacheModule {}

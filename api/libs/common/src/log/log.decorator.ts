@@ -1,8 +1,14 @@
-import { applyAspectDecorator } from '../aop/aop.decorator';
-import { LogAspectProvider } from './log.aspect';
+import { LazyDecorator, WrapParams, createDecorator } from '@toss/nestjs-aop';
 
-export const LOG_DECORATOR = Symbol('LOG_DECORATOR');
-export const LOG_METADATA_KEY = Symbol('LOG_METADATA_KEY');
+export const LOG = Symbol('LOG');
 
-export const Logable = () =>
-  applyAspectDecorator(LOG_DECORATOR, LogAspectProvider, LOG_METADATA_KEY, {});
+export const Logable = () => createDecorator(LOG);
+
+export class LogDecorator implements LazyDecorator<any, any> {
+  wrap({ method }: WrapParams<any, any>) {
+    return async (...args: any[]) => {
+      const ret = await method(...args);
+      return ret;
+    };
+  }
+}
