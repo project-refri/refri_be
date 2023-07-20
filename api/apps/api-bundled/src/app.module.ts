@@ -6,9 +6,9 @@ import { AuthModule } from '@app/auth/auth.module';
 import { ImageModule } from '@app/image/image.module';
 import { IngredientModule } from '@app/ingredient/ingredient.module';
 import { RecipeModule } from '@app/recipe/recipe.module';
-import { AopModule } from '@app/common/aop/aop.module';
 import { CacheModule } from '@app/common/cache/cache.module';
 import { LogModule } from '@app/common/log/log.module';
+import { AopModule } from '@toss/nestjs-aop';
 
 @Module({
   imports: [
