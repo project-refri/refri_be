@@ -1,7 +1,7 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { MEMORY_CACHE } from './cache.module';
 import { CacheOptions, QueryType } from './db-cache.decorator';
+import { MEMORY_CACHE } from './cache.constant';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class CacheStrategyService {

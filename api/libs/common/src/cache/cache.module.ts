@@ -7,9 +7,7 @@ import {
   RecipeCacheDecorator,
   UserCacheDecorator,
 } from './cache.decorator';
-
-export const MEMORY_CACHE = Symbol('MEMORY_CACHE');
-export const MEMORY = 'memory';
+import { MEMORY, MEMORY_CACHE } from './cache.constant';
 
 @Module({
   imports: [],
