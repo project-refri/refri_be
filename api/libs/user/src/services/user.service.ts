@@ -7,11 +7,13 @@ import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
+import { Logable } from '@app/common/log/log.decorator';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
+  @Logable()
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { email, username } = createUserDto;
     const [dupEmail, dupUsername] = await Promise.all([
@@ -24,10 +26,12 @@ export class UserService {
     return await this.userRepository.create(createUserDto);
   }
 
+  @Logable()
   async findAll(filterDto: any): Promise<User[]> {
     return await this.userRepository.findAll(filterDto);
   }
 
+  @Logable()
   async findOne(id: string): Promise<User> {
     const ret = await this.userRepository.findOne(id);
     if (!ret) {
@@ -36,10 +40,12 @@ export class UserService {
     return ret;
   }
 
+  @Logable()
   async findByEmail(email: string): Promise<User> {
     return await this.userRepository.findByEmail(email);
   }
 
+  @Logable()
   async update(id: string, updateDto: UpdateUserDto): Promise<User> {
     const { username } = updateDto;
     const dupUsername = await this.userRepository.findByUsername(username);
@@ -53,6 +59,7 @@ export class UserService {
     return ret;
   }
 
+  @Logable()
   async deleteOne(id: string): Promise<User> {
     const ret = await this.userRepository.deleteOne(id);
     if (!ret) {
@@ -61,6 +68,7 @@ export class UserService {
     return ret;
   }
 
+  @Logable()
   async deleteAll(filterDto: FilterUserDto): Promise<any> {
     return await this.userRepository.deleteAll(filterDto);
   }
