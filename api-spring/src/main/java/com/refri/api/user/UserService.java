@@ -1,7 +1,7 @@
 package com.refri.api.user;
 
+import com.refri.api.common.exception.NotFoundException;
 import com.refri.api.common.exception.UserDuplicatedException;
-import com.refri.api.common.exception.UserNotFoundException;
 import com.refri.api.user.dto.CreateUserDto;
 import com.refri.api.user.dto.UpdateUserDto;
 import com.refri.api.user.entity.User;
@@ -29,22 +29,22 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findOne(Long id) {
-        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        return userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
     }
 
     public User update(Long id, UpdateUserDto updateUserDto) {
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
         user.update(updateUserDto);
         return user;
     }
 
     public void delete(Long id) {
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
         userRepository.delete(user);
     }
 }

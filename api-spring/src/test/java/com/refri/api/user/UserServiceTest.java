@@ -1,7 +1,7 @@
 package com.refri.api.user;
 
+import com.refri.api.common.exception.NotFoundException;
 import com.refri.api.common.exception.UserDuplicatedException;
-import com.refri.api.common.exception.UserNotFoundException;
 import com.refri.api.user.dto.CreateUserDto;
 import com.refri.api.user.dto.UpdateUserDto;
 import com.refri.api.user.entity.User;
@@ -109,7 +109,7 @@ public class UserServiceTest {
         when(userRepository.findById(validUserId)).thenReturn(Optional.of(user));
 
         // When
-        User result = userService.findOne(validUserId);
+        User result = userService.findById(validUserId);
 
         // Then
         assertNotNull(result);
@@ -124,7 +124,7 @@ public class UserServiceTest {
 
         // When & Then
 
-        assertThrows(UserNotFoundException.class, () -> userService.findOne(invalidUserId));
+        assertThrows(NotFoundException.class, () -> userService.findById(invalidUserId));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class UserServiceTest {
         when(userRepository.findByEmail(invalidEmail)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(UserNotFoundException.class, () -> userService.findByEmail(invalidEmail));
+        assertThrows(NotFoundException.class, () -> userService.findByEmail(invalidEmail));
     }
 
     @Test

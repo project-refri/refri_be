@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User findById(@RequestParam("id") Long id) {
-        return userService.findOne(id);
+        return userService.findById(id);
     }
 
     @PatchMapping("/{id}")
