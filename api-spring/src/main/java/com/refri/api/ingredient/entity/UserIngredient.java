@@ -5,6 +5,7 @@ import com.refri.api.ingredient.type.FoodType;
 import com.refri.api.ingredient.type.StoreMethod;
 import com.refri.api.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.Date;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_ingredient")
 public class UserIngredient {
 

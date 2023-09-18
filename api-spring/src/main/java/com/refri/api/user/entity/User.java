@@ -3,13 +3,14 @@ package com.refri.api.user.entity;
 import com.refri.api.user.dto.UpdateUserDto;
 import com.refri.api.user.type.Diet;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user")
 public class User {
     @Id
