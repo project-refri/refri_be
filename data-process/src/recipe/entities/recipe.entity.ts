@@ -1,8 +1,29 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
-import { schemaOptions } from '@app/common/utils/schema-option';
+import {
+  HydratedDocument,
+  Schema as MongooseSchema,
+  ToObjectOptions,
+  SchemaOptions,
+} from 'mongoose';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
+
+const toObjectOptions: ToObjectOptions = {
+  virtuals: true,
+  transform: (doc, ret) => {
+    delete ret._id;
+    delete ret.__v;
+  },
+};
+
+export const schemaOptions: SchemaOptions = {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  toObject: toObjectOptions,
+  toJSON: toObjectOptions,
+};
 
 export class IngredientRequirement {
   ingredient_id: MongooseSchema.Types.ObjectId;

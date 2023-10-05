@@ -58,14 +58,14 @@ export class RecipeController {
    * #### Recipe's user_id is request user's id by default.
    * If any query is not given, return all Recipes of request user's.
    */
-  @Auth()
+  // @Auth()
   @ApiGet(FindAllRecipeResponseDto)
   @Get()
   async findAll(@ReqUser() user: User) {
-    const filterRecipeDto: FilterRecipeDto = queryBuilder({
-      user_id: user.id.toString(),
-    });
-    return this.recipeService.findAll(filterRecipeDto);
+    // const filterRecipeDto: FilterRecipeDto = queryBuilder({
+    //   user_id: user.id.toString(),
+    // });
+    return this.recipeService.findAll({});
   }
 
   /**
@@ -73,7 +73,7 @@ export class RecipeController {
    *
    * Find one Recipe with given id.
    */
-  @Auth()
+  // @Auth()
   @ApiGet(FindOneRecipeResponseDto)
   @Get(':id')
   async findOne(@Param('id') id: string) {

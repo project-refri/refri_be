@@ -1,4 +1,3 @@
-import { OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -132,7 +131,3 @@ export class CreateRecipeDto {
   @IsString()
   origin_url: string;
 }
-
-export class UpdateRecipeDto extends PartialType(
-  OmitType(CreateRecipeDto, ['owner'] as const),
-) {}
