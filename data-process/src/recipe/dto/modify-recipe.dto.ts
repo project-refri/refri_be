@@ -13,7 +13,7 @@ class IngredientRequirementDto {
   constructor(ingredient_id: string, name: string, amount: string) {
     this.ingredient_id = ingredient_id;
     this.name = name;
-    this.amount = amount;
+    this.amount = amount ?? '적당량';
   }
 
   @IsMongoId()
@@ -37,14 +37,16 @@ export class RecipeStepDto {
   ) {
     this.description = description;
     this.images = images;
-    this.ingredients = ingredients.map(
-      (item) =>
-        new IngredientRequirementDto(
-          item.ingredient_id,
-          item.name,
-          item.amount,
-        ),
-    );
+    this.ingredients = ingredients
+      ? ingredients.map(
+          (item) =>
+            new IngredientRequirementDto(
+              item.ingredient_id,
+              item.name,
+              item.amount,
+            ),
+        )
+      : [];
   }
   @IsString()
   @IsNotEmpty()
