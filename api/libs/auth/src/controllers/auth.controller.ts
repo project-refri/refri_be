@@ -17,15 +17,10 @@ import {
 import { User } from '@app/user/entities/user.entity';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/modify-user.dto';
-import {
-  Auth,
-  RefreshAuth,
-  RegisterAuth,
-} from '@app/common/decorators/auth.decorator';
+import { Auth, RegisterAuth } from '@app/common/decorators/auth.decorator';
 import {
   LogoutResponseDto,
   OAuthLoginResponseDto,
-  RefreshResponseDto,
   RegisterResponseDto,
 } from '../dto/auth-response.dto';
 import { FindOneUserResponseDto } from '@app/user/dto/user-response.dto';
@@ -96,31 +91,16 @@ export class AuthController {
   }
 
   /**
-   * ## Refresh
-   *
-   * Refresh with given dto's `refresh_token`.
-   * If `refresh_token` is valid and not expired, return new `access_token` & `refresh_token`.
-   * If `refresh_token` is invalid or expired, return `401`.
-   */
-  @RefreshAuth()
-  @ApiPostOk(RefreshResponseDto)
-  @HttpCode(HttpStatus.OK)
-  @Post('refresh')
-  async refresh(@ReqUser() user: User) {
-    return await this.authService.refresh(user);
-  }
-
-  /**
    * ## Logout
    *
-   * Logout with given dto's `refresh_token`.
-   * If `refresh_token` is valid and not expired, delete `refresh_token` from db.
+   * Logout with given `.
+   * If `session_token` is valid and not expired, delete `refresh_token` from db.
    */
-  @RefreshAuth()
+  @Auth()
   @ApiPostOk(LogoutResponseDto)
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  async logout(@ReqUser() user: User) {
-    return user;
+  async logout(@Req() req: any) {
+    return await this.authService.logout(req.sessionToken);
   }
 }

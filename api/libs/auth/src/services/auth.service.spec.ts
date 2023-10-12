@@ -3,13 +3,12 @@ import { AuthService } from './auth.service';
 import { AuthRepository } from '../repositories/auth.repository';
 import { UserService } from '@app/user/services/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { User } from '@app/user/entities/user.entity';
 import { CreateUserDto } from '@app/user/dto/modify-user.dto';
-import { RefreshToken } from '../entities/refresh-token.entity';
 import { Schema } from 'mongoose';
-import { OAuthLoginTokenAndUserDto } from '../dto/oauth.dto';
-import { LoginTokenAndUserDto } from '../dto/token.dto';
+import { LoginSessionDto } from '../dto/token.dto';
+import { Session } from '../entities/session.entity';
+import { OAuthLoginSessionDto } from '../dto/oauth.dto';
 
 jest.mock('uuid', () => ({
   v4: () => 'mock-uuid',
@@ -20,7 +19,6 @@ describe('AuthService', () => {
   let authRepository: jest.Mocked<AuthRepository>;
   let userService: jest.Mocked<UserService>;
   let jwtService: jest.Mocked<JwtService>;
-  let configService: jest.Mocked<ConfigService>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(AuthService).compile();
@@ -29,63 +27,44 @@ describe('AuthService', () => {
     authRepository = unitRef.get(AuthRepository);
     userService = unitRef.get(UserService);
     jwtService = unitRef.get(JwtService);
-    configService = unitRef.get(ConfigService);
   });
 
   describe('register', () => {
     it('should register a new user and return a login response', async () => {
       const createUserDto: CreateUserDto = new CreateUserDto();
       const user: User = new User();
-      const loginTokenAndUserDto: LoginTokenAndUserDto =
-        new LoginTokenAndUserDto();
+      const loginSessionDto: LoginSessionDto = new LoginSessionDto();
       userService.create.mockResolvedValue(user);
-      service.login = jest.fn().mockResolvedValue(loginTokenAndUserDto);
+      service.login = jest.fn().mockResolvedValue(loginSessionDto);
 
       const result = await service.register(createUserDto);
 
       expect(userService.create).toHaveBeenCalledWith(createUserDto);
       expect(service.login).toHaveBeenCalledWith(user);
-      expect(result).toEqual(loginTokenAndUserDto);
+      expect(result).toEqual(loginSessionDto);
     });
   });
 
   describe('login', () => {
-    it('should create a new refresh token and return a login response', async () => {
+    it('should create a new session and return a login response', async () => {
       const user: User = {
         ...new User(),
         id: new Schema.Types.ObjectId('id'),
       };
-      const accessToken = 'mock-access-token';
-      const refreshToken = 'mock-refresh-token';
-      const jwtPayload = { sub: user.id.toString() };
-      const jwtRefreshPayload = {
-        sub: user.id.toString(),
-        uuid: 'mock-uuid',
-      };
-      const expiresIn = 3600;
-      const loginTokenAndUserDto: LoginTokenAndUserDto = {
-        token: {
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        },
+      const sessToken = 'mock-uuid';
+      const loginSessionDto: LoginSessionDto = {
+        session_token: sessToken,
         user,
       };
-      jwtService.sign.mockReturnValueOnce(accessToken);
-      jwtService.sign.mockReturnValueOnce(refreshToken);
-      configService.get.mockReturnValueOnce(expiresIn);
-      authRepository.create.mockResolvedValueOnce(new RefreshToken());
+      authRepository.create.mockResolvedValueOnce(new Session());
 
       const result = await service.login(user);
 
-      expect(jwtService.sign).toHaveBeenNthCalledWith(1, jwtPayload);
-      expect(jwtService.sign).toHaveBeenNthCalledWith(2, jwtRefreshPayload, {
-        expiresIn,
-      });
       expect(authRepository.create).toHaveBeenCalledWith({
-        refresh_token: refreshToken,
-        uuid: jwtRefreshPayload.uuid,
+        user_id: user.id.toString(),
+        session_token: sessToken,
       });
-      expect(result).toEqual(loginTokenAndUserDto);
+      expect(result).toEqual(loginSessionDto);
     });
   });
 
@@ -96,25 +75,23 @@ describe('AuthService', () => {
       const user = new User();
       user.email = email;
       user.username = username;
-      const loginTokenAndUserDto: LoginTokenAndUserDto = {
-        token: {
-          access_token: 'access_token',
-          refresh_token: 'refresh_token',
-        },
+
+      const loginSessionDto: LoginSessionDto = {
+        session_token: 'sessToken',
         user,
       };
-      const oAuthLoginTokenAndUserDto: OAuthLoginTokenAndUserDto = {
+      const oAuthLoginSessionDto: OAuthLoginSessionDto = {
         is_exist: true,
-        ...loginTokenAndUserDto,
+        ...loginSessionDto,
       };
       userService.findByEmail.mockResolvedValue(user);
-      service.login = jest.fn().mockResolvedValue(loginTokenAndUserDto);
+      service.login = jest.fn().mockResolvedValue(loginSessionDto);
 
       const result = await service.OAuthLoginByEmail({ email, username });
 
       expect(userService.findByEmail).toHaveBeenCalledWith(email);
       expect(service.login).toHaveBeenCalledWith(user);
-      expect(result).toEqual(oAuthLoginTokenAndUserDto);
+      expect(result).toEqual(oAuthLoginSessionDto);
     });
 
     it('should return whether user does not exist', async () => {

@@ -1,6 +1,5 @@
 import { User } from '@app/user/entities/user.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { LoginTokensDto } from './token.dto';
 
 export class GoogleLoginDto {
   @IsString()
@@ -14,9 +13,9 @@ export class KakaoLoginDto {
   access_token: string;
 }
 
-export class OAuthLoginTokenAndUserDto {
+export class OAuthLoginSessionDto {
   is_exist: boolean;
-  token?: LoginTokensDto;
+  session_token?: string;
   user?: User;
   register_token?: string;
 }

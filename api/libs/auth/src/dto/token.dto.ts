@@ -1,31 +1,16 @@
 import { User } from '@app/user/entities/user.entity';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsMongoId, IsUUID } from 'class-validator';
 
-export class LoginTokensDto {
-  access_token: string;
-
-  refresh_token: string;
-}
-
-export class LoginTokenAndUserDto {
-  token: LoginTokensDto;
+export class LoginSessionDto {
+  session_token: string;
 
   user: User;
 }
 
-export class RefreshDto {
-  @IsString()
-  @IsNotEmpty()
-  refresh_token: string;
-}
-
-export class CreateRefreshTokenDto {
-  @IsString()
-  @IsNotEmpty()
-  refresh_token: string;
-
-  @IsString()
+export class CreateSessionDto {
   @IsUUID()
-  @IsNotEmpty()
-  uuid: string;
+  session_token: string;
+
+  @IsMongoId()
+  user_id: string;
 }

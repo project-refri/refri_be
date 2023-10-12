@@ -1,18 +1,14 @@
 import { OkResponse } from '@app/common/dto/success-response.dto';
 import { User } from '@app/user/entities/user.entity';
-import { OAuthLoginTokenAndUserDto } from './oauth.dto';
-import { LoginTokenAndUserDto } from './token.dto';
+import { LoginSessionDto } from './token.dto';
+import { OAuthLoginSessionDto } from './oauth.dto';
 
 export class RegisterResponseDto extends OkResponse {
-  data: LoginTokenAndUserDto;
+  data: LoginSessionDto;
 }
 
 export class OAuthLoginResponseDto extends OkResponse {
-  data: OAuthLoginTokenAndUserDto;
-}
-
-export class RefreshResponseDto extends OkResponse {
-  data: LoginTokenAndUserDto;
+  data: OAuthLoginSessionDto;
 }
 
 export class LogoutResponseDto extends OkResponse {

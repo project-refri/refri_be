@@ -9,7 +9,7 @@ describe('AuthRepository', () => {
       providers: [
         AuthRepository,
         {
-          provide: 'RefreshTokenModel',
+          provide: 'SessionModel',
           useValue: {},
         },
       ],
