@@ -18,10 +18,14 @@ export class LogDecorator implements LazyDecorator<any, any> {
     return async (...args: any[]) => {
       const reqId = this.clsService.getId();
       try {
+        const t = Date.now();
+        const ret = await method(...args);
         console.log(
-          `[${reqId}] ${instance.constructor.name}.${methodName} execute`,
+          `[${reqId}] ${instance.constructor.name}.${methodName} executed in ${
+            Date.now() - t
+          }ms`,
         );
-        return await method(...args);
+        return ret;
       } catch (e) {
         console.error(
           `[${reqId}] ${instance.constructor.name}.${methodName} error: ${e}`,

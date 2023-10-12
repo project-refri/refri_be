@@ -6,7 +6,6 @@ import {
   ApiPostCreated,
 } from '@app/common/decorators/http-method.decorator';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { queryBuilder } from '@app/common/utils/query-builder';
 import { User } from '@app/user/entities/user.entity';
 import {
   Body,
@@ -18,17 +17,20 @@ import {
   Param,
   Patch,
   Post,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { FilterRecipeDto } from '../dto/filter-recipe.dto';
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import {
   CreateRecipeResponseDto,
-  FindAllRecipeResponseDto,
   FindOneRecipeResponseDto,
+  FindRecipesResponseDto,
   UpdateRecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { RecipeService } from '../services/recipe.service';
+import { Logable } from '@app/common/log/log.decorator';
+import { FilterRecipeDto, TextSearchRecipeDto } from '../dto/filter-recipe.dto';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -59,13 +61,32 @@ export class RecipeController {
    * If any query is not given, return all Recipes of request user's.
    */
   // @Auth()
-  @ApiGet(FindAllRecipeResponseDto)
+  @ApiGet(FindRecipesResponseDto)
   @Get()
-  async findAll(@ReqUser() user: User) {
+  async findAll(
+    @ReqUser() user: User,
+    @Query() filterRecipeDto: FilterRecipeDto,
+  ) {
     // const filterRecipeDto: FilterRecipeDto = queryBuilder({
     //   user_id: user.id.toString(),
     // });
-    return this.recipeService.findAll({});
+    return this.recipeService.findAll(filterRecipeDto);
+  }
+
+  /**
+   * ## Find Recipes by full text search
+   *
+   * Find all Recipes with given query text.
+   * If any query is not given, return all Recipes.
+   */
+  @ApiGet(FindRecipesResponseDto)
+  @Get('search')
+  async findAllByFullTextSearch(
+    @Query()
+    textSearchRecipeDto: TextSearchRecipeDto,
+  ) {
+    console.log(textSearchRecipeDto);
+    return this.recipeService.findAllByFullTextSearch(textSearchRecipeDto);
   }
 
   /**
