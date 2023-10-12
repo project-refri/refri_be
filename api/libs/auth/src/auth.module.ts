@@ -1,27 +1,25 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  RefreshToken,
-  RefreshTokenSchema,
-  RefreshTokenSchemaFactory,
-} from './entities/refresh-token.entity';
 import { AuthRepository } from './repositories/auth.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { UserModule } from '@app/user/user.module';
 import { HttpModule } from '@nestjs/axios';
-import { JwtRegisterStrategy } from './strategies/jwt-register.strategy';
+import {
+  Session,
+  SessionSchema,
+  SessionSchemaFactory,
+} from './entities/session.entity';
 
+@Global()
 @Module({
   imports: [
     MongooseModule.forFeatureAsync([
       {
-        name: RefreshToken.name,
-        useFactory: RefreshTokenSchemaFactory,
+        name: Session.name,
+        useFactory: SessionSchemaFactory,
         inject: [ConfigService],
       },
     ]),
@@ -41,15 +39,16 @@ import { JwtRegisterStrategy } from './strategies/jwt-register.strategy';
   providers: [
     AuthService,
     AuthRepository,
-    JwtStrategy,
-    JwtRefreshStrategy,
-    JwtRegisterStrategy,
-    { provide: 'REFRESH_TOKEN_SCHEMA', useValue: RefreshTokenSchema },
+    // SessionAuthGuard,
+    // RegisterAuthGuard,
+    { provide: 'SESSION_SCHEMA', useValue: SessionSchema },
   ],
   exports: [
     AuthService,
     AuthRepository,
-    { provide: 'REFRESH_TOKEN_SCHEMA', useValue: RefreshTokenSchema },
+    // SessionAuthGuard,
+    // RegisterAuthGuard,
+    { provide: 'SESSION_SCHEMA', useValue: SessionSchema },
   ],
 })
 export class AuthModule {}
