@@ -23,7 +23,7 @@ export class PagenationResponseDto {
 
   count: number;
 
-  // has_next: boolean;
+  has_next: boolean;
 
   // has_prev: boolean;
 

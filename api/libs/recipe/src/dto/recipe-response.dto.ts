@@ -10,7 +10,7 @@ export class CreateRecipeResponseDto extends CreatedResponse {
 }
 
 export class FindRecipesResponseDto extends OkResponse {
-  data: RecipesResponseDto[];
+  data: RecipesResponseDto;
 }
 
 export class FindOneRecipeResponseDto extends OkResponse {

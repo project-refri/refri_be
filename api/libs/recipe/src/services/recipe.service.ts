@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   FilterRecipeDto,
+  RecipesAndCountDto,
   RecipesResponseDto,
   TextSearchRecipeDto,
 } from '../dto/filter-recipe.dto';
@@ -19,24 +20,28 @@ export class RecipeService {
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
     const results = await this.recipeRepository.findAll(filterRecipeDto);
     return {
-      results,
+      results: results.recipes,
       page: filterRecipeDto.page,
-      count: results.length,
+      count: results.recipes.length,
+      has_next:
+        results.count >
+        (filterRecipeDto.page - 1) * filterRecipeDto.limit +
+          results.recipes.length,
     };
   }
 
   async findAllByFullTextSearch(
     textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesResponseDto> {
-    let results: Recipe[];
+    let results: RecipesAndCountDto;
     if (
       textSearchRecipeDto.searchQuery &&
       textSearchRecipeDto.searchQuery.length > 0
-    )
+    ) {
       results = await this.recipeRepository.findAllByFullTextSearch(
         textSearchRecipeDto,
       );
-    else
+    } else
       results = await this.recipeRepository.findAll(
         new FilterRecipeDto(
           textSearchRecipeDto.page,
@@ -44,9 +49,13 @@ export class RecipeService {
         ),
       );
     return {
-      results,
+      results: results.recipes,
       page: textSearchRecipeDto.page,
-      count: results.length,
+      count: results.recipes.length,
+      has_next:
+        results.count >
+        (textSearchRecipeDto.page - 1) * textSearchRecipeDto.limit +
+          results.recipes.length,
     };
   }
 

@@ -10,7 +10,6 @@ import {
   IsString,
 } from 'class-validator';
 import { Recipe } from '../entities/recipe.entity';
-import { Transform } from 'class-transformer';
 
 export class FilterRecipeDto extends PagenationDto {
   constructor(
@@ -80,4 +79,9 @@ export class TextSearchRecipeDto extends PagenationDto {
 
 export class RecipesResponseDto extends PagenationResponseDto {
   results: Recipe[];
+}
+
+export class RecipesAndCountDto {
+  recipes: Recipe[];
+  count: number;
 }
