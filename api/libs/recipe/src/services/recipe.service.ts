@@ -1,5 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FilterRecipeDto } from '../dto/filter-recipe.dto';
+import {
+  FilterRecipeDto,
+  RecipesAndCountDto,
+  RecipesResponseDto,
+  TextSearchRecipeDto,
+} from '../dto/filter-recipe.dto';
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
@@ -12,8 +17,46 @@ export class RecipeService {
     return await this.recipeRepository.create(createRecipeDto);
   }
 
-  async findAll(filterRecipeDto: FilterRecipeDto): Promise<Recipe[]> {
-    return await this.recipeRepository.findAll(filterRecipeDto);
+  async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
+    const results = await this.recipeRepository.findAll(filterRecipeDto);
+    return {
+      results: results.recipes,
+      page: filterRecipeDto.page,
+      count: results.recipes.length,
+      has_next:
+        results.count >
+        (filterRecipeDto.page - 1) * filterRecipeDto.limit +
+          results.recipes.length,
+    };
+  }
+
+  async findAllByFullTextSearch(
+    textSearchRecipeDto: TextSearchRecipeDto,
+  ): Promise<RecipesResponseDto> {
+    let results: RecipesAndCountDto;
+    if (
+      textSearchRecipeDto.searchQuery &&
+      textSearchRecipeDto.searchQuery.length > 0
+    ) {
+      results = await this.recipeRepository.findAllByFullTextSearch(
+        textSearchRecipeDto,
+      );
+    } else
+      results = await this.recipeRepository.findAll(
+        new FilterRecipeDto(
+          textSearchRecipeDto.page,
+          textSearchRecipeDto.limit,
+        ),
+      );
+    return {
+      results: results.recipes,
+      page: textSearchRecipeDto.page,
+      count: results.recipes.length,
+      has_next:
+        results.count >
+        (textSearchRecipeDto.page - 1) * textSearchRecipeDto.limit +
+          results.recipes.length,
+    };
   }
 
   async findOne(id: string): Promise<Recipe> {
