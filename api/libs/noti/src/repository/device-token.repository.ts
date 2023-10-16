@@ -7,12 +7,14 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CrudMongoRepository } from '@app/common/crud-mongo.repository';
 import { CreateDeviceTokenDto } from '../dto/modify-device-token.dto';
+import { FilterDeviceTokenDto } from '../dto/filter-device-token.dto';
 
 @Injectable()
 export class DeviceTokenRepository extends CrudMongoRepository<
   DeviceToken,
   CreateDeviceTokenDto,
-  any
+  any,
+  FilterDeviceTokenDto
 > {
   constructor(
     @InjectModel(DeviceToken.name)

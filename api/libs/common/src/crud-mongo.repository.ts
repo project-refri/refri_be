@@ -1,8 +1,8 @@
 import { Model } from 'mongoose';
 import { ICrudRepository } from './crud.repository';
 
-export class CrudMongoRepository<Entity, CreateDto, UpdateDto>
-  implements ICrudRepository<Entity, CreateDto, UpdateDto>
+export class CrudMongoRepository<Entity, CreateDto, UpdateDto, FilterDto>
+  implements ICrudRepository<Entity, CreateDto, UpdateDto, FilterDto>
 {
   private model: Model<any>;
   constructor(model: Model<any>) {
@@ -14,8 +14,8 @@ export class CrudMongoRepository<Entity, CreateDto, UpdateDto>
     return await createdEntity.save();
   }
 
-  async findAll(): Promise<Entity[]> {
-    return await this.model.find().exec();
+  async findAll(filterDto: FilterDto): Promise<Entity[]> {
+    return await this.model.find(filterDto).exec();
   }
 
   async findOne(id: string): Promise<Entity> {

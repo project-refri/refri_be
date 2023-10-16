@@ -26,6 +26,8 @@ import {
 import { CreateDeviceTokenDto } from '../dto/modify-device-token.dto';
 import { CreateDeviceTokenResponseDto } from '../dto/device-token-response.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { ReqUser } from '@app/common/decorators/req-user.decorator';
+import { User } from '@app/user/entities/user.entity';
 
 @ApiTags('Noti')
 @Controller('noti')
@@ -38,10 +40,17 @@ export class NotiController {
   @Auth()
   @ApiPostCreated(CreateDeviceTokenResponseDto)
   @Post('device-token')
-  async createDeviceToken(@Body() createDeviceTokenDto: CreateDeviceTokenDto) {
+  async createDeviceToken(
+    @Body() createDeviceTokenDto: CreateDeviceTokenDto,
+    @ReqUser() user: User,
+  ) {
+    createDeviceTokenDto.user_id = user.id.toString();
     return await this.deviceTokenService.create(createDeviceTokenDto);
   }
 
+  /**
+   * For Testing. Don't Use this API in Production.
+   */
   @Auth()
   @ApiPostCreated(CreateNotiResponseDto)
   @Post()
@@ -52,8 +61,10 @@ export class NotiController {
   @Auth()
   @ApiGet(FindNotisResponseDto)
   @Get()
-  async findAllNotis() {
-    return await this.notiService.findAll();
+  async findAllNotis(@ReqUser() user: User) {
+    return await this.notiService.findAll({
+      user_id: user.id.toString(),
+    });
   }
 
   @Auth()

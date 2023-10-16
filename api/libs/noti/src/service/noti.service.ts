@@ -5,12 +5,14 @@ import { CrudService } from '@app/common/crud.service';
 import { Noti } from '../entity/noti.entity';
 import { CreateNotiDto, UpdateNotiDto } from '../dto/modify-noti.dto';
 import { NotiRepository } from '../repository/noti.repository';
+import { FilterNotiDto } from '../dto/filter-noti.dto';
 
 @Injectable()
 export class NotiService extends CrudService<
   Noti,
   CreateNotiDto,
-  UpdateNotiDto
+  UpdateNotiDto,
+  FilterNotiDto
 > {
   constructor(
     private readonly notiRepository: NotiRepository,
