@@ -50,6 +50,10 @@ jobs:
             MEMORY_CACHE_DEFAULT_TTL=${{ secrets.MEMORY_CACHE_DEFAULT_TTL }}
             MEMORY_CACHE_DEFAULT_MAX=${{ secrets. MEMORY_CACHE_DEFAULT_MAX }}
             IMAGE_PROCESS_SERVICE_URL=${{ secrets.IMAGE_PROCESS_SERVICE_URL }}
+            SESSION_EXPIRES_IN=${{ secrets.SESSION_EXPIRES_IN }}
+            FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+            FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}
+            FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}
           image: ${{ secrets.DOCKER_IMAGE_API_TAG }}
 
       # If required, use the Cloud Run url output in later steps
