@@ -17,6 +17,7 @@ module.exports = (options, webpack) => {
         ioredis: 'commonjs ioredis',
         amqplib: 'commonjs amqplib',
         'amqp-connection-manager': 'commonjs amqp-connection-manager',
+        saslprep: "require('saslprep')",
       },
     ],
     output: {

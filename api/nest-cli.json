@@ -91,6 +91,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/recipe/tsconfig.lib.json"
       }
+    },
+    "noti": {
+      "type": "library",
+      "root": "libs/noti",
+      "entryFile": "index",
+      "sourceRoot": "libs/noti/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/noti/tsconfig.lib.json"
+      }
     }
   }
 }

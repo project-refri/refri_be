@@ -20,6 +20,7 @@ module.exports = (options, webpack) => {
         amqplib: 'commonjs amqplib',
         'amqp-connection-manager': 'commonjs amqp-connection-manager',
         '@fastify/static': 'commonjs @fastify/static',
+        saslprep: "require('saslprep')",
       },
     ],
     output: {

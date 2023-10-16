@@ -9,6 +9,7 @@ import { RecipeModule } from '@app/recipe/recipe.module';
 import { CacheModule } from '@app/common/cache/cache.module';
 import { LogModule } from '@app/common/log/log.module';
 import { AopModule } from '@toss/nestjs-aop';
+import { NotiModule } from '@app/noti/noti.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AopModule } from '@toss/nestjs-aop';
     ImageModule,
     IngredientModule,
     RecipeModule,
+    NotiModule,
   ],
 })
 export class AppModule {}
