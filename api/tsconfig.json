@@ -54,6 +54,12 @@
       ],
       "@app/recipe/*": [
         "libs/recipe/src/*"
+      ],
+      "@app/noti": [
+        "libs/noti/src"
+      ],
+      "@app/noti/*": [
+        "libs/noti/src/*"
       ]
     }
   }
