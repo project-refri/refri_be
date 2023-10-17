@@ -23,27 +23,36 @@ export class RecipeRepository {
     return await createdEntity.save();
   }
 
-  async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesAndCountDto> {
+  async findAll(
+    _filterRecipeDto: FilterRecipeDto,
+  ): Promise<RecipesAndCountDto> {
+    const filterRecipeDto = { ..._filterRecipeDto };
     deleteNull(filterRecipeDto);
 
     const page = filterRecipeDto.page,
       limit = filterRecipeDto.limit;
     delete filterRecipeDto.page;
     delete filterRecipeDto.limit;
-    const aggrpipe = this.recipeModel
+    const filteredPipe = this.recipeModel
       .aggregate()
       .match(filterRecipeDto)
+      .project({
+        _id: 0,
+        __v: 0,
+        recipe_raw_text: 0,
+        origin_url: 0,
+      })
       .pipeline();
-    const countPromise = this.recipeModel.aggregate(aggrpipe).count('count');
+    const countPromise = this.recipeModel
+      .aggregate(filteredPipe)
+      .count('count');
     const recipeAggrPipe = this.recipeModel
-      .aggregate()
+      .aggregate(filteredPipe)
       .sort({ created_at: -1 })
       .skip((page - 1) * limit)
-      .limit(limit)
-      .pipeline();
-    aggrpipe.concat(recipeAggrPipe);
+      .limit(limit);
     const [recipes, count] = await Promise.all([
-      this.recipeModel.aggregate(aggrpipe).exec(),
+      recipeAggrPipe.exec(),
       countPromise.exec(),
     ]);
     return {
