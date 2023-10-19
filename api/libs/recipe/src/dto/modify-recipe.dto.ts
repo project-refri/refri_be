@@ -4,6 +4,7 @@ import {
   IsArray,
   IsMongoId,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
@@ -135,4 +136,7 @@ export class CreateRecipeDto {
 
 export class UpdateRecipeDto extends PartialType(
   OmitType(CreateRecipeDto, ['owner'] as const),
-) {}
+) {
+  @IsNumber()
+  view_count: number;
+}

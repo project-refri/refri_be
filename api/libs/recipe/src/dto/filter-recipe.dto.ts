@@ -10,6 +10,7 @@ import {
   IsString,
 } from 'class-validator';
 import { Recipe } from '../entities/recipe.entity';
+import { OmitType } from '@nestjs/swagger';
 
 export class FilterRecipeDto extends PagenationDto {
   constructor(
@@ -77,11 +78,32 @@ export class TextSearchRecipeDto extends PagenationDto {
   sort?: TextSearchSortBy;
 }
 
+export class RecipeListViewResponseDto extends OmitType(Recipe, [
+  'recipe_raw_text',
+  'origin_url',
+  'recipe_steps',
+  'ingredient_requirements',
+] as const) {}
+
 export class RecipesResponseDto extends PagenationResponseDto {
-  results: Recipe[];
+  results: RecipeListViewResponseDto[];
 }
 
 export class RecipesAndCountDto {
-  recipes: Recipe[];
+  recipes: RecipeListViewResponseDto[];
   count: number;
+
+  constructor(recipes: RecipeListViewResponseDto[], count: number) {
+    this.recipes = recipes;
+    this.count = count;
+  }
+
+  toRecipesResponseDto(page: number, limit: number): RecipesResponseDto {
+    return {
+      results: this.recipes,
+      page,
+      count: this.recipes.length,
+      has_next: this.count > (page - 1) * limit + this.recipes.length,
+    } as RecipesResponseDto;
+  }
 }

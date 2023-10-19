@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   FilterRecipeDto,
+  RecipeListViewResponseDto,
   RecipesAndCountDto,
   RecipesResponseDto,
   TextSearchRecipeDto,
@@ -8,6 +9,8 @@ import {
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
+import { RecipeViewerIdentifier } from '../dto/recipe-viewer-identifier';
+import { Cacheable } from '@app/common/cache/memory-cache.service';
 
 @Injectable()
 export class RecipeService {
@@ -19,15 +22,10 @@ export class RecipeService {
 
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
     const results = await this.recipeRepository.findAll(filterRecipeDto);
-    return {
-      results: results.recipes,
-      page: filterRecipeDto.page,
-      count: results.recipes.length,
-      has_next:
-        results.count >
-        (filterRecipeDto.page - 1) * filterRecipeDto.limit +
-          results.recipes.length,
-    };
+    return results.toRecipesResponseDto(
+      filterRecipeDto.page,
+      filterRecipeDto.limit,
+    );
   }
 
   async findAllByFullTextSearch(
@@ -48,15 +46,10 @@ export class RecipeService {
           textSearchRecipeDto.limit,
         ),
       );
-    return {
-      results: results.recipes,
-      page: textSearchRecipeDto.page,
-      count: results.recipes.length,
-      has_next:
-        results.count >
-        (textSearchRecipeDto.page - 1) * textSearchRecipeDto.limit +
-          results.recipes.length,
-    };
+    return results.toRecipesResponseDto(
+      textSearchRecipeDto.page,
+      textSearchRecipeDto.limit,
+    );
   }
 
   async findOne(id: string): Promise<Recipe> {
@@ -65,19 +58,35 @@ export class RecipeService {
     return ret;
   }
 
+  async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
+    return await this.recipeRepository.findTopViewed();
+  }
+
+  @Cacheable({
+    ttl: 60 * 60 * 1000,
+    generateKey: (id: string, identifier: RecipeViewerIdentifier) =>
+      identifier.user
+        ? `${id}-${identifier.user.id}`
+        : `${id}-${identifier.ip}`,
+  })
+  async increaseViewCount(
+    id: string,
+    _identifier: RecipeViewerIdentifier,
+  ): Promise<boolean> {
+    const ret = await this.recipeRepository.increaseViewCount(id);
+    if (!ret) throw new NotFoundException('Recipe not found');
+    return true;
+  }
+
   async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
     const ret = await this.recipeRepository.update(id, updateRecipeDto);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
   }
 
-  async delete(id: string): Promise<Recipe> {
+  async deleteOne(id: string): Promise<Recipe> {
     const ret = await this.recipeRepository.deleteOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
-  }
-
-  async deleteAll(filterRecipeDto: FilterRecipeDto): Promise<any> {
-    return await this.recipeRepository.deleteAll(filterRecipeDto);
   }
 }

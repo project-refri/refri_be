@@ -18,7 +18,7 @@ import {
   Patch,
   Post,
   Query,
-  ValidationPipe,
+  Ip,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
@@ -26,11 +26,13 @@ import {
   CreateRecipeResponseDto,
   FindOneRecipeResponseDto,
   FindRecipesResponseDto,
+  FindTopViewdResponseDto,
   UpdateRecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { RecipeService } from '../services/recipe.service';
 import { Logable } from '@app/common/log/log.decorator';
 import { FilterRecipeDto, TextSearchRecipeDto } from '../dto/filter-recipe.dto';
+import { RecipeViewerIdentifier } from '../dto/recipe-viewer-identifier';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -89,6 +91,12 @@ export class RecipeController {
     return this.recipeService.findAllByFullTextSearch(textSearchRecipeDto);
   }
 
+  @ApiGet(FindTopViewdResponseDto)
+  @Get('top-viewed')
+  async findTopViewed() {
+    return this.recipeService.findTopViewed();
+  }
+
   /**
    * ## Find one Recipe
    *
@@ -97,8 +105,16 @@ export class RecipeController {
   // @Auth()
   @ApiGet(FindOneRecipeResponseDto)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.recipeService.findOne(id);
+  async findOne(
+    @Param('id') id: string,
+    @Ip() ip: string,
+    @ReqUser() user: User,
+  ) {
+    await this.recipeService.increaseViewCount(
+      id,
+      new RecipeViewerIdentifier(user, ip),
+    );
+    return await this.recipeService.findOne(id);
   }
 
   /**
@@ -126,6 +142,6 @@ export class RecipeController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    return this.recipeService.delete(id);
+    return this.recipeService.deleteOne(id);
   }
 }

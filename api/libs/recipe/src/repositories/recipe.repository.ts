@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   FilterRecipeDto,
+  RecipeListViewResponseDto,
   RecipesAndCountDto,
   TextSearchRecipeDto,
   TextSearchSortBy,
@@ -41,6 +42,8 @@ export class RecipeRepository {
         __v: 0,
         recipe_raw_text: 0,
         origin_url: 0,
+        recipe_steps: 0,
+        ingredient_requirements: 0,
       })
       .pipeline();
     const countPromise = this.recipeModel
@@ -55,10 +58,7 @@ export class RecipeRepository {
       recipeAggrPipe.exec(),
       countPromise.exec(),
     ]);
-    return {
-      recipes,
-      count: count[0].count,
-    };
+    return new RecipesAndCountDto(recipes, count[0].count);
   }
 
   async findAllByFullTextSearch(
@@ -83,6 +83,8 @@ export class RecipeRepository {
         __v: 0,
         recipe_raw_text: 0,
         origin_url: 0,
+        recipe_steps: 0,
+        ingredient_requirements: 0,
       })
       .pipeline();
     const countPromise = this.recipeModel.aggregate(aggrpipe).count('count');
@@ -106,14 +108,41 @@ export class RecipeRepository {
       countPromise.exec(),
     ]);
 
-    return {
-      recipes,
-      count: count[0].count,
-    };
+    return new RecipesAndCountDto(recipes, count[0].count);
   }
 
   async findOne(id: string): Promise<Recipe> {
-    return await this.recipeModel.findOne({ id }).exec();
+    return await this.recipeModel
+      .findOne({ id })
+      .select({
+        _id: 0,
+        __v: 0,
+        recipe_raw_text: 0,
+        origin_url: 0,
+      })
+      .exec();
+  }
+
+  async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
+    return await this.recipeModel
+      .find()
+      .sort({ view_count: -1 })
+      .limit(10)
+      .select({
+        _id: 0,
+        __v: 0,
+        recipe_raw_text: 0,
+        origin_url: 0,
+        recipe_steps: 0,
+        ingredient_requirements: 0,
+      })
+      .exec();
+  }
+
+  async increaseViewCount(id: string): Promise<Recipe> {
+    return await this.recipeModel
+      .findOneAndUpdate({ id }, { $inc: { view_count: 1 } }, { new: true })
+      .exec();
   }
 
   async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {

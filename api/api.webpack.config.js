@@ -11,6 +11,7 @@ module.exports = (options, webpack) => {
 
   return {
     ...options,
+    devtool: 'source-map',
     externals: [
       {
         kafkajs: 'commonjs kafkajs',
@@ -26,6 +27,7 @@ module.exports = (options, webpack) => {
     output: {
       ...options.output,
       libraryTarget: 'commonjs2',
+      devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',
     },
     optimization: {
       minimizer: [
