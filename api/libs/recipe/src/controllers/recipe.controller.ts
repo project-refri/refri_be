@@ -26,6 +26,7 @@ import {
   CreateRecipeResponseDto,
   FindOneRecipeResponseDto,
   FindRecipesResponseDto,
+  FindTopViewdResponseDto,
   UpdateRecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { RecipeService } from '../services/recipe.service';
@@ -88,6 +89,12 @@ export class RecipeController {
   ) {
     console.log(textSearchRecipeDto);
     return this.recipeService.findAllByFullTextSearch(textSearchRecipeDto);
+  }
+
+  @ApiGet(FindTopViewdResponseDto)
+  @Get('top-viewed')
+  async findTopViewed() {
+    return this.recipeService.findTopViewed();
   }
 
   /**

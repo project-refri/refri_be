@@ -1,6 +1,7 @@
 import { User } from '@app/user/entities/user.entity';
 import {
   FilterRecipeDto,
+  RecipeListViewResponseDto,
   RecipesAndCountDto,
   RecipesResponseDto,
   TextSearchRecipeDto,
@@ -25,12 +26,12 @@ describe('RecipeService', () => {
     limit: 10,
   };
   const recipesAndCountLast: jest.Mocked<RecipesAndCountDto> = {
-    recipes: [new Recipe(), new Recipe()],
+    recipes: [new RecipeListViewResponseDto(), new RecipeListViewResponseDto()],
     count: 2,
     toRecipesResponseDto: jest.fn(),
   };
   const recipesAndCountNotLast: jest.Mocked<RecipesAndCountDto> = {
-    recipes: [new Recipe(), new Recipe()],
+    recipes: [new RecipeListViewResponseDto(), new RecipeListViewResponseDto()],
     count: 15,
     toRecipesResponseDto: jest.fn(),
   };
@@ -177,6 +178,18 @@ describe('RecipeService', () => {
 
       expect(recipeRepository.findOne).toHaveBeenCalledWith('1');
       expect(result).toEqual(recipe);
+    });
+  });
+
+  describe('findTopViewed', () => {
+    it('should return an array of recipes', async () => {
+      const recipe = new RecipeListViewResponseDto();
+      recipeRepository.findTopViewed.mockResolvedValue([recipe]);
+
+      const result = await service.findTopViewed();
+
+      expect(recipeRepository.findTopViewed).toHaveBeenCalled();
+      expect(result).toEqual([recipe]);
     });
   });
 

@@ -1,6 +1,7 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   FilterRecipeDto,
+  RecipeListViewResponseDto,
   RecipesAndCountDto,
   RecipesResponseDto,
   TextSearchRecipeDto,
@@ -9,16 +10,11 @@ import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
 import { RecipeViewerIdentifier } from '../dto/recipe-viewer-identifier';
-import { MEMORY_CACHE } from '@app/common/cache/cache.constant';
-import { Cache } from 'cache-manager';
 import { Cacheable } from '@app/common/cache/memory-cache.service';
 
 @Injectable()
 export class RecipeService {
-  constructor(
-    private readonly recipeRepository: RecipeRepository,
-    @Inject(MEMORY_CACHE) private readonly cacheManager: Cache,
-  ) {}
+  constructor(private readonly recipeRepository: RecipeRepository) {}
 
   async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
     return await this.recipeRepository.create(createRecipeDto);
@@ -60,6 +56,10 @@ export class RecipeService {
     const ret = await this.recipeRepository.findOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
+  }
+
+  async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
+    return await this.recipeRepository.findTopViewed();
   }
 
   @Cacheable({
