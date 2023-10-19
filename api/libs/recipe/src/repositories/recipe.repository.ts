@@ -55,10 +55,7 @@ export class RecipeRepository {
       recipeAggrPipe.exec(),
       countPromise.exec(),
     ]);
-    return {
-      recipes,
-      count: count[0].count,
-    };
+    return new RecipesAndCountDto(recipes, count[0].count);
   }
 
   async findAllByFullTextSearch(
@@ -106,10 +103,7 @@ export class RecipeRepository {
       countPromise.exec(),
     ]);
 
-    return {
-      recipes,
-      count: count[0].count,
-    };
+    return new RecipesAndCountDto(recipes, count[0].count);
   }
 
   async findOne(id: string): Promise<Recipe> {

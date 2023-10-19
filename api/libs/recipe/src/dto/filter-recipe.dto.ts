@@ -84,4 +84,18 @@ export class RecipesResponseDto extends PagenationResponseDto {
 export class RecipesAndCountDto {
   recipes: Recipe[];
   count: number;
+
+  constructor(recipes: Recipe[], count: number) {
+    this.recipes = recipes;
+    this.count = count;
+  }
+
+  toRecipesResponseDto(page: number, limit: number): RecipesResponseDto {
+    return {
+      results: this.recipes,
+      page,
+      count: this.recipes.length,
+      has_next: this.count > (page - 1) * limit + this.recipes.length,
+    } as RecipesResponseDto;
+  }
 }

@@ -135,6 +135,6 @@ export class RecipeController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    return this.recipeService.delete(id);
+    return this.recipeService.deleteOne(id);
   }
 }

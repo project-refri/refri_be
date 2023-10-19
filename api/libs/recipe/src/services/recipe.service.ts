@@ -26,15 +26,10 @@ export class RecipeService {
 
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
     const results = await this.recipeRepository.findAll(filterRecipeDto);
-    return {
-      results: results.recipes,
-      page: filterRecipeDto.page,
-      count: results.recipes.length,
-      has_next:
-        results.count >
-        (filterRecipeDto.page - 1) * filterRecipeDto.limit +
-          results.recipes.length,
-    };
+    return results.toRecipesResponseDto(
+      filterRecipeDto.page,
+      filterRecipeDto.limit,
+    );
   }
 
   async findAllByFullTextSearch(
@@ -55,15 +50,10 @@ export class RecipeService {
           textSearchRecipeDto.limit,
         ),
       );
-    return {
-      results: results.recipes,
-      page: textSearchRecipeDto.page,
-      count: results.recipes.length,
-      has_next:
-        results.count >
-        (textSearchRecipeDto.page - 1) * textSearchRecipeDto.limit +
-          results.recipes.length,
-    };
+    return results.toRecipesResponseDto(
+      textSearchRecipeDto.page,
+      textSearchRecipeDto.limit,
+    );
   }
 
   async findOne(id: string): Promise<Recipe> {
@@ -94,13 +84,9 @@ export class RecipeService {
     return ret;
   }
 
-  async delete(id: string): Promise<Recipe> {
+  async deleteOne(id: string): Promise<Recipe> {
     const ret = await this.recipeRepository.deleteOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
-  }
-
-  async deleteAll(filterRecipeDto: FilterRecipeDto): Promise<any> {
-    return await this.recipeRepository.deleteAll(filterRecipeDto);
   }
 }
