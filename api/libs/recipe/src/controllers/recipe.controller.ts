@@ -18,7 +18,7 @@ import {
   Patch,
   Post,
   Query,
-  ValidationPipe,
+  Ip,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
@@ -31,6 +31,7 @@ import {
 import { RecipeService } from '../services/recipe.service';
 import { Logable } from '@app/common/log/log.decorator';
 import { FilterRecipeDto, TextSearchRecipeDto } from '../dto/filter-recipe.dto';
+import { RecipeViewerIdentifier } from '../dto/recipe-viewer-identifier';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -97,8 +98,16 @@ export class RecipeController {
   // @Auth()
   @ApiGet(FindOneRecipeResponseDto)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.recipeService.findOne(id);
+  async findOne(
+    @Param('id') id: string,
+    @Ip() ip: string,
+    @ReqUser() user: User,
+  ) {
+    await this.recipeService.increaseViewCount(
+      id,
+      new RecipeViewerIdentifier(user, ip),
+    );
+    return await this.recipeService.findOne(id);
   }
 
   /**

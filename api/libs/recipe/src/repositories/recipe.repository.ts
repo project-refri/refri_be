@@ -113,7 +113,21 @@ export class RecipeRepository {
   }
 
   async findOne(id: string): Promise<Recipe> {
-    return await this.recipeModel.findOne({ id }).exec();
+    return await this.recipeModel
+      .findOne({ id })
+      .select({
+        _id: 0,
+        __v: 0,
+        recipe_raw_text: 0,
+        origin_url: 0,
+      })
+      .exec();
+  }
+
+  async increaseViewCount(id: string): Promise<Recipe> {
+    return await this.recipeModel
+      .findOneAndUpdate({ id }, { $inc: { view_count: 1 } }, { new: true })
+      .exec();
   }
 
   async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {

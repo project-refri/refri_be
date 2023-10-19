@@ -54,6 +54,9 @@ export class Recipe {
   @Prop({ required: true })
   origin_url: string;
 
+  @Prop({ required: true, default: 0 })
+  view_count: number;
+
   @Prop({ required: false })
   created_at: Date;
 
