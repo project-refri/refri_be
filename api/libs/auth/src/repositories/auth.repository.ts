@@ -25,11 +25,11 @@ export class AuthRepository {
     return await this.sessionModel.findOne({ id }).exec();
   }
 
+  @Logable()
   @Cacheable({
     ttl: 24 * 60 * 60 * 1000,
     generateKey: (session: string) => `session:${session}`,
   })
-  @Logable()
   async findBySessionToken(session: string): Promise<Session> {
     return await this.sessionModel
       .findOne({ session_token: session })

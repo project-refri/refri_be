@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Diet } from '../types/diet.enum';
+import { DeviceToken } from '@app/noti/entity/device-token.entity';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -34,6 +35,8 @@ export class User {
   })
   thumbnail: string;
 
+  device_tokens: DeviceToken[];
+
   @Prop({ required: false })
   created_at: Date;
 
@@ -42,6 +45,12 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.virtual('device_tokens', {
+  ref: 'DeviceToken',
+  localField: 'id',
+  foreignField: 'user_id',
+});
 
 export const UserSchemaFactory = (configService: ConfigService) => {
   const schema = UserSchema;

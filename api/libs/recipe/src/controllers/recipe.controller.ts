@@ -30,8 +30,8 @@ import {
   UpdateRecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { RecipeService } from '../services/recipe.service';
-import { Logable } from '@app/common/log/log.decorator';
 import { FilterRecipeDto, TextSearchRecipeDto } from '../dto/filter-recipe.dto';
+import { Public } from '@app/common/decorators/public.decorator';
 import { RecipeViewerIdentifier } from '../dto/recipe-viewer-identifier';
 
 @ApiTags('Recipe')
@@ -62,7 +62,8 @@ export class RecipeController {
    * #### Recipe's user_id is request user's id by default.
    * If any query is not given, return all Recipes of request user's.
    */
-  // @Auth()
+  @Public()
+  @Auth()
   @ApiGet(FindRecipesResponseDto)
   @Get()
   async findAll(
@@ -81,6 +82,8 @@ export class RecipeController {
    * Find all Recipes with given query text.
    * If any query is not given, return all Recipes.
    */
+  @Public()
+  @Auth()
   @ApiGet(FindRecipesResponseDto)
   @Get('search')
   async findAllByFullTextSearch(
@@ -102,7 +105,8 @@ export class RecipeController {
    *
    * Find one Recipe with given id.
    */
-  // @Auth()
+  @Public()
+  @Auth()
   @ApiGet(FindOneRecipeResponseDto)
   @Get(':id')
   async findOne(
