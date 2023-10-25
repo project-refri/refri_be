@@ -1,8 +1,10 @@
+import { OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
   IsMongoId,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
@@ -13,11 +15,11 @@ class IngredientRequirementDto {
   constructor(ingredient_id: string, name: string, amount: string) {
     this.ingredient_id = ingredient_id;
     this.name = name;
-    this.amount = amount ?? '적당량';
+    this.amount = amount ? amount : '적당량';
   }
 
-  @IsMongoId()
-  @IsString()
+  // @IsMongoId()
+  // @IsString()
   ingredient_id: string;
 
   @IsString()
@@ -62,7 +64,7 @@ export class RecipeStepDto {
   images: string[];
 
   @ValidateNested()
-  @ArrayNotEmpty()
+  // @ArrayNotEmpty()
   @IsArray()
   ingredients: IngredientRequirementDto[];
 }
@@ -132,4 +134,11 @@ export class CreateRecipeDto {
   @IsUrl()
   @IsString()
   origin_url: string;
+}
+
+export class UpdateRecipeDto extends PartialType(
+  OmitType(CreateRecipeDto, ['owner'] as const),
+) {
+  @IsNumber()
+  view_count: number;
 }

@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { validate } from 'class-validator';
+import { validateOrReject } from 'class-validator';
 import { DataStructureService } from '../data-structure/data-structure.service';
 import { CreateRecipeDto } from '../recipe/dto/modify-recipe.dto';
 import { RecipeService } from '../recipe/services/recipe.service';
 import { Page } from '../web-automation/domain/page.domain';
 import { WebAutomationService } from '../web-automation/web-automation.service';
-import { CreateRecipeScrapRequestDto } from './dto/modify-recipe-scrap-req.dto';
+import {
+  ConfirmRecipeScrapRequestDto,
+  CreateRecipeScrapRequestDto,
+} from './dto/modify-recipe-scrap-req.dto';
 import { RecipeScrapRepository } from './recipe-scrap.repository';
+import * as util from 'util';
+import { Recipe } from 'src/recipe/entities/recipe.entity';
 
 @Injectable()
 export class RecipeScrapService {
@@ -40,7 +45,12 @@ export class RecipeScrapService {
       recipeStructuredDto.recipe_raw_text,
       url,
     );
-    await validate(createRecipeDto);
+    await validateOrReject(createRecipeDto, {
+      validationError: {
+        target: false,
+        value: false,
+      },
+    });
     return createRecipeDto;
   }
 
@@ -60,9 +70,9 @@ export class RecipeScrapService {
         );
         await this.webAutomationService.closeBrower();
       } catch (e) {
-        console.log(e);
+        console.log(util.inspect(e, false, null, true /* enable colors */));
       } finally {
-        await new Promise((r) => setTimeout(r, 3 * 60 * 1000));
+        await new Promise((r) => setTimeout(r, 2 * 60 * 1000));
       }
     }
   }
@@ -73,5 +83,38 @@ export class RecipeScrapService {
     return await this.recipeScrapRepository.createRecipeScrapRequest(
       createRecipeScrapRequestDto,
     );
+  }
+
+  async confirmRecipeScrapRequest(
+    confirmRecipeScrapRequestDto: ConfirmRecipeScrapRequestDto,
+  ) {
+    const { origin_url, recipe_id } = confirmRecipeScrapRequestDto;
+    let recipe: Recipe;
+    if (recipe_id) {
+      recipe = await this.recipeService.findOne(recipe_id);
+    }
+    console.log(recipe.origin_url);
+    const req = await this.recipeScrapRepository.findOneByUrl(
+      origin_url ? origin_url : recipe.origin_url,
+    );
+    if (confirmRecipeScrapRequestDto.confirm === 'confirm') {
+      console.log('confirm');
+      await this.recipeScrapRepository.deleteOne(req.id);
+    } else if (confirmRecipeScrapRequestDto.confirm === 'reject') {
+      console.log('reject');
+      const res =
+        await this.recipeScrapRepository.updateRecipeScrapRequestStatusToError(
+          req.id,
+        );
+      await this.recipeService.deleteAll({
+        origin_url: res.url,
+        page: 1,
+        limit: 1,
+      });
+    }
+  }
+
+  async deleteAllRecipeScrapRequest() {
+    return await this.recipeScrapRepository.deleteAll();
   }
 }

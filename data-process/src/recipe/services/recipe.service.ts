@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FilterRecipeDto } from '../dto/filter-recipe.dto';
-import { CreateRecipeDto } from '../dto/modify-recipe.dto';
+import { FilterRecipeDto, RecipesResponseDto } from '../dto/filter-recipe.dto';
+import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
 
@@ -12,8 +12,18 @@ export class RecipeService {
     return await this.recipeRepository.create(createRecipeDto);
   }
 
-  async findAll(filterRecipeDto: FilterRecipeDto): Promise<Recipe[]> {
-    return await this.recipeRepository.findAll(filterRecipeDto);
+  async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
+    const results = await this.recipeRepository.findAll(filterRecipeDto);
+    return results.toRecipesResponseDto(
+      filterRecipeDto.page,
+      filterRecipeDto.limit,
+    );
+  }
+
+  async findOneByOriginUrl(originUrl: string) {
+    const ret = await this.recipeRepository.findOneByOriginUrl(originUrl);
+    if (!ret) throw new NotFoundException('Recipe not found');
+    return ret;
   }
 
   async findOne(id: string): Promise<Recipe> {
@@ -22,19 +32,19 @@ export class RecipeService {
     return ret;
   }
 
-  // async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
-  //   const ret = await this.recipeRepository.update(id, updateRecipeDto);
-  //   if (!ret) throw new NotFoundException('Recipe not found');
-  //   return ret;
-  // }
+  async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
+    const ret = await this.recipeRepository.update(id, updateRecipeDto);
+    if (!ret) throw new NotFoundException('Recipe not found');
+    return ret;
+  }
 
-  async delete(id: string): Promise<Recipe> {
+  async deleteOne(id: string): Promise<Recipe> {
     const ret = await this.recipeRepository.deleteOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
   }
 
-  async deleteAll(filterRecipeDto: FilterRecipeDto): Promise<any> {
-    return await this.recipeRepository.deleteAll(filterRecipeDto);
+  async deleteAll(filterRecipeDto: FilterRecipeDto): Promise<void> {
+    await this.recipeRepository.deleteAll(filterRecipeDto);
   }
 }

@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Recipe, RecipeSchema } from './entities/recipe.entity';
 import { RecipeRepository } from './repositories/recipe.repository';
 import { RecipeService } from './services/recipe.service';
+import { RecipeController } from './controllers/recipe.controller';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RecipeService } from './services/recipe.service';
       },
     ]),
   ],
+  controllers: [RecipeController],
   providers: [RecipeService, RecipeRepository],
   exports: [RecipeService, RecipeRepository],
 })

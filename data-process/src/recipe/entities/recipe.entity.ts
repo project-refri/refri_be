@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
-import { schemaOptions } from '../../common/schema.option';
+import { schemaOptions } from 'src/common/schema.option';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
@@ -53,6 +53,9 @@ export class Recipe {
 
   @Prop({ required: true })
   origin_url: string;
+
+  @Prop({ required: true, default: 0 })
+  view_count: number;
 
   @Prop({ required: false })
   created_at: Date;

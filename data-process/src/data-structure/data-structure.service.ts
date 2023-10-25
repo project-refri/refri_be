@@ -25,11 +25,11 @@ export class DataStructureService {
     const history: ChatCompletionMessageParam[] = [
       {
         role: 'user',
-        content: recipeTextFromHtml + '\n' + chatGPTQueryStringAdder,
+        content: chatGPTQueryStringAdder(recipeTextFromHtml),
       },
       {
         role: 'user',
-        content: chatGPTQueryString + '\n' + chatGPTQueryJsonFormat,
+        content: chatGPTQueryString,
       },
     ];
     const recipeStructuredText = (
@@ -71,14 +71,12 @@ export class DataStructureService {
   ): Promise<RecipeStructuredDto> {
     const session = await this.chatGPTWebappService.getSession();
     await session.sendMessage(
-      recipeTextFromHtml + '\n' + chatGPTQueryStringAdder,
+      chatGPTQueryStringAdder(recipeTextFromHtml),
       false,
     );
 
     const recipeStructured = JSON.parse(
-      await session.sendMessage(
-        chatGPTQueryString + '\n' + chatGPTQueryJsonFormat,
-      ),
+      await session.sendMessage(chatGPTQueryString),
     );
 
     const recipeRawText = JSON.parse(
