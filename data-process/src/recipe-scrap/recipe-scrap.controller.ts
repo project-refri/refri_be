@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post } from '@nestjs/common';
 import { RecipeScrapService } from './recipe-scrap.service';
 import {
   ConfirmRecipeScrapRequestDto,
@@ -30,5 +30,10 @@ export class RecipeScrapController {
     return await this.recipeScrapService.confirmRecipeScrapRequest(
       confirmRecipeScrapRequestDto,
     );
+  }
+
+  @Post('reject/:recipe_id')
+  async rejectRecipeScrapRequest(@Param('recipe_id') id: string) {
+    return await this.recipeScrapService.rejectRecipeScrapRequest(id);
   }
 }

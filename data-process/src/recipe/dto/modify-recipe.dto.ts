@@ -2,10 +2,8 @@ import { OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
-  IsMongoId,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   IsUrl,
   ValidateNested,
@@ -55,6 +53,7 @@ export class RecipeStepDto {
   description: string;
 
   @IsArray()
+  @ArrayNotEmpty()
   @IsUrl(
     {},
     {
@@ -108,9 +107,9 @@ export class CreateRecipeDto {
   @IsNotEmpty()
   description: string;
 
-  @IsMongoId()
-  @IsString()
-  @IsOptional()
+  // @IsMongoId()
+  // @IsString()
+  // @IsOptional()
   owner: string;
 
   @ValidateNested()

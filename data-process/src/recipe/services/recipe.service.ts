@@ -22,7 +22,6 @@ export class RecipeService {
 
   async findOneByOriginUrl(originUrl: string) {
     const ret = await this.recipeRepository.findOneByOriginUrl(originUrl);
-    if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
   }
 

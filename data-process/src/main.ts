@@ -2,15 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { RecipeScrapService } from './recipe-scrap/recipe-scrap.service';
 import { RecipeService } from './recipe/services/recipe.service';
-import { CreateRecipeDto } from './recipe/dto/modify-recipe.dto';
-import { IngredientRequirement } from './recipe/entities/recipe.entity';
-import { validate } from 'class-validator';
+import { Recipe } from './recipe/entities/recipe.entity';
 import * as util from 'util';
-import { CreateRecipeScrapRequestDto } from './recipe-scrap/dto/modify-recipe-scrap-req.dto';
+import {} from './recipe-scrap/dto/modify-recipe-scrap-req.dto';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { ValidationPipe } from '@nestjs/common';
+import { RecipeScrapRequest } from './recipe-scrap/entity/recipe-scrap-req.entity';
+import { WebAutomationService } from './web-automation/web-automation.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -45,72 +45,34 @@ async function bootstrap() {
   });
 
   await app.listen(3000);
-
-  // const recipeService = app.get(RecipeService);
-  // const recipeScrapService = app.get(RecipeScrapService);
-
-  // const recipes = await recipeService.findAll({});
-  // const recipeExist = new Set<string>();
-  // const requestExist = new Set<string>();
-  // const requests: CreateRecipeScrapRequestDto[] = [];
-
-  // for (const recipe of recipes) {
-  //   if (
-  //     recipeExist.has(recipe.origin_url) &&
-  // !requestExist.has(recipe.origin_url)
-  //   ) {
-  //     await recipeService.deleteAll({
-  //       origin_url: recipe.origin_url,
-  //     });
-  //     requests.push({
-  //       url: recipe.origin_url,
-  //     });
-  //     requestExist.add(recipe.origin_url);
-  //   } else if (!recipeExist.has(recipe.origin_url)) {
-  //     recipeExist.add(recipe.origin_url);
-  //   }
-  // }
-
-  // const recipes2 = await recipeService.findAll({});
-
-  // for (const recipe of recipes2) {
-  //   const createRecipeDto = new CreateRecipeDto(
-  //     recipe.name,
-  //     recipe.description,
-  //     null,
-  //     recipe.ingredient_requirements as any,
-  //     recipe.recipe_steps as any,
-  //     recipe.thumbnail,
-  //     recipe.recipe_raw_text,
-  //     recipe.origin_url,
-  //   );
-  //   const errors = await validate(createRecipeDto, {
-  //     validationError: { target: false, value: false },
-  //   });
-  //   if (errors.length > 0) {
-  //     // errors.forEach((error) => {
-  //     //   console.log(
-  //     //     error.property,
-  //     //     util.inspect(error.children, false, null, true /* enable colors */),
-  //     //   );
-  //     // });
-  //     await recipeService.deleteAll({
-  //       origin_url: recipe.origin_url,
-  //     });
-  //     requests.push({
-  //       url: recipe.origin_url,
-  //     });
-  //   }
-  // }
-
-  // await recipeScrapService.deleteAllRecipeScrapRequest();
-  // for (const request of requests) {
-  //   console.log(request);
-  //   try {
-  //     await recipeScrapService.createRecipeScrapRequest(request);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
 }
+
+async function bootstrap2() {
+  const app = await NestFactory.createApplicationContext(AppModule);
+
+  const recipeService = app.get(RecipeService);
+  const recipeScrapService = app.get(RecipeScrapService);
+  const webAutomationService = app.get(WebAutomationService);
+
+  const recipeExist = new Map<string, Recipe>();
+  const requestExist = new Set<string>();
+
+  await webAutomationService.initBrowser();
+  const page = await webAutomationService.getPage();
+
+  const recipes: Recipe[] = (
+    await recipeService.findAll({ page: 1, limit: 1000 })
+  ).results as Recipe[];
+  const requests: RecipeScrapRequest[] = await recipeScrapService.findAll();
+
+  for (let i = 1; i < 415; i++) {
+    const url = `https://chef-choice.tistory.com/${i}`;
+    const recipe = await recipeService.findOneByOriginUrl(url);
+    const req = await recipeScrapService.findOneByUrl(url);
+    if (recipe && req) {
+      console.log('both exist', url);
+    }
+  }
+}
+
 bootstrap();

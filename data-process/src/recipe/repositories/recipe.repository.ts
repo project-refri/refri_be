@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  FilterRecipeDto,
-  RecipeListViewResponseDto,
-  RecipesAndCountDto,
-  TextSearchRecipeDto,
-  TextSearchSortBy,
-} from '../dto/filter-recipe.dto';
+import { FilterRecipeDto, RecipesAndCountDto } from '../dto/filter-recipe.dto';
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe, RecipeDocument } from '../entities/recipe.entity';
 
@@ -47,7 +41,7 @@ export class RecipeRepository {
       .project({
         _id: 0,
         __v: 0,
-        recipe_raw_text: 0,
+        // recipe_raw_text: 0,
         // origin_url: 0,
         // recipe_steps: 0,
         // ingredient_requirements: 0,
@@ -65,7 +59,10 @@ export class RecipeRepository {
       recipeAggrPipe.exec(),
       countPromise.exec(),
     ]);
-    return new RecipesAndCountDto(recipes, count[0].count);
+    return new RecipesAndCountDto(
+      recipes,
+      count.length > 0 ? count[0].count : 0,
+    );
   }
 
   async findOneByOriginUrl(originUrl: string) {

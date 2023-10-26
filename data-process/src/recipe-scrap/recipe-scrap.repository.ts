@@ -27,6 +27,10 @@ export class RecipeScrapRepository {
     return await this.recipeScrapReqModel.findOne({ url }).exec();
   }
 
+  async findAll() {
+    return await this.recipeScrapReqModel.find().exec();
+  }
+
   async findAllRecipeScrapRequestOrderByRecent() {
     return await this.recipeScrapReqModel
       .find({ status: RecipeScrapRequestStatus.PENDING })
@@ -58,7 +62,7 @@ export class RecipeScrapRepository {
     return await this.recipeScrapReqModel.deleteOne({ id }).exec();
   }
 
-  async deleteAll() {
-    return await this.recipeScrapReqModel.deleteMany().exec();
+  async deleteAll(filterDto: { status: RecipeScrapRequestStatus }) {
+    return await this.recipeScrapReqModel.deleteMany(filterDto).exec();
   }
 }

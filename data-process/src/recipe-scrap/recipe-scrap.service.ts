@@ -12,6 +12,7 @@ import {
 import { RecipeScrapRepository } from './recipe-scrap.repository';
 import * as util from 'util';
 import { Recipe } from 'src/recipe/entities/recipe.entity';
+import { RecipeScrapRequestStatus } from './entity/recipe-scrap-req.entity';
 
 @Injectable()
 export class RecipeScrapService {
@@ -114,7 +115,35 @@ export class RecipeScrapService {
     }
   }
 
-  async deleteAllRecipeScrapRequest() {
-    return await this.recipeScrapRepository.deleteAll();
+  async rejectRecipeScrapRequest(id: string) {
+    const recipe = await this.recipeService.findOne(id);
+    const req = await this.recipeScrapRepository.findOneByUrl(
+      recipe.origin_url,
+    );
+    if (req) {
+      await this.recipeScrapRepository.updateRecipeScrapRequestStatusToError(
+        req.id.toString(),
+      );
+    }
+    await this.recipeService.deleteOne(id);
+    console.log('reject complete');
+  }
+
+  async deleteAllRecipeScrapRequest(filterDto: {
+    status: RecipeScrapRequestStatus;
+  }) {
+    return await this.recipeScrapRepository.deleteAll(filterDto);
+  }
+
+  async deleteOne(id: string) {
+    return await this.recipeScrapRepository.deleteOne(id);
+  }
+
+  async findAll() {
+    return await this.recipeScrapRepository.findAll();
+  }
+
+  async findOneByUrl(url: string) {
+    return await this.recipeScrapRepository.findOneByUrl(url);
   }
 }
