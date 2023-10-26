@@ -42,7 +42,7 @@ export class WebAutomationService {
   }
 
   async closeBrower() {
-    await this.browser.close();
+    if (this.browser) await this.browser.close();
     this.browser = null;
   }
 }
