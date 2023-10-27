@@ -104,13 +104,21 @@ export class ChatGPTWebappSession {
     try {
       response = await (
         await this.page.getElementByCssSelector(
-          '#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div.group.final-completion.w-full.text-token-text-primary.border-b.border-black\\/10.gizmo\\:border-0.dark\\:border-gray-900\\/50.gizmo\\:dark\\:border-0.bg-gray-50.gizmo\\:bg-transparent.dark\\:bg-\\[\\#444654\\].gizmo\\:dark\\:bg-transparent > div > div > div.relative.flex.w-\\[calc\\(100\\%-50px\\)\\].flex-col.gizmo\\:w-full.lg\\:w-\\[calc\\(100\\%-115px\\)\\].agent-turn > div > div.flex.flex-grow.flex-col.gap-3.max-w-full > div > div > pre > div > div.p-4.overflow-y-auto',
+          xPath(
+            `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
+              this.history.length + 1
+            }]/div/div/div[2]/div/div[1]/div/div/pre/div/div[2]`,
+          ),
         )
       ).evaluate((e) => e.textContent);
     } catch (e) {
       response = await (
         await this.page.getElementByCssSelector(
-          '#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div.group.final-completion.w-full.text-token-text-primary.border-b.border-black\\/10.gizmo\\:border-0.dark\\:border-gray-900\\/50.gizmo\\:dark\\:border-0.bg-gray-50.gizmo\\:bg-transparent.dark\\:bg-\\[\\#444654\\].gizmo\\:dark\\:bg-transparent > div > div > div.relative.flex.w-\\[calc\\(100\\%-50px\\)\\].flex-col.gizmo\\:w-full.lg\\:w-\\[calc\\(100\\%-115px\\)\\].agent-turn > div > div.flex.flex-grow.flex-col.gap-3.max-w-full',
+          xPath(
+            `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
+              this.history.length + 1
+            }]/div/div/div[2]/div/div[1]`,
+          ),
         )
       ).evaluate((e) => e.textContent);
     }
@@ -121,7 +129,11 @@ export class ChatGPTWebappSession {
   private async extractResponse() {
     const response = await (
       await this.page.getElementByCssSelector(
-        '#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div.group.final-completion.w-full.text-token-text-primary.border-b.border-black\\/10.gizmo\\:border-0.dark\\:border-gray-900\\/50.gizmo\\:dark\\:border-0.bg-gray-50.gizmo\\:bg-transparent.dark\\:bg-\\[\\#444654\\].gizmo\\:dark\\:bg-transparent > div > div > div.relative.flex.w-\\[calc\\(100\\%-50px\\)\\].flex-col.gizmo\\:w-full.lg\\:w-\\[calc\\(100\\%-115px\\)\\].agent-turn > div > div.flex.flex-grow.flex-col.gap-3.max-w-full',
+        xPath(
+          `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
+            this.history.length + 1
+          }]/div/div/div[2]/div/div[1]`,
+        ),
       )
     ).evaluate((e) => e.textContent);
     this.history.push(response);
@@ -147,13 +159,22 @@ export class ChatGPTWebappSession {
 
   private async waitForResponse() {
     for (;;) {
-      await this.page.waitForDOMChange(
-        '#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div.group.final-completion.w-full.text-token-text-primary.border-b.border-black\\/10.gizmo\\:border-0.dark\\:border-gray-900\\/50.gizmo\\:dark\\:border-0.bg-gray-50.gizmo\\:bg-transparent.dark\\:bg-\\[\\#444654\\].gizmo\\:dark\\:bg-transparent > div > div > div.relative.flex.w-\\[calc\\(100\\%-50px\\)\\].flex-col.gizmo\\:w-full.lg\\:w-\\[calc\\(100\\%-115px\\)\\].agent-turn > div > div.flex.flex-grow.flex-col.gap-3.max-w-full',
+      await this.page.waitForDOMChangeByXPath(
+        `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
+          this.history.length + 1
+        }]/div/div/div[2]/div/div[1]`,
       );
       const button = await this.page.getElementByCssSelector(
-        '#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.w-full.pt-2.md\\:pt-0.border-t.md\\:border-t-0.dark\\:border-white\\/20.md\\:border-transparent.md\\:dark\\:border-transparent.md\\:pl-2.md\\:w-\\[calc\\(100\\%-\\.5rem\\)\\].absolute.bottom-0.left-0.md\\:bg-vert-light-gradient.bg-white.dark\\:bg-gray-800.md\\:\\!bg-transparent.dark\\:md\\:bg-vert-dark-gradient > form > div > div:nth-child(1) > div > div.flex.items-center.md\\:items-end > div > button',
+        xPath(
+          '//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[2]/form/div/div[1]/div/div[2]/div/button',
+        ),
       );
-      if ((await button.evaluate((e) => e.textContent)) !== 'Regenerate') {
+
+      if (
+        button &&
+        (await button.evaluate((e) => e.textContent)) !== 'Regenerate'
+      ) {
+        //click regenerate button
         await button.click();
         continue;
       }
@@ -178,11 +199,11 @@ export class ChatGPTWebappSession {
         if (response.length == 0) continue;
         return response;
       } catch (e) {
-        const button = await this.page.getElementsByCssSelector(
+        const button = await this.page.getElementByCssSelector(
           xPath(
             '//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[2]/form/div/div[1]/div/div[2]/div/button',
           ),
-        )[0];
+        );
         if (!!button) {
           await this.closeModal();
         } else if (

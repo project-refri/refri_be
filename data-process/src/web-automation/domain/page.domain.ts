@@ -48,22 +48,33 @@ export class Page {
     );
   }
 
-  async waitForDOMChange(cssSelector: string) {
-    await this.page.waitForSelector(cssSelector);
+  async waitForDOMChangeByXPath(xPathString: string) {
+    const xPath = (xpath: string) => '::-p-xpath(' + xpath + ')';
+    await this.page.waitForSelector(xPath(xPathString));
     await this.page.waitForFunction(
-      async (cssSelector) => {
-        const oldTextLength =
-          document.querySelector(cssSelector).textContent.length;
+      async (xPathString) => {
+        const oldTextLength = document.evaluate(
+          xPathString,
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null,
+        )?.singleNodeValue.textContent.length;
         await new Promise((r) => setTimeout(r, 10000));
-        const newTextLength =
-          document.querySelector(cssSelector).textContent.length;
+        const newTextLength = document.evaluate(
+          xPathString,
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null,
+        )?.singleNodeValue.textContent.length;
         return newTextLength === oldTextLength;
       },
       {
         polling: 5000,
         timeout: 2 * 10 ** 6,
       },
-      cssSelector,
+      xPathString,
     );
     await new Promise((r) => setTimeout(r, 3000));
   }
@@ -78,6 +89,10 @@ export class Page {
 
   async getElementByCssSelector(cssSelector: string) {
     return await this.page.$(cssSelector);
+  }
+
+  async getElementsByXPath(xPath: string) {
+    return await this.page.$x(xPath);
   }
 
   async close() {
