@@ -17,17 +17,13 @@ export class FilterRecipeDto extends PagenationDto {
     page: number,
     limit: number,
     name?: string,
-    description?: string,
     owner?: string,
-    thumbnail?: string,
     created_at?: Date,
     updated_at?: Date,
   ) {
     super(page, limit);
     this.name = name;
-    this.description = description;
     this.owner = owner;
-    this.thumbnail = thumbnail;
     this.created_at = created_at;
     this.updated_at = updated_at;
   }
@@ -40,17 +36,7 @@ export class FilterRecipeDto extends PagenationDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  description?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
   owner?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  thumbnail?: string;
 
   @IsDate()
   @IsOptional()

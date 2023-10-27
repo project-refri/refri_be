@@ -54,11 +54,12 @@ export class RecipeRepository {
       .sort({ created_at: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
-    const [recipes, count] = await Promise.all([
-      recipeAggrPipe.exec(),
-      countPromise.exec(),
-    ]);
-    return new RecipesAndCountDto(recipes, count[0].count);
+    const [recipes, count]: [RecipeListViewResponseDto[], { count: number }[]] =
+      await Promise.all([recipeAggrPipe.exec(), countPromise.exec()]);
+    return new RecipesAndCountDto(
+      recipes,
+      count.length > 0 ? count[0].count : 0,
+    );
   }
 
   async findAllByFullTextSearch(
@@ -103,12 +104,16 @@ export class RecipeRepository {
       $limit: textSearchRecipeDto.limit,
     });
 
-    const [recipes, count] = await Promise.all([
-      this.recipeModel.aggregate(aggrpipe).exec(),
-      countPromise.exec(),
-    ]);
+    const [recipes, count]: [RecipeListViewResponseDto[], { count: number }[]] =
+      await Promise.all([
+        this.recipeModel.aggregate(aggrpipe).exec(),
+        countPromise.exec(),
+      ]);
 
-    return new RecipesAndCountDto(recipes, count[0].count);
+    return new RecipesAndCountDto(
+      recipes,
+      count.length > 0 ? count[0].count : 0,
+    );
   }
 
   async findOne(id: string): Promise<Recipe> {
