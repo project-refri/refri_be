@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import {
-  chatGPTQueryJsonFormat,
   chatGPTQueryRawTextFormat,
+  chatGPTQueryRawTextFormatForAPI,
   chatGPTQueryString,
   chatGPTQueryStringAdder,
 } from './resource/query';
@@ -36,29 +36,31 @@ export class DataStructureService {
       await this.openaiApi.chat.completions.create({
         model: 'gpt-3.5-turbo-16k',
         messages: history,
+        temperature: 0.0,
       })
     ).choices[0].message.content;
     history.push({
       role: 'assistant',
       content: recipeStructuredText,
     });
+    console.log(recipeStructuredText);
 
     history.push({
       role: 'user',
-      content: chatGPTQueryRawTextFormat,
+      content: chatGPTQueryRawTextFormatForAPI,
     });
     const recipeRawText = (
       await this.openaiApi.chat.completions.create({
         model: 'gpt-3.5-turbo-16k',
         messages: history,
+        temperature: 0.0,
       })
     ).choices[0].message.content;
     history.push({
       role: 'assistant',
       content: recipeRawText,
     });
-
-    console.log(history);
+    console.log(recipeRawText);
 
     return {
       ...JSON.parse(recipeStructuredText),
@@ -70,13 +72,10 @@ export class DataStructureService {
     recipeTextFromHtml: string,
   ): Promise<RecipeStructuredDto> {
     const session = await this.chatGPTWebappService.getSession();
-    await session.sendMessage(
-      chatGPTQueryStringAdder(recipeTextFromHtml),
-      false,
-    );
+    await session.sendMessage(chatGPTQueryString, false);
 
     const recipeStructured = JSON.parse(
-      await session.sendMessage(chatGPTQueryString),
+      await session.sendMessage(chatGPTQueryStringAdder(recipeTextFromHtml)),
     );
 
     const recipeRawText = JSON.parse(
