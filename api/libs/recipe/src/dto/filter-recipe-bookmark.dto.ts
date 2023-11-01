@@ -44,6 +44,6 @@ export class RecipeBookmarksAndCountDto {
       page,
       count: this.recipes.length,
       has_next: this.count > (page - 1) * limit + this.recipes.length,
-    } as RecipeBookmarksResponseDto;
+    };
   }
 }

@@ -8,8 +8,10 @@ import {
   FilterRecipeBookmarkDto,
   RecipeBookmarksAndCountDto,
 } from '../dto/filter-recipe-bookmark.dto';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { transferObjectId } from '@app/common/utils/transfer-objectid';
+import { deleteProps } from '@app/common/utils/delete-props';
 
 export class RecipeBookmarkRepository extends CrudMongoRepository<
   RecipeBookmark,
@@ -25,27 +27,23 @@ export class RecipeBookmarkRepository extends CrudMongoRepository<
   }
 
   async findAllRecipeBookmarked(
-    _filterRecipeBookmarkDto: FilterRecipeBookmarkDto,
+    filterRecipeBookmarkDto: FilterRecipeBookmarkDto,
   ): Promise<RecipeBookmarksAndCountDto> {
-    const filterRecipeBookmarkDto = {
-      ..._filterRecipeBookmarkDto,
-      user_id: new Types.ObjectId(_filterRecipeBookmarkDto.user_id),
-    };
     const { page, limit } = filterRecipeBookmarkDto;
-    delete filterRecipeBookmarkDto.page;
-    delete filterRecipeBookmarkDto.limit;
+    const filterDto = deleteProps(
+      transferObjectId(filterRecipeBookmarkDto, ['user_id']),
+      ['page', 'limit'],
+    );
     const filteredAggrPipe = this.recipeBookmarkModel
       .aggregate()
-      .match(filterRecipeBookmarkDto)
+      .match(filterDto)
+      .sort({ created_at: -1 })
       .pipeline();
 
     const ret = await this.recipeBookmarkModel
       .aggregate(filteredAggrPipe)
       .facet({
         recipes: [
-          {
-            $sort: { created_at: -1 },
-          },
           {
             $skip: (page - 1) * limit,
           },
