@@ -49,8 +49,8 @@ export class FilterRecipeDto extends PagenationDto {
 
 export enum TextSearchSortBy {
   RELEVANCE = 'RELEVANCE',
-  CREATED_AT = 'CREATED_AT',
-  UPDATED_AT = 'UPDATED_AT',
+  CREATED_AT = 'created_at',
+  UPDATED_AT = 'updated_at',
 }
 
 export class TextSearchRecipeDto extends PagenationDto {
@@ -63,6 +63,11 @@ export class TextSearchRecipeDto extends PagenationDto {
   @IsOptional()
   sort?: TextSearchSortBy;
 }
+
+export class RecipeDto extends OmitType(Recipe, [
+  'recipe_raw_text',
+  'origin_url',
+] as const) {}
 
 export class RecipeListViewResponseDto extends OmitType(Recipe, [
   'recipe_raw_text',
@@ -90,6 +95,6 @@ export class RecipesAndCountDto {
       page,
       count: this.recipes.length,
       has_next: this.count > (page - 1) * limit + this.recipes.length,
-    } as RecipesResponseDto;
+    };
   }
 }

@@ -4,6 +4,7 @@ import {
 } from '@app/common/dto/success-response.dto';
 import { Recipe } from '../entities/recipe.entity';
 import {
+  RecipeDto,
   RecipeListViewResponseDto,
   RecipesResponseDto,
 } from './filter-recipe.dto';
@@ -21,7 +22,7 @@ export class FindTopViewdResponseDto extends OkResponse {
 }
 
 export class FindOneRecipeResponseDto extends OkResponse {
-  data: Recipe;
+  data: RecipeDto;
 }
 
 export class UpdateRecipeResponseDto extends OkResponse {
