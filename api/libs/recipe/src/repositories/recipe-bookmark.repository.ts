@@ -10,7 +10,7 @@ import {
 } from '../dto/filter-recipe-bookmark.dto';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { transferObjectId } from '@app/common/utils/transfer-objectid';
+import { transferObjectId } from '@app/common/utils/transfer-objectId';
 import { deleteProps } from '@app/common/utils/delete-props';
 
 export class RecipeBookmarkRepository extends CrudMongoRepository<
