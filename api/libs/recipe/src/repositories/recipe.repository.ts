@@ -13,7 +13,6 @@ import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe, RecipeDocument } from '../entities/recipe.entity';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { deleteProps } from '@app/common/utils/delete-props';
-import { inspect } from '@app/common/utils/inpect';
 
 @Injectable()
 export class RecipeRepository {
@@ -51,8 +50,6 @@ export class RecipeRepository {
       })
       .pipeline();
 
-    const explain = await this.recipeModel.aggregate(filteredPipe).explain();
-    console.log(inspect(explain));
     const ret = await this.recipeModel.aggregate(filteredPipe).exec();
     return new RecipesAndCountDto(
       ret[0].recipes,
@@ -97,8 +94,6 @@ export class RecipeRepository {
       })
       .pipeline();
 
-    const explain = await this.recipeModel.aggregate(aggrpipe).explain();
-    console.log(inspect(explain));
     const ret = await this.recipeModel.aggregate(aggrpipe).exec();
     return new RecipesAndCountDto(
       ret[0].recipes,
