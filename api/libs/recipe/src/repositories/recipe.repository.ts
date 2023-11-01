@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   FilterRecipeDto,
+  RecipeDto,
   RecipeListViewResponseDto,
   RecipesAndCountDto,
   TextSearchRecipeDto,
@@ -11,6 +12,8 @@ import {
 import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
 import { Recipe, RecipeDocument } from '../entities/recipe.entity';
 import { deleteNull } from '@app/common/utils/delete-null';
+import { deleteProps } from '@app/common/utils/delete-props';
+import { inspect } from '@app/common/utils/inpect';
 
 @Injectable()
 export class RecipeRepository {
@@ -24,19 +27,15 @@ export class RecipeRepository {
     return await createdEntity.save();
   }
 
-  async findAll(
-    _filterRecipeDto: FilterRecipeDto,
-  ): Promise<RecipesAndCountDto> {
-    const filterRecipeDto = { ..._filterRecipeDto };
-    deleteNull(filterRecipeDto);
-
-    const page = filterRecipeDto.page,
-      limit = filterRecipeDto.limit;
-    delete filterRecipeDto.page;
-    delete filterRecipeDto.limit;
+  async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesAndCountDto> {
+    const { page, limit } = filterRecipeDto;
+    const filterDto = deleteProps(deleteNull(filterRecipeDto), [
+      'page',
+      'limit',
+    ]);
     const filteredPipe = this.recipeModel
       .aggregate()
-      .match(filterRecipeDto)
+      .match(filterDto)
       .project({
         _id: 0,
         __v: 0,
@@ -45,26 +44,26 @@ export class RecipeRepository {
         recipe_steps: 0,
         ingredient_requirements: 0,
       })
-      .pipeline();
-    const countPromise = this.recipeModel
-      .aggregate(filteredPipe)
-      .count('count');
-    const recipeAggrPipe = this.recipeModel
-      .aggregate(filteredPipe)
       .sort({ created_at: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
-    const [recipes, count]: [RecipeListViewResponseDto[], { count: number }[]] =
-      await Promise.all([recipeAggrPipe.exec(), countPromise.exec()]);
+      .facet({
+        recipes: [{ $skip: (page - 1) * limit }, { $limit: limit }],
+        count: [{ $count: 'count' }],
+      })
+      .pipeline();
+
+    const explain = await this.recipeModel.aggregate(filteredPipe).explain();
+    console.log(inspect(explain));
+    const ret = await this.recipeModel.aggregate(filteredPipe).exec();
     return new RecipesAndCountDto(
-      recipes,
-      count.length > 0 ? count[0].count : 0,
+      ret[0].recipes,
+      ret[0].count.length > 0 ? ret[0].count[0].count : 0,
     );
   }
 
   async findAllByFullTextSearch(
     textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesAndCountDto> {
+    const { page, limit } = textSearchRecipeDto;
     const aggrpipe = this.recipeModel
       .aggregate()
       .search({
@@ -79,6 +78,11 @@ export class RecipeRepository {
           ],
         },
       })
+      .sort({
+        [textSearchRecipeDto.sort === TextSearchSortBy.RELEVANCE
+          ? 'score'
+          : textSearchRecipeDto.sort]: -1,
+      })
       .project({
         _id: 0,
         __v: 0,
@@ -87,36 +91,22 @@ export class RecipeRepository {
         recipe_steps: 0,
         ingredient_requirements: 0,
       })
+      .facet({
+        recipes: [{ $skip: (page - 1) * limit }, { $limit: limit }],
+        count: [{ $count: 'count' }],
+      })
       .pipeline();
-    const countPromise = this.recipeModel.aggregate(aggrpipe).count('count');
 
-    if (textSearchRecipeDto.sort !== TextSearchSortBy.RELEVANCE) {
-      aggrpipe.push({
-        $sort: {
-          [textSearchRecipeDto.sort]: -1,
-        },
-      });
-    }
-    aggrpipe.push({
-      $skip: (textSearchRecipeDto.page - 1) * textSearchRecipeDto.limit,
-    });
-    aggrpipe.push({
-      $limit: textSearchRecipeDto.limit,
-    });
-
-    const [recipes, count]: [RecipeListViewResponseDto[], { count: number }[]] =
-      await Promise.all([
-        this.recipeModel.aggregate(aggrpipe).exec(),
-        countPromise.exec(),
-      ]);
-
+    const explain = await this.recipeModel.aggregate(aggrpipe).explain();
+    console.log(inspect(explain));
+    const ret = await this.recipeModel.aggregate(aggrpipe).exec();
     return new RecipesAndCountDto(
-      recipes,
-      count.length > 0 ? count[0].count : 0,
+      ret[0].recipes,
+      ret[0].count.length > 0 ? ret[0].count[0].count : 0,
     );
   }
 
-  async findOne(id: string): Promise<Recipe> {
+  async findOne(id: string): Promise<RecipeDto> {
     return await this.recipeModel
       .findOne({ id })
       .select({

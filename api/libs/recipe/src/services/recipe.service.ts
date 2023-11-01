@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   FilterRecipeDto,
+  RecipeDto,
   RecipeListViewResponseDto,
   RecipesAndCountDto,
   RecipesResponseDto,
@@ -21,16 +22,15 @@ export class RecipeService {
   }
 
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
+    const { page, limit } = filterRecipeDto;
     const results = await this.recipeRepository.findAll(filterRecipeDto);
-    return results.toRecipesResponseDto(
-      filterRecipeDto.page,
-      filterRecipeDto.limit,
-    );
+    return results.toRecipesResponseDto(page, limit);
   }
 
   async findAllByFullTextSearch(
     textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesResponseDto> {
+    const { page, limit } = textSearchRecipeDto;
     let results: RecipesAndCountDto;
     if (
       textSearchRecipeDto.searchQuery &&
@@ -41,18 +41,12 @@ export class RecipeService {
       );
     } else
       results = await this.recipeRepository.findAll(
-        new FilterRecipeDto(
-          textSearchRecipeDto.page,
-          textSearchRecipeDto.limit,
-        ),
+        new FilterRecipeDto(page, limit),
       );
-    return results.toRecipesResponseDto(
-      textSearchRecipeDto.page,
-      textSearchRecipeDto.limit,
-    );
+    return results.toRecipesResponseDto(page, limit);
   }
 
-  async findOne(id: string): Promise<Recipe> {
+  async findOne(id: string): Promise<RecipeDto> {
     const ret = await this.recipeRepository.findOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
@@ -66,8 +60,8 @@ export class RecipeService {
     ttl: 60 * 60 * 1000,
     generateKey: (id: string, identifier: RecipeViewerIdentifier) =>
       identifier.user
-        ? `${id}-${identifier.user.id}`
-        : `${id}-${identifier.ip}`,
+        ? `recipe-view:${id}-${identifier.user.id}`
+        : `recipe-view:${id}-${identifier.ip}`,
   })
   async increaseViewCount(
     id: string,
