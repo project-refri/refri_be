@@ -73,13 +73,3 @@ JSON Format:
 
 temperature: 0.0
 `;
-
-export const chatGPTQueryRawTextFormatForAPI = `레시피에 대한 내용만 추출해서 아래와 같은 json 형태로 출력해줘.
-
-JSON Format:
-"""
-{
-  "recipe_raw_text": "레시피 제목\\n레시피에 대한 간단한 소개\\n레시피 대표 이미지 url\\n필요한 재료 목록\\n - 재료 이름1: 재료 양\\n- 재료 이름2: 재료 양\\n조리법 목록\\n  1. 조리법 설명1\\n  2. 조리법 설명2\\n  3. 조리법 설명3\\n"
-}
-"""
-`;
