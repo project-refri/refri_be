@@ -23,6 +23,78 @@ export class DataStructureService {
     private readonly configService: ConfigService,
   ) {}
 
+  private async extractByOpenAIAPI(
+    recipeTextFromHtml: string,
+  ): Promise<RecipeStructuredDto> {
+    const history: ChatCompletionMessageParam[] = [
+      {
+        role: 'user',
+        content: chatGPTQueryStringAdderForAPI(recipeTextFromHtml),
+      },
+    ];
+    const firstInstructionText = (
+      await this.openaiApi.chat.completions.create({
+        model: 'gpt-3.5-turbo-16k',
+        messages: history,
+        temperature: 0.0,
+      })
+    ).choices[0].message.content;
+    history.push({
+      role: 'assistant',
+      content: firstInstructionText,
+    });
+    console.log(firstInstructionText);
+
+    history.push({
+      role: 'user',
+      content: chatGPTQueryStringForAPI,
+    });
+    const recipeStructuredText = (
+      await this.openaiApi.chat.completions.create(
+        {
+          model: 'gpt-3.5-turbo-16k',
+          messages: history,
+          temperature: 0.0,
+        },
+        {
+          timeout: 20 * 60 * 1000,
+        },
+      )
+    ).choices[0].message.content;
+    history.push({
+      role: 'assistant',
+      content: recipeStructuredText,
+    });
+    console.log(recipeStructuredText);
+
+    history.push({
+      role: 'user',
+      content: chatGPTQueryRawTextFormatForAPI,
+    });
+    const recipeRawText = (
+      await this.openaiApi.chat.completions.create(
+        {
+          model: 'gpt-3.5-turbo-16k',
+          messages: history,
+          temperature: 0.0,
+        },
+        {
+          timeout: 20 * 60 * 1000,
+        },
+      )
+    ).choices[0].message.content;
+    history.push({
+      role: 'assistant',
+      content: recipeRawText,
+    });
+    console.log(recipeRawText);
+
+    return {
+      ...JSON.parse(recipeStructuredText),
+      ...JSON.parse(recipeRawText),
+    };
+  }
+
   private async extractByOpenAIAPIWithStream(
     recipeTextFromHtml: string,
   ): Promise<RecipeStructuredDto> {
@@ -32,6 +104,7 @@ export class DataStructureService {
         content: chatGPTQueryStringAdderForAPI(recipeTextFromHtml),
       },
     ];
+    console.log(new Date());
     const firstInstructionStream = await this.openaiApi.chat.completions.create(
       {
         model: 'gpt-3.5-turbo-16k',
@@ -57,13 +130,19 @@ export class DataStructureService {
       role: 'user',
       content: chatGPTQueryStringForAPI,
     });
+    console.log(new Date());
     const recipeStructuredTextStream =
-      await this.openaiApi.chat.completions.create({
-        model: 'gpt-3.5-turbo-16k',
-        messages: history,
-        temperature: 0.0,
-        stream: true,
-      });
+      await this.openaiApi.chat.completions.create(
+        {
+          model: 'gpt-3.5-turbo-16k',
+          messages: history,
+          temperature: 0.0,
+          stream: true,
+        },
+        {
+          timeout: 20 * 60 * 1000,
+        },
+      );
     let recipeStructuredText = '';
     for await (const chunk of recipeStructuredTextStream) {
       if (chunk?.choices[0]?.delta?.content) {
@@ -81,6 +160,7 @@ export class DataStructureService {
       role: 'user',
       content: chatGPTQueryRawTextFormatForAPI,
     });
+    console.log(new Date());
     const recipeRawTextStream = await this.openaiApi.chat.completions.create({
       model: 'gpt-3.5-turbo-16k',
       messages: history,
