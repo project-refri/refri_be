@@ -21,18 +21,24 @@ import {
   Ip,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
+import {
+  CreateRecipeDto,
+  UpdateRecipeDto,
+} from '../dto/recipe/modify-recipe.dto';
 import {
   CreateRecipeResponseDto,
   FindOneRecipeResponseDto,
   FindRecipesResponseDto,
   FindTopViewdResponseDto,
   UpdateRecipeResponseDto,
-} from '../dto/recipe-response.dto';
+} from '../dto/recipe/recipe-response.dto';
 import { RecipeService } from '../services/recipe.service';
-import { FilterRecipeDto, TextSearchRecipeDto } from '../dto/filter-recipe.dto';
+import {
+  FilterRecipeDto,
+  TextSearchRecipeDto,
+} from '../dto/recipe/filter-recipe.dto';
 import { Public } from '@app/common/decorators/public.decorator';
-import { RecipeViewerIdentifier } from '../dto/recipe-viewer-identifier';
+import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -114,7 +120,7 @@ export class RecipeController {
     @Ip() ip: string,
     @ReqUser() user: User,
   ) {
-    await this.recipeService.increaseViewCount(
+    await this.recipeService.viewRecipe(
       id,
       new RecipeViewerIdentifier(user, ip),
     );

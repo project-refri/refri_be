@@ -1,10 +1,10 @@
 import { CrudService } from '@app/common/crud.service';
-import { FilterRecipeBookmarkDto } from '../dto/filter-recipe-bookmark.dto';
-import { CreateRecipeBookmarkDto } from '../dto/modify-recipe-bookmark.dto';
+import { FilterRecipeBookmarkDto } from '../dto/recipe-bookmark/filter-recipe-bookmark.dto';
+import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/modify-recipe-bookmark.dto';
 import { RecipeBookmarkRepository } from '../repositories/recipe-bookmark.repository';
 import { Injectable } from '@nestjs/common';
 import { RecipeBookmark } from '../entities/recipe-bookmark.entity';
-import { RecipesResponseDto } from '../dto/filter-recipe.dto';
+import { RecipesResponseDto } from '../dto/recipe/filter-recipe.dto';
 
 @Injectable()
 export class RecipeBookmarkService extends CrudService<

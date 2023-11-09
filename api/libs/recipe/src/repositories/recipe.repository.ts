@@ -8,8 +8,11 @@ import {
   RecipesAndCountDto,
   TextSearchRecipeDto,
   TextSearchSortBy,
-} from '../dto/filter-recipe.dto';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
+} from '../dto/recipe/filter-recipe.dto';
+import {
+  CreateRecipeDto,
+  UpdateRecipeDto,
+} from '../dto/recipe/modify-recipe.dto';
 import { Recipe, RecipeDocument } from '../entities/recipe.entity';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { deleteProps } from '@app/common/utils/delete-props';

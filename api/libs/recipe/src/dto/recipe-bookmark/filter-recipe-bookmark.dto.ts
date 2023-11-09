@@ -4,7 +4,7 @@ import {
   PagenationResponseDto,
 } from '@app/common/dto/pagenation.dto';
 import { ApiHideProperty, OmitType } from '@nestjs/swagger';
-import { Recipe } from '../entities/recipe.entity';
+import { Recipe } from '../../entities/recipe.entity';
 
 export class FilterRecipeBookmarkDto extends PagenationDto {
   @ApiHideProperty()
