@@ -9,6 +9,7 @@ module.exports = (options, webpack) => {
 
   return {
     ...options,
+    mode: 'production',
     externals: [
       {
         kafkajs: 'commonjs kafkajs',

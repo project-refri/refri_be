@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { CacheOption, MEMORY_CACHE } from './cache.constant';
+import { CacheOption, REDIS_CACHE } from './cache.constant';
 import { Cache } from 'cache-manager';
 import {
   Aspect,
@@ -8,16 +8,16 @@ import {
   createDecorator,
 } from '@toss/nestjs-aop';
 
-export const MemoryCacheable = (option: CacheOption) =>
-  createDecorator(MEMORY_CACHE, { action: 'get', ...option });
+export const RedisCacheable = (option: CacheOption) =>
+  createDecorator(REDIS_CACHE, { action: 'get', ...option });
 
-@Aspect(MEMORY_CACHE)
-export class MemoryCacheService implements LazyDecorator<any, CacheOption> {
-  constructor(@Inject(MEMORY_CACHE) private readonly cacheManager: Cache) {}
+@Aspect(REDIS_CACHE)
+export class RedisCacheService implements LazyDecorator<any, CacheOption> {
+  constructor(@Inject(REDIS_CACHE) private readonly cacheManager: Cache) {}
 
   wrap({ method, metadata }: WrapParams<any, CacheOption>) {
     return async (...args: any[]) => {
-      const key = metadata.keyGenerator(...args);
+      const key = 'cached:' + metadata.keyGenerator(...args);
       if (metadata.action === 'get') {
         const cached = await this.cacheManager.get(key);
         if (cached) return cached;
