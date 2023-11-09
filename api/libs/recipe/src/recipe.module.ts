@@ -11,6 +11,11 @@ import {
   RecipeBookmark,
   RecipeBookmarkSchema,
 } from './entities/recipe-bookmark.entity';
+import { RecipeViewLogRepository } from './repositories/recipe-view-log.repository';
+import {
+  RecipeViewLog,
+  RecipeViewLogSchema,
+} from './entities/recipe-view-log.entity';
 
 @Module({
   imports: [
@@ -29,6 +34,13 @@ import {
           return schema;
         },
       },
+      {
+        name: RecipeViewLog.name,
+        useFactory: () => {
+          const schema = RecipeViewLogSchema;
+          return schema;
+        },
+      },
     ]),
   ],
   controllers: [RecipeController, RecipeBookmarkController],
@@ -37,12 +49,14 @@ import {
     RecipeRepository,
     RecipeBookmarkService,
     RecipeBookmarkRepository,
+    RecipeViewLogRepository,
   ],
   exports: [
     RecipeService,
     RecipeRepository,
     RecipeBookmarkService,
     RecipeBookmarkRepository,
+    RecipeViewLogRepository,
   ],
 })
 export class RecipeModule {}

@@ -13,6 +13,8 @@ export async function setServer(appModule: any) {
     }),
   );
 
+  app.enableShutdownHooks();
+
   app.useGlobalInterceptors(new TransformInterceptor());
 
   app.useGlobalFilters(new AllExceptionsFilter(app.get(HttpAdapterHost)));

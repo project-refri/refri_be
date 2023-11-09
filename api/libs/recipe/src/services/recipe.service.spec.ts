@@ -5,8 +5,11 @@ import {
   RecipesAndCountDto,
   RecipesResponseDto,
   TextSearchRecipeDto,
-} from '../dto/filter-recipe.dto';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
+} from '../dto/recipe/filter-recipe.dto';
+import {
+  CreateRecipeDto,
+  UpdateRecipeDto,
+} from '../dto/recipe/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
 import { RecipeService } from './recipe.service';
@@ -193,11 +196,11 @@ describe('RecipeService', () => {
     });
   });
 
-  describe('increaseViewCount', () => {
+  describe('viewRecipe', () => {
     it('should return true', async () => {
       recipeRepository.increaseViewCount.mockResolvedValue(new Recipe());
 
-      const result = await service.increaseViewCount('1', {
+      const result = await service.viewRecipe('1', {
         ip: '::1',
         user: new User(),
       });
@@ -210,7 +213,7 @@ describe('RecipeService', () => {
       recipeRepository.increaseViewCount.mockResolvedValue(null);
 
       await expect(
-        service.increaseViewCount('1', {
+        service.viewRecipe('1', {
           ip: '::1',
           user: new User(),
         }),
