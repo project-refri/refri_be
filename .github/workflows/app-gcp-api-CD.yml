@@ -42,6 +42,7 @@ jobs:
           region: ${{ env.REGION }}
           env_vars: |
             DATABASE_URI=${{ secrets.DATABASE_URI }}
+            REDIS_URI=${{ secrets.REDIS_URI }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
             JWT_REFRESH_EXPIRES_IN=${{ secrets.JWT_REFRESH_EXPIRES_IN }}
