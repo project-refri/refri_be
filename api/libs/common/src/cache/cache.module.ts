@@ -1,19 +1,15 @@
 import { Global, Module, Provider, Scope } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CacheStrategyService } from './cache-strategy.service';
 import { caching } from 'cache-manager';
-import {
-  IngredientCacheDecorator,
-  RecipeCacheDecorator,
-  UserCacheDecorator,
-} from './cache.decorator';
-import { MEMORY, MEMORY_CACHE } from './cache.constant';
+import { MEMORY, MEMORY_CACHE, REDIS_CACHE } from './cache.constant';
 import { MemoryCacheService } from './memory-cache.service';
+import { redisStore } from 'cache-manager-redis-yet';
+import { RedisCacheService } from './redis-cache.service';
 
-const memoryCacheDynamicModule: Provider = {
+const MemoryCacheProvider: Provider = {
   provide: MEMORY_CACHE,
-  useFactory: (configService: ConfigService) => {
-    return caching(MEMORY, {
+  useFactory: async (configService: ConfigService) => {
+    return await caching(MEMORY, {
       ttl: parseInt(configService.get<string>('MEMORY_CACHE_DEFAULT_TTL')),
       max: parseInt(configService.get<string>('MEMORY_CACHE_DEFAULT_MAX')),
     });
@@ -22,17 +18,25 @@ const memoryCacheDynamicModule: Provider = {
   scope: Scope.TRANSIENT,
 };
 
+const RedisCacheProvider: Provider = {
+  provide: REDIS_CACHE,
+  useFactory: async (configService: ConfigService) => {
+    return await caching(
+      await redisStore({
+        url: configService.get<string>('REDIS_URI'),
+      }),
+    );
+  },
+  inject: [ConfigService],
+};
+
 @Global()
 @Module({
-  imports: [],
   providers: [
-    CacheStrategyService,
-    UserCacheDecorator,
-    IngredientCacheDecorator,
-    RecipeCacheDecorator,
-    memoryCacheDynamicModule,
+    MemoryCacheProvider,
+    RedisCacheProvider,
     MemoryCacheService,
+    RedisCacheService,
   ],
-  exports: [CacheStrategyService, memoryCacheDynamicModule],
 })
 export class CacheModule {}

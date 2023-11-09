@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { Session, SessionDocument } from '../entities/session.entity';
 import { CreateSessionDto } from '../dto/token.dto';
 import { Logable } from '@app/common/log/log.decorator';
-import { Cacheable } from '@app/common/cache/memory-cache.service';
+import { Cacheable } from '@app/common/cache/cache.service';
 
 export class AuthRepository {
   constructor(
@@ -28,7 +28,7 @@ export class AuthRepository {
   @Logable()
   @Cacheable({
     ttl: 24 * 60 * 60 * 1000,
-    generateKey: (session: string) => `session:${session}`,
+    keyGenerator: (session: string) => `session:${session}`,
   })
   async findBySessionToken(session: string): Promise<Session> {
     return await this.sessionModel
@@ -51,6 +51,10 @@ export class AuthRepository {
   }
 
   @Logable()
+  @Cacheable({
+    keyGenerator: (session: string) => `session:${session}`,
+    action: 'del',
+  })
   async deleteBySessionToken(session: string) {
     return await this.sessionModel
       .findOneAndDelete({ session_token: session })
