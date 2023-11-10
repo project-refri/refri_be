@@ -5,16 +5,22 @@ import {
   RecipesAndCountDto,
   RecipesResponseDto,
   TextSearchRecipeDto,
-} from '../dto/filter-recipe.dto';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
+} from '../dto/recipe/filter-recipe.dto';
+import {
+  CreateRecipeDto,
+  UpdateRecipeDto,
+} from '../dto/recipe/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
 import { RecipeService } from './recipe.service';
 import { TestBed } from '@automock/jest';
+import { RecipeViewLogRepository } from '../repositories/recipe-view-log.repository';
+import { RecipeViewLog } from '../entities/recipe-view-log.entity';
 
 describe('RecipeService', () => {
   let service: RecipeService;
   let recipeRepository: jest.Mocked<RecipeRepository>;
+  let recipeViewLogRepository: jest.Mocked<RecipeViewLogRepository>;
 
   const filterRecipeDto: FilterRecipeDto = {
     page: 1,
@@ -53,6 +59,7 @@ describe('RecipeService', () => {
 
     service = unit;
     recipeRepository = unitRef.get(RecipeRepository);
+    recipeViewLogRepository = unitRef.get(RecipeViewLogRepository);
   });
 
   it('should be defined', () => {
@@ -184,25 +191,38 @@ describe('RecipeService', () => {
   describe('findTopViewed', () => {
     it('should return an array of recipes', async () => {
       const recipe = new RecipeListViewResponseDto();
-      recipeRepository.findTopViewed.mockResolvedValue([recipe]);
+      recipeViewLogRepository.findAll5MostViewedRecipesInPast1Month.mockResolvedValue(
+        [recipe],
+      );
 
       const result = await service.findTopViewed();
 
-      expect(recipeRepository.findTopViewed).toHaveBeenCalled();
+      expect(
+        recipeViewLogRepository.findAll5MostViewedRecipesInPast1Month,
+      ).toHaveBeenCalled();
       expect(result).toEqual([recipe]);
     });
   });
 
-  describe('increaseViewCount', () => {
+  describe('viewRecipe', () => {
     it('should return true', async () => {
       recipeRepository.increaseViewCount.mockResolvedValue(new Recipe());
+      recipeViewLogRepository.create.mockResolvedValue(new RecipeViewLog());
 
-      const result = await service.increaseViewCount('1', {
+      const result = await service.viewRecipe('1', {
         ip: '::1',
-        user: new User(),
+        user: {
+          ...new User(),
+          id: '1' as any,
+        },
       });
 
       expect(recipeRepository.increaseViewCount).toHaveBeenCalledWith('1');
+      expect(recipeViewLogRepository.create).toHaveBeenCalledWith({
+        recipe_id: '1',
+        user_id: '1',
+        user_ip: '::1',
+      });
       expect(result).toEqual(true);
     });
 
@@ -210,11 +230,49 @@ describe('RecipeService', () => {
       recipeRepository.increaseViewCount.mockResolvedValue(null);
 
       await expect(
-        service.increaseViewCount('1', {
+        service.viewRecipe('1', {
           ip: '::1',
           user: new User(),
         }),
       ).rejects.toThrowError('Recipe not found');
+    });
+  });
+
+  describe('setAllViewedRecipesInPast1Month', () => {
+    it('should set all viewed recipes in past 1 month', async () => {
+      recipeViewLogRepository.checkIfRecipeViewCountKeyExists.mockResolvedValue(
+        false,
+      );
+      recipeViewLogRepository.setAllViewedRecipesInPast1Month.mockResolvedValue(
+        undefined,
+      );
+
+      await service.setAllViewedRecipesInPast1Month();
+
+      expect(
+        recipeViewLogRepository.checkIfRecipeViewCountKeyExists,
+      ).toHaveBeenCalled();
+      expect(
+        recipeViewLogRepository.setAllViewedRecipesInPast1Month,
+      ).toHaveBeenCalled();
+    });
+
+    it('should not set all viewed recipes in past 1 month', async () => {
+      recipeViewLogRepository.checkIfRecipeViewCountKeyExists.mockResolvedValue(
+        true,
+      );
+      recipeViewLogRepository.setAllViewedRecipesInPast1Month.mockResolvedValue(
+        undefined,
+      );
+
+      await service.setAllViewedRecipesInPast1Month();
+
+      expect(
+        recipeViewLogRepository.checkIfRecipeViewCountKeyExists,
+      ).toHaveBeenCalled();
+      expect(
+        recipeViewLogRepository.setAllViewedRecipesInPast1Month,
+      ).not.toHaveBeenCalled();
     });
   });
 

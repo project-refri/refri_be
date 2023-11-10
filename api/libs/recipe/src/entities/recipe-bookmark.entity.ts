@@ -15,10 +15,10 @@ export class RecipeBookmark {
   })
   id: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: false, type: MongooseSchema.Types.ObjectId })
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId })
   user_id: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: false, type: MongooseSchema.Types.ObjectId })
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId })
   recipe_id: MongooseSchema.Types.ObjectId;
 
   recipe: Recipe;

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  OnApplicationBootstrap,
+} from '@nestjs/common';
 import {
   FilterRecipeDto,
   RecipeDto,
@@ -6,18 +10,24 @@ import {
   RecipesAndCountDto,
   RecipesResponseDto,
   TextSearchRecipeDto,
-} from '../dto/filter-recipe.dto';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
+} from '../dto/recipe/filter-recipe.dto';
+import {
+  CreateRecipeDto,
+  UpdateRecipeDto,
+} from '../dto/recipe/modify-recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeRepository } from '../repositories/recipe.repository';
-import { RecipeViewerIdentifier } from '../dto/recipe-viewer-identifier';
+import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
 import { MemoryCacheable } from '@app/common/cache/memory-cache.service';
-import { Cacheable } from '@app/common/cache/cache.service';
 import { Logable } from '@app/common/log/log.decorator';
+import { RecipeViewLogRepository } from '../repositories/recipe-view-log.repository';
 
 @Injectable()
-export class RecipeService {
-  constructor(private readonly recipeRepository: RecipeRepository) {}
+export class RecipeService implements OnApplicationBootstrap {
+  constructor(
+    private readonly recipeRepository: RecipeRepository,
+    private readonly recipeViewLogRepository: RecipeViewLogRepository,
+  ) {}
 
   @Logable()
   async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
@@ -52,10 +62,6 @@ export class RecipeService {
   }
 
   @Logable()
-  @Cacheable({
-    ttl: 5 * 60 * 1000,
-    keyGenerator: (id: string) => `recipe:${id}`,
-  })
   async findOne(id: string): Promise<RecipeDto> {
     const ret = await this.recipeRepository.findOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
@@ -64,7 +70,7 @@ export class RecipeService {
 
   @Logable()
   async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
-    return await this.recipeRepository.findTopViewed();
+    return await this.recipeViewLogRepository.findAll5MostViewedRecipesInPast1Month();
   }
 
   @Logable()
@@ -75,13 +81,25 @@ export class RecipeService {
         ? `recipe-view:${id}-${identifier.user.id}`
         : `recipe-view:${id}-${identifier.ip}`,
   })
-  async increaseViewCount(
+  async viewRecipe(
     id: string,
-    _identifier: RecipeViewerIdentifier,
+    identifier: RecipeViewerIdentifier,
   ): Promise<boolean> {
     const ret = await this.recipeRepository.increaseViewCount(id);
     if (!ret) throw new NotFoundException('Recipe not found');
+    const recipeViewLog = await this.recipeViewLogRepository.create({
+      recipe_id: id,
+      user_id: identifier.user ? identifier.user.id.toString() : undefined,
+      user_ip: identifier.ip,
+    });
     return true;
+  }
+
+  @Logable()
+  async setAllViewedRecipesInPast1Month() {
+    if (await this.recipeViewLogRepository.checkIfRecipeViewCountKeyExists())
+      return;
+    await this.recipeViewLogRepository.setAllViewedRecipesInPast1Month();
   }
 
   @Logable()
@@ -95,5 +113,9 @@ export class RecipeService {
     const ret = await this.recipeRepository.deleteOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
+  }
+
+  async onApplicationBootstrap() {
+    await this.setAllViewedRecipesInPast1Month();
   }
 }

@@ -8,11 +8,16 @@ import {
   RecipesAndCountDto,
   TextSearchRecipeDto,
   TextSearchSortBy,
-} from '../dto/filter-recipe.dto';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto/modify-recipe.dto';
+} from '../dto/recipe/filter-recipe.dto';
+import {
+  CreateRecipeDto,
+  UpdateRecipeDto,
+} from '../dto/recipe/modify-recipe.dto';
 import { Recipe, RecipeDocument } from '../entities/recipe.entity';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { deleteProps } from '@app/common/utils/delete-props';
+import { Cacheable } from '@app/common/cache/cache.service';
+import { Logable } from '@app/common/log/log.decorator';
 
 @Injectable()
 export class RecipeRepository {
@@ -101,6 +106,11 @@ export class RecipeRepository {
     );
   }
 
+  @Logable()
+  @Cacheable({
+    ttl: 5 * 60 * 1000,
+    keyGenerator: (id: string) => `recipe:${id}`,
+  })
   async findOne(id: string): Promise<RecipeDto> {
     return await this.recipeModel
       .findOne({ id })
@@ -118,6 +128,20 @@ export class RecipeRepository {
       .find()
       .sort({ view_count: -1 })
       .limit(10)
+      .select({
+        _id: 0,
+        __v: 0,
+        recipe_raw_text: 0,
+        origin_url: 0,
+        recipe_steps: 0,
+        ingredient_requirements: 0,
+      })
+      .exec();
+  }
+
+  async findAllByIds(ids: string[]): Promise<RecipeListViewResponseDto[]> {
+    return await this.recipeModel
+      .find({ id: { $in: ids } })
       .select({
         _id: 0,
         __v: 0,

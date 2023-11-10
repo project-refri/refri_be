@@ -6,7 +6,7 @@ import {
   RecipeBookmarkListViewResponseDto,
   RecipeBookmarksAndCountDto,
   RecipeBookmarksResponseDto,
-} from '../dto/filter-recipe-bookmark.dto';
+} from '../dto/recipe-bookmark/filter-recipe-bookmark.dto';
 
 describe('RecipeBookmarkService', () => {
   let service: RecipeBookmarkService;

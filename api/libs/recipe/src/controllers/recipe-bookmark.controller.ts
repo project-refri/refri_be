@@ -18,11 +18,11 @@ import { Auth } from '@app/common/decorators/auth.decorator';
 import {
   CreateRecipeBookmarkResponseDto,
   FindRecipeBookmarksResponseDto,
-} from '../dto/recipe-bookmark-response.dto';
-import { CreateRecipeBookmarkDto } from '../dto/modify-recipe-bookmark.dto';
+} from '../dto/recipe-bookmark/recipe-bookmark-response.dto';
+import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/modify-recipe-bookmark.dto';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { User } from '@app/user/entities/user.entity';
-import { FilterRecipeBookmarkDto } from '../dto/filter-recipe-bookmark.dto';
+import { FilterRecipeBookmarkDto } from '../dto/recipe-bookmark/filter-recipe-bookmark.dto';
 
 @ApiTags('RecipeBookmark')
 @Controller('recipe-bookmark')

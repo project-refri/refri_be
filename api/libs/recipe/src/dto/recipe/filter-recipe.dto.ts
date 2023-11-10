@@ -9,7 +9,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Recipe } from '../entities/recipe.entity';
+import { Recipe } from '../../entities/recipe.entity';
 import { OmitType } from '@nestjs/swagger';
 
 export class FilterRecipeDto extends PagenationDto {
