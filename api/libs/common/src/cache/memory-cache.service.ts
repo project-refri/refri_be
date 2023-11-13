@@ -25,8 +25,10 @@ export class MemoryCacheService implements LazyDecorator<any, CacheOption> {
         await this.cacheManager.del(key);
       }
       const ret = await method(...args);
-      if (metadata.action === 'get')
-        await this.cacheManager.set(key, ret, metadata.ttl);
+      if (metadata.action === 'get') {
+        if (!ret) return ret;
+        else await this.cacheManager.set(key, ret, metadata.ttl);
+      }
       return ret;
     };
   }

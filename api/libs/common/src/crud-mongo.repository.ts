@@ -11,7 +11,7 @@ export class CrudMongoRepository<Entity, CreateDto, UpdateDto, FilterDto>
 
   async create(createDto: CreateDto): Promise<Entity> {
     const createdEntity = new this.model(createDto);
-    return (await createdEntity.save()).toObject();
+    return (await createdEntity.save())?.toObject();
   }
 
   async findAll(filterDto: FilterDto): Promise<Entity[]> {
@@ -19,7 +19,7 @@ export class CrudMongoRepository<Entity, CreateDto, UpdateDto, FilterDto>
   }
 
   async findOne(id: string): Promise<Entity> {
-    return (await this.model.findOne({ id }).exec()).toObject();
+    return (await this.model.findOne({ id }).exec())?.toObject();
   }
 
   async update(id: string, updateDto: UpdateDto) {
@@ -27,10 +27,10 @@ export class CrudMongoRepository<Entity, CreateDto, UpdateDto, FilterDto>
       await this.model.findOneAndUpdate({ id }, updateDto, {
         new: true,
       })
-    ).toObject();
+    )?.toObject();
   }
 
   async deleteOne(id: string): Promise<Entity> {
-    return (await this.model.findOneAndDelete({ id }).exec()).toObject();
+    return (await this.model.findOneAndDelete({ id }).exec())?.toObject();
   }
 }

@@ -11,6 +11,8 @@ import {
 } from 'class-validator';
 import { Recipe } from '../../entities/recipe.entity';
 import { OmitType } from '@nestjs/swagger';
+import { Schema, Types } from 'mongoose';
+import { User } from '@app/user/entities/user.entity';
 
 export class FilterRecipeDto extends PagenationDto {
   constructor(
@@ -74,7 +76,28 @@ export class RecipeListViewResponseDto extends OmitType(Recipe, [
   'origin_url',
   'recipe_steps',
   'ingredient_requirements',
-] as const) {}
+] as const) {
+  constructor(
+    id: Schema.Types.ObjectId,
+    owner: User,
+    name: string,
+    thumbnail: string,
+    description: string,
+    view_count: number,
+    created_at: Date,
+    updated_at: Date,
+  ) {
+    super();
+    this.id = id;
+    this.owner = null;
+    this.name = name;
+    this.thumbnail = thumbnail;
+    this.description = description;
+    this.view_count = view_count;
+    this.created_at = created_at;
+    this.updated_at = updated_at;
+  }
+}
 
 export class RecipesResponseDto extends PagenationResponseDto {
   results: RecipeListViewResponseDto[];

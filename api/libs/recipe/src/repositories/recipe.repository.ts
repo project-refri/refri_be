@@ -16,8 +16,8 @@ import {
 import { Recipe, RecipeDocument } from '../entities/recipe.entity';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { deleteProps } from '@app/common/utils/delete-props';
-import { Cacheable } from '@app/common/cache/cache.service';
 import { Logable } from '@app/common/log/log.decorator';
+import { Cacheable } from '@app/common/cache/cache.service';
 
 @Injectable()
 export class RecipeRepository {
@@ -28,7 +28,7 @@ export class RecipeRepository {
 
   async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
     const createdEntity = new this.recipeModel(createRecipeDto);
-    return (await createdEntity.save()).toObject();
+    return (await createdEntity.save())?.toObject();
   }
 
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesAndCountDto> {
@@ -122,7 +122,7 @@ export class RecipeRepository {
           origin_url: 0,
         })
         .exec()
-    ).toObject();
+    )?.toObject();
   }
 
   async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
@@ -164,7 +164,7 @@ export class RecipeRepository {
       await this.recipeModel
         .findOneAndUpdate({ id }, { $inc: { view_count: 1 } }, { new: true })
         .exec()
-    ).toObject();
+    )?.toObject();
   }
 
   async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
@@ -172,11 +172,11 @@ export class RecipeRepository {
       await this.recipeModel
         .findOneAndUpdate({ id }, updateRecipeDto, { new: true })
         .exec()
-    ).toObject();
+    )?.toObject();
   }
 
   async deleteOne(id: string): Promise<Recipe> {
-    return (await this.recipeModel.findOneAndDelete({ id }).exec()).toObject();
+    return (await this.recipeModel.findOneAndDelete({ id }).exec())?.toObject();
   }
 
   async deleteAll(filterRecipeDto: FilterRecipeDto): Promise<any> {

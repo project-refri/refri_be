@@ -31,15 +31,17 @@ export class AuthRepository {
     keyGenerator: (session: string) => `session:${session}`,
   })
   async findBySessionToken(session: string): Promise<Session> {
-    return await this.sessionModel
-      .findOne({ session_token: session })
-      .populate({
-        path: 'user',
-        populate: {
-          path: 'device_tokens',
-        },
-      })
-      .exec();
+    return (
+      await this.sessionModel
+        .findOne({ session_token: session })
+        .populate({
+          path: 'user',
+          populate: {
+            path: 'device_tokens',
+          },
+        })
+        .exec()
+    )?.toObject();
   }
 
   async deleteOne(id: string): Promise<Session> {
