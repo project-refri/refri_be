@@ -7,6 +7,7 @@ import {
 } from '@toss/nestjs-aop';
 import { Connection } from 'mongoose';
 import { ClsService } from 'nestjs-cls';
+import { TRANSACTION_SESSION } from '../mongo.service';
 
 export const MONGO_TRANSACTIONAL = Symbol('MONGO_TRANSACTIONAL');
 
@@ -28,14 +29,16 @@ export class MongoTransactionService
 
   wrap({ method, metadata }: WrapParams<any, TransactionOption>) {
     return async (...args: any[]) => {
-      if (this.clsService.get('transaction_session')) {
+      if (this.clsService.get(TRANSACTION_SESSION)) {
+        return await method(...args);
+      } else if (metadata.readOnly) {
         return await method(...args);
       }
       const session = await this.conn.startSession();
       session.startTransaction({
-        readPreference: metadata.readOnly ? 'secondaryPreferred' : 'primary',
+        readPreference: 'primary',
       });
-      this.clsService.set('transaction_session', session);
+      this.clsService.set(TRANSACTION_SESSION, session);
       try {
         const ret = await method(...args);
         await session.commitTransaction();
@@ -46,6 +49,7 @@ export class MongoTransactionService
         throw e;
       } finally {
         session.endSession();
+        this.clsService.set(TRANSACTION_SESSION, null);
       }
     };
   }
