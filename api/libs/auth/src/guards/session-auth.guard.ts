@@ -5,14 +5,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AuthRepository } from '../repositories/auth.repository';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '@app/common/decorators/public.decorator';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class SessionAuthGuard implements CanActivate {
   constructor(
-    private readonly authRepository: AuthRepository,
+    private readonly authService: AuthService,
     private readonly reflector: Reflector,
   ) {}
 
@@ -30,9 +30,7 @@ export class SessionAuthGuard implements CanActivate {
       return true;
     }
     try {
-      const session = await this.authRepository.findBySessionToken(
-        sessionToken,
-      );
+      const session = await this.authService.findBySessionToken(sessionToken);
       request['user'] = session.user;
       request['sessionToken'] = session.session_token;
     } catch {

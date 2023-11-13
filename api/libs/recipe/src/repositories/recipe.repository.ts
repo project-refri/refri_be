@@ -28,7 +28,7 @@ export class RecipeRepository {
 
   async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
     const createdEntity = new this.recipeModel(createRecipeDto);
-    return await createdEntity.save();
+    return (await createdEntity.save()).toObject();
   }
 
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesAndCountDto> {
@@ -112,61 +112,71 @@ export class RecipeRepository {
     keyGenerator: (id: string) => `recipe:${id}`,
   })
   async findOne(id: string): Promise<RecipeDto> {
-    return await this.recipeModel
-      .findOne({ id })
-      .select({
-        _id: 0,
-        __v: 0,
-        recipe_raw_text: 0,
-        origin_url: 0,
-      })
-      .exec();
+    return (
+      await this.recipeModel
+        .findOne({ id })
+        .select({
+          _id: 0,
+          __v: 0,
+          recipe_raw_text: 0,
+          origin_url: 0,
+        })
+        .exec()
+    ).toObject();
   }
 
   async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
-    return await this.recipeModel
-      .find()
-      .sort({ view_count: -1 })
-      .limit(10)
-      .select({
-        _id: 0,
-        __v: 0,
-        recipe_raw_text: 0,
-        origin_url: 0,
-        recipe_steps: 0,
-        ingredient_requirements: 0,
-      })
-      .exec();
+    return (
+      await this.recipeModel
+        .find()
+        .sort({ view_count: -1 })
+        .limit(10)
+        .select({
+          _id: 0,
+          __v: 0,
+          recipe_raw_text: 0,
+          origin_url: 0,
+          recipe_steps: 0,
+          ingredient_requirements: 0,
+        })
+        .exec()
+    ).map((recipe) => recipe.toObject());
   }
 
   async findAllByIds(ids: string[]): Promise<RecipeListViewResponseDto[]> {
-    return await this.recipeModel
-      .find({ id: { $in: ids } })
-      .select({
-        _id: 0,
-        __v: 0,
-        recipe_raw_text: 0,
-        origin_url: 0,
-        recipe_steps: 0,
-        ingredient_requirements: 0,
-      })
-      .exec();
+    return (
+      await this.recipeModel
+        .find({ id: { $in: ids } })
+        .select({
+          _id: 0,
+          __v: 0,
+          recipe_raw_text: 0,
+          origin_url: 0,
+          recipe_steps: 0,
+          ingredient_requirements: 0,
+        })
+        .exec()
+    ).map((recipe) => recipe.toObject());
   }
 
   async increaseViewCount(id: string): Promise<Recipe> {
-    return await this.recipeModel
-      .findOneAndUpdate({ id }, { $inc: { view_count: 1 } }, { new: true })
-      .exec();
+    return (
+      await this.recipeModel
+        .findOneAndUpdate({ id }, { $inc: { view_count: 1 } }, { new: true })
+        .exec()
+    ).toObject();
   }
 
   async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
-    return await this.recipeModel
-      .findOneAndUpdate({ id }, updateRecipeDto, { new: true })
-      .exec();
+    return (
+      await this.recipeModel
+        .findOneAndUpdate({ id }, updateRecipeDto, { new: true })
+        .exec()
+    ).toObject();
   }
 
   async deleteOne(id: string): Promise<Recipe> {
-    return await this.recipeModel.findOneAndDelete({ id }).exec();
+    return (await this.recipeModel.findOneAndDelete({ id }).exec()).toObject();
   }
 
   async deleteAll(filterRecipeDto: FilterRecipeDto): Promise<any> {

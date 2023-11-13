@@ -1,6 +1,6 @@
 import { User } from '@app/user/entities/user.entity';
 import { UserService } from '@app/user/services/user.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from '../repositories/auth.repository';
 import { CreateUserDto } from '@app/user/dto/modify-user.dto';
@@ -14,6 +14,7 @@ import { UserInfo } from '../types/user-info.type';
 import { LoginSessionDto } from '../dto/token.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Logable } from '@app/common/log/log.decorator';
+import { MongoTransactional } from '@app/common/transaction/mongo-transaction.service';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
   ) {}
 
   @Logable()
+  @MongoTransactional()
   async register(createUserDto: CreateUserDto): Promise<LoginSessionDto> {
     const user = await this.userService.create(createUserDto);
     return await this.login(user);
@@ -37,6 +39,17 @@ export class AuthService {
   }
 
   @Logable()
+  @MongoTransactional({ readOnly: true })
+  async findBySessionToken(sessionToken: string) {
+    const ret = await this.authRepository.findBySessionToken(sessionToken);
+    if (!ret) {
+      throw new NotFoundException('Session not found');
+    }
+    return ret;
+  }
+
+  @Logable()
+  @MongoTransactional()
   async login(user: User): Promise<LoginSessionDto> {
     const session_token = uuidv4();
     await this.authRepository.create({
@@ -50,6 +63,7 @@ export class AuthService {
   }
 
   @Logable()
+  @MongoTransactional()
   async OAuthLoginByEmail(userInfo: UserInfo): Promise<OAuthLoginSessionDto> {
     const { email, username } = userInfo;
     const user = await this.userService.findByEmail(email);
@@ -97,6 +111,7 @@ export class AuthService {
   }
 
   @Logable()
+  @MongoTransactional()
   async logout(sessionToken: string) {
     await this.authRepository.deleteBySessionToken(sessionToken);
   }
