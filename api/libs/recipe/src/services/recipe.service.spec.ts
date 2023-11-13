@@ -180,9 +180,23 @@ describe('RecipeService', () => {
     it('should return a recipe', async () => {
       const recipe = new Recipe();
       recipeRepository.findOne.mockResolvedValue(recipe);
+      recipeRepository.increaseViewCount.mockResolvedValue(new Recipe());
+      recipeViewLogRepository.create.mockResolvedValue(new RecipeViewLog());
 
-      const result = await service.findOne('1');
+      const result = await service.findOne('1', {
+        ip: '::1',
+        user: {
+          ...new User(),
+          id: '1' as any,
+        },
+      });
 
+      expect(recipeRepository.increaseViewCount).toHaveBeenCalledWith('1');
+      expect(recipeViewLogRepository.create).toHaveBeenCalledWith({
+        recipe_id: '1',
+        user_id: '1',
+        user_ip: '::1',
+      });
       expect(recipeRepository.findOne).toHaveBeenCalledWith('1');
       expect(result).toEqual(recipe);
     });

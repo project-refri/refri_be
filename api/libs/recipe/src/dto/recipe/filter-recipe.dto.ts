@@ -78,14 +78,14 @@ export class RecipeListViewResponseDto extends OmitType(Recipe, [
   'ingredient_requirements',
 ] as const) {
   constructor(
-    id: Schema.Types.ObjectId,
-    owner: User,
-    name: string,
-    thumbnail: string,
-    description: string,
-    view_count: number,
-    created_at: Date,
-    updated_at: Date,
+    id: Schema.Types.ObjectId = null,
+    owner: User = null,
+    name: string = null,
+    thumbnail: string = null,
+    description: string = null,
+    view_count: number = null,
+    created_at: Date = null,
+    updated_at: Date = null,
   ) {
     super();
     this.id = id;
