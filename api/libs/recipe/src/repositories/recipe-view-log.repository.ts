@@ -67,18 +67,20 @@ export class RecipeViewLogRepository extends CrudMongoRepository<
   }
 
   async findAllViewedRecipesInPast1Month() {
-    return await this.recipeViewLogModel
-      .aggregate()
-      .match({
-        created_at: {
-          $gte: calcPast1MonthDate(),
-        },
-      })
-      .group({
-        _id: '$recipe_id',
-        count: { $sum: 1 },
-      })
-      .exec();
+    return (
+      await this.recipeViewLogModel
+        .aggregate()
+        .match({
+          created_at: {
+            $gte: calcPast1MonthDate(),
+          },
+        })
+        .group({
+          _id: '$recipe_id',
+          count: { $sum: 1 },
+        })
+        .exec()
+    ).map((recipeWithCount) => recipeWithCount.toObject());
   }
 
   async findAll5MostViewedRecipesInPast1Month(): Promise<
@@ -99,16 +101,16 @@ export class RecipeViewLogRepository extends CrudMongoRepository<
         ),
       );
       return recipes.map((recipe, index) => {
-        return {
-          id: recipe.id,
-          owner: recipe.owner,
-          name: recipe.name,
-          thumbnail: recipe.thumbnail,
-          description: recipe.description,
-          view_count: recipeIdsWithViews[index].score,
-          created_at: recipe.created_at,
-          updated_at: recipe.updated_at,
-        };
+        return new RecipeListViewResponseDto(
+          recipe.id,
+          null,
+          recipe.name,
+          recipe.thumbnail,
+          recipe.description,
+          recipeIdsWithViews[index].score,
+          recipe.created_at,
+          recipe.updated_at,
+        );
       });
     }
     return await this.recipeViewLogModel

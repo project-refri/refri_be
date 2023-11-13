@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../services/user.service';
 import { UserController } from './user.controller';
 import { UserRepository } from '../repositories/user.repository';
-import { AuthRepository } from '@app/auth/repositories/auth.repository';
+import { AuthService } from '@app/auth/services/auth.service';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -14,7 +14,7 @@ describe('UserController', () => {
         UserService,
         { provide: UserRepository, useValue: {} },
         { provide: 'UserModel', useValue: {} },
-        { provide: AuthRepository, useValue: {} },
+        { provide: AuthService, useValue: {} },
       ],
     }).compile();
 

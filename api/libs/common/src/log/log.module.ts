@@ -13,6 +13,7 @@ import { v4 as uuid } from 'uuid';
           return (req.headers['x-request-id'] as string) ?? uuid().slice(0, 8);
         },
       },
+      global: true,
     }),
   ],
   providers: [LogDecorator],

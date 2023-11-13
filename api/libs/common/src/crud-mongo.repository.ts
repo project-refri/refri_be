@@ -11,24 +11,26 @@ export class CrudMongoRepository<Entity, CreateDto, UpdateDto, FilterDto>
 
   async create(createDto: CreateDto): Promise<Entity> {
     const createdEntity = new this.model(createDto);
-    return await createdEntity.save();
+    return (await createdEntity.save())?.toObject();
   }
 
   async findAll(filterDto: FilterDto): Promise<Entity[]> {
-    return await this.model.find(filterDto).exec();
+    return (await this.model.find(filterDto).exec()).map((e) => e.toObject());
   }
 
   async findOne(id: string): Promise<Entity> {
-    return await this.model.findOne({ id }).exec();
+    return (await this.model.findOne({ id }).exec())?.toObject();
   }
 
   async update(id: string, updateDto: UpdateDto) {
-    return await this.model.findOneAndUpdate({ id }, updateDto, {
-      new: true,
-    });
+    return (
+      await this.model.findOneAndUpdate({ id }, updateDto, {
+        new: true,
+      })
+    )?.toObject();
   }
 
   async deleteOne(id: string): Promise<Entity> {
-    return await this.model.findOneAndDelete({ id }).exec();
+    return (await this.model.findOneAndDelete({ id }).exec())?.toObject();
   }
 }

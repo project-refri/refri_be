@@ -21,6 +21,7 @@ import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-ide
 import { MemoryCacheable } from '@app/common/cache/memory-cache.service';
 import { Logable } from '@app/common/log/log.decorator';
 import { RecipeViewLogRepository } from '../repositories/recipe-view-log.repository';
+import { MongoTransactional } from '@app/common/transaction/mongo-transaction.service';
 
 @Injectable()
 export class RecipeService implements OnApplicationBootstrap {
@@ -30,11 +31,13 @@ export class RecipeService implements OnApplicationBootstrap {
   ) {}
 
   @Logable()
+  @MongoTransactional()
   async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
     return await this.recipeRepository.create(createRecipeDto);
   }
 
   @Logable()
+  @MongoTransactional({ readOnly: true })
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
     const { page, limit } = filterRecipeDto;
     const results = await this.recipeRepository.findAll(filterRecipeDto);
@@ -42,6 +45,7 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   @Logable()
+  @MongoTransactional({ readOnly: true })
   async findAllByFullTextSearch(
     textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesResponseDto> {
@@ -62,18 +66,29 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   @Logable()
-  async findOne(id: string): Promise<RecipeDto> {
-    const ret = await this.recipeRepository.findOne(id);
+  @MongoTransactional()
+  async findOne(
+    id: string,
+    identifier: RecipeViewerIdentifier,
+  ): Promise<RecipeDto> {
+    const ret = (
+      await Promise.all([
+        this.recipeRepository.findOne(id),
+        this.viewRecipe(id, identifier),
+      ])
+    )[0];
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
   }
 
   @Logable()
+  @MongoTransactional({ readOnly: true })
   async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
     return await this.recipeViewLogRepository.findAll5MostViewedRecipesInPast1Month();
   }
 
   @Logable()
+  @MongoTransactional()
   @MemoryCacheable({
     ttl: 60 * 60 * 1000,
     keyGenerator: (id: string, identifier: RecipeViewerIdentifier) =>
@@ -103,6 +118,7 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   @Logable()
+  @MongoTransactional()
   async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
     const ret = await this.recipeRepository.update(id, updateRecipeDto);
     if (!ret) throw new NotFoundException('Recipe not found');

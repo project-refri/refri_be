@@ -8,12 +8,14 @@ import { FilterUserDto } from '../dto/filter-user.dto';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { Logable } from '@app/common/log/log.decorator';
+import { MongoTransactional } from '@app/common/transaction/mongo-transaction.service';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   @Logable()
+  @MongoTransactional()
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { email, username } = createUserDto;
     const [dupEmail, dupUsername] = await Promise.all([
@@ -27,11 +29,13 @@ export class UserService {
   }
 
   @Logable()
+  @MongoTransactional({ readOnly: true })
   async findAll(filterDto: any): Promise<User[]> {
     return await this.userRepository.findAll(filterDto);
   }
 
   @Logable()
+  @MongoTransactional({ readOnly: true })
   async findOne(id: string): Promise<User> {
     const ret = await this.userRepository.findOne(id);
     if (!ret) {
@@ -41,11 +45,13 @@ export class UserService {
   }
 
   @Logable()
+  @MongoTransactional({ readOnly: true })
   async findByEmail(email: string): Promise<User> {
     return await this.userRepository.findByEmail(email);
   }
 
   @Logable()
+  @MongoTransactional()
   async update(id: string, updateDto: UpdateUserDto): Promise<User> {
     const { username } = updateDto;
     const dupUsername = await this.userRepository.findByUsername(username);
@@ -60,6 +66,7 @@ export class UserService {
   }
 
   @Logable()
+  @MongoTransactional()
   async deleteOne(id: string): Promise<User> {
     const ret = await this.userRepository.deleteOne(id);
     if (!ret) {
