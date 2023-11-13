@@ -111,7 +111,6 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   @Logable()
-  @MongoTransactional({ readOnly: true })
   async setAllViewedRecipesInPast1Month() {
     if (await this.recipeViewLogRepository.checkIfRecipeViewCountKeyExists())
       return;
