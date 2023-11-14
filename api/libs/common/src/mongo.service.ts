@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Schema } from 'mongoose';
 import { ClsService } from 'nestjs-cls';
 
-export const TRANSACTION_SESSION = Symbol('TRANSACTION_SESSION');
+export const TRANSACTION_SESSION = 'TRANSACTION_SESSION';
 
 @Injectable()
 export class MongoService {
