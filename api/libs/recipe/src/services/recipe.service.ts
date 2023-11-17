@@ -66,13 +66,12 @@ export class RecipeService implements OnApplicationBootstrap {
     id: string,
     identifier: RecipeViewerIdentifier,
   ): Promise<RecipeDto> {
-    // const ret = (
-    //   await Promise.all([
-    //     this.recipeRepository.findOne(id),
-    //     this.viewRecipe(id, identifier),
-    //   ])
-    // )[0];
-    const ret = await this.recipeRepository.findOne(id);
+    const ret = (
+      await Promise.all([
+        this.recipeRepository.findOne(id),
+        this.viewRecipe(id, identifier),
+      ])
+    )[0];
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
   }
