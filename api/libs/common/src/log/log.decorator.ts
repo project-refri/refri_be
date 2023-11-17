@@ -21,14 +21,16 @@ export class LogDecorator implements LazyDecorator<any, any> {
         const t = Date.now();
         const ret = await method(...args);
         console.log(
-          `[${reqId}] ${instance.constructor.name}.${methodName} executed in ${
-            Date.now() - t
-          }ms`,
+          `[${reqId}] [${new Date().toISOString()}] ${
+            instance.constructor.name
+          }.${methodName} executed in ${Date.now() - t}ms`,
         );
         return ret;
       } catch (e) {
         console.error(
-          `[${reqId}] ${instance.constructor.name}.${methodName} error: ${e}`,
+          `[${reqId}] [${new Date().toISOString()}] ${
+            instance.constructor.name
+          }.${methodName} error: ${e}`,
         );
         throw e;
       }
