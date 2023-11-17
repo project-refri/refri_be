@@ -120,6 +120,10 @@ export class RecipeController {
     @Ip() ip: string,
     @ReqUser() user: User,
   ) {
+    await this.recipeService.viewRecipe(
+      id,
+      new RecipeViewerIdentifier(user, ip),
+    );
     return await this.recipeService.findOne(
       id,
       new RecipeViewerIdentifier(user, ip),
