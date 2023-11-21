@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectConnection, MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { MongoService } from './mongo.service';
-import { MongoTransactionService } from './transaction/mongo-transaction.service';
+import { MongoTransactionService } from '../transaction/mongo-transaction.service';
 
 @Global()
 @Module({

@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { ICrudRepository } from './crud.repository';
+import { ICrudRepository } from './repository/crud.repository';
 
 export class CrudService<Entity, CreateDto, UpdateDto, FilterDto> {
   private repository: ICrudRepository<Entity, CreateDto, UpdateDto, FilterDto>;
