@@ -1,5 +1,5 @@
-export function deleteProps(obj: any, props: string[]) {
-  const ret = { ...obj };
+export function deleteProps<T>(obj: T, props: string[]) {
+  const ret: T = { ...obj };
   for (const prop of props) {
     delete ret[prop];
   }
