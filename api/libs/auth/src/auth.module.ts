@@ -11,7 +11,7 @@ import {
   Session,
   SessionSchema,
   SessionSchemaFactory,
-} from './entities/session.entity';
+} from './entities/mongo.session.entity';
 
 @Global()
 @Module({
@@ -39,15 +39,10 @@ import {
   providers: [
     AuthService,
     AuthRepository,
-    // SessionAuthGuard,
-    // RegisterAuthGuard,
     { provide: 'SESSION_SCHEMA', useValue: SessionSchema },
   ],
   exports: [
     AuthService,
-    AuthRepository,
-    // SessionAuthGuard,
-    // RegisterAuthGuard,
     { provide: 'SESSION_SCHEMA', useValue: SessionSchema },
   ],
 })

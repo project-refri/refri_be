@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   NotFoundException,
   OnApplicationBootstrap,
@@ -15,16 +16,20 @@ import {
   CreateRecipeDto,
   UpdateRecipeDto,
 } from '../dto/recipe/modify-recipe.dto';
-import { Recipe } from '../entities/recipe.entity';
-import { RecipeRepository } from '../repositories/recipe.repository';
+import { MongoRecipeRepository } from '../repositories/recipe/mongo.recipe.repository';
+import { RecipeRepository } from '../repositories/recipe/recipe.repository';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
 import { Logable } from '@app/common/log/log.decorator';
-import { RecipeViewLogRepository } from '../repositories/recipe-view-log.repository';
+import { RecipeViewLogRepository } from '../repositories/recipe-view-log/recipe-view-log.repository';
 import { Cacheable } from '@app/common/cache/cache.service';
+import { Recipe } from '../entities/recipe.entity';
 
 @Injectable()
 export class RecipeService implements OnApplicationBootstrap {
   constructor(
+    @Inject('MongoRecipeRepository')
+    private readonly mongoRecipeRepository: MongoRecipeRepository,
+    @Inject('PrismaRecipeRepository')
     private readonly recipeRepository: RecipeRepository,
     private readonly recipeViewLogRepository: RecipeViewLogRepository,
   ) {}
@@ -37,7 +42,7 @@ export class RecipeService implements OnApplicationBootstrap {
   @Logable()
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesResponseDto> {
     const { page, limit } = filterRecipeDto;
-    const results = await this.recipeRepository.findAll(filterRecipeDto);
+    const results = await this.recipeRepository.findAllRecipe(filterRecipeDto);
     return results.toRecipesResponseDto(page, limit);
   }
 
@@ -51,11 +56,11 @@ export class RecipeService implements OnApplicationBootstrap {
       textSearchRecipeDto.searchQuery &&
       textSearchRecipeDto.searchQuery.length > 0
     ) {
-      results = await this.recipeRepository.findAllByFullTextSearch(
+      results = await this.mongoRecipeRepository.findAllByFullTextSearch(
         textSearchRecipeDto,
       );
     } else
-      results = await this.recipeRepository.findAll(
+      results = await this.recipeRepository.findAllRecipe(
         new FilterRecipeDto(page, limit),
       );
     return results.toRecipesResponseDto(page, limit);
@@ -63,12 +68,12 @@ export class RecipeService implements OnApplicationBootstrap {
 
   @Logable()
   async findOne(
-    id: string,
+    id: number,
     identifier: RecipeViewerIdentifier,
   ): Promise<RecipeDto> {
     const ret = (
       await Promise.all([
-        this.recipeRepository.findOne(id),
+        this.mongoRecipeRepository.findOneByMysqlId(id),
         this.viewRecipe(id, identifier),
       ])
     )[0];
@@ -84,20 +89,20 @@ export class RecipeService implements OnApplicationBootstrap {
   @Logable()
   @Cacheable({
     ttl: 60 * 60 * 1000,
-    keyGenerator: (id: string, identifier: RecipeViewerIdentifier) =>
+    keyGenerator: (id: number, identifier: RecipeViewerIdentifier) =>
       identifier.user
         ? `recipe-view:${id}-${identifier.user.id}`
         : `recipe-view:${id}-${identifier.ip}`,
   })
   async viewRecipe(
-    id: string,
+    id: number,
     identifier: RecipeViewerIdentifier,
   ): Promise<boolean> {
     const ret = await this.recipeRepository.increaseViewCount(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     const recipeViewLog = await this.recipeViewLogRepository.create({
       recipe_id: id,
-      user_id: identifier.user ? identifier.user.id.toString() : undefined,
+      user_id: identifier.user ? identifier.user.id : undefined,
       user_ip: identifier.ip,
     });
     return true;
@@ -111,13 +116,13 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   @Logable()
-  async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
+  async update(id: number, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
     const ret = await this.recipeRepository.update(id, updateRecipeDto);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;
   }
 
-  async deleteOne(id: string): Promise<Recipe> {
+  async deleteOne(id: number): Promise<Recipe> {
     const ret = await this.recipeRepository.deleteOne(id);
     if (!ret) throw new NotFoundException('Recipe not found');
     return ret;

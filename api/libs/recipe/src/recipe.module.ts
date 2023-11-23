@@ -1,21 +1,24 @@
-import { Module } from '@nestjs/common';
+import { Module, Provider } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Recipe, RecipeSchema } from './entities/recipe.entity';
-import { RecipeRepository } from './repositories/recipe.repository';
+import { Recipe, RecipeSchema } from './entities/mongo/mongo.recipe.entity';
 import { RecipeService } from './services/recipe.service';
 import { RecipeController } from './controllers/recipe.controller';
 import { RecipeBookmarkController } from './controllers/recipe-bookmark.controller';
-import { RecipeBookmarkRepository } from './repositories/recipe-bookmark.repository';
 import { RecipeBookmarkService } from './services/recipe-bookmark.service';
-import {
-  RecipeBookmark,
-  RecipeBookmarkSchema,
-} from './entities/recipe-bookmark.entity';
-import { RecipeViewLogRepository } from './repositories/recipe-view-log.repository';
-import {
-  RecipeViewLog,
-  RecipeViewLogSchema,
-} from './entities/recipe-view-log.entity';
+import { RecipeBookmarkRepository } from './repositories/recipe-bookmark/recipe-bookmark.repository';
+import { RecipeViewLogRepository } from './repositories/recipe-view-log/recipe-view-log.repository';
+import { MongoRecipeRepository } from './repositories/recipe/mongo.recipe.repository';
+import { RecipeRepository as PrismaRecipeRepository } from './repositories/recipe/recipe.repository';
+
+const PrismaRecipeRepositoryProvider: Provider = {
+  provide: 'PrismaRecipeRepository',
+  useClass: PrismaRecipeRepository,
+};
+
+const MongoRecipeRepositoryProvider: Provider = {
+  provide: 'MongoRecipeRepository',
+  useClass: MongoRecipeRepository,
+};
 
 @Module({
   imports: [
@@ -27,36 +30,17 @@ import {
           return schema;
         },
       },
-      {
-        name: RecipeBookmark.name,
-        useFactory: () => {
-          const schema = RecipeBookmarkSchema;
-          return schema;
-        },
-      },
-      {
-        name: RecipeViewLog.name,
-        useFactory: () => {
-          const schema = RecipeViewLogSchema;
-          return schema;
-        },
-      },
     ]),
   ],
   controllers: [RecipeController, RecipeBookmarkController],
   providers: [
     RecipeService,
-    RecipeRepository,
+    PrismaRecipeRepositoryProvider,
+    MongoRecipeRepositoryProvider,
     RecipeBookmarkService,
     RecipeBookmarkRepository,
     RecipeViewLogRepository,
   ],
-  exports: [
-    RecipeService,
-    RecipeRepository,
-    RecipeBookmarkService,
-    RecipeBookmarkRepository,
-    RecipeViewLogRepository,
-  ],
+  exports: [RecipeService, RecipeBookmarkService],
 })
 export class RecipeModule {}

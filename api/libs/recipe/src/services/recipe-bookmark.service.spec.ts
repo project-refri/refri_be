@@ -1,5 +1,5 @@
 import { TestBed } from '@automock/jest';
-import { RecipeBookmarkRepository } from '../repositories/recipe-bookmark.repository';
+import { RecipeBookmarkRepository } from '../repositories/recipe-bookmark/mongo.recipe-bookmark.repository';
 import { RecipeBookmarkService } from './recipe-bookmark.service';
 import {
   FilterRecipeBookmarkDto,

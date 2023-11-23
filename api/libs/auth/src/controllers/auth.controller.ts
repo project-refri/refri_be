@@ -14,7 +14,7 @@ import {
   ApiGet,
   ApiPostOk,
 } from '@app/common/decorators/http-method.decorator';
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/entities/mongo.user.entity';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/modify-user.dto';
 import { Auth, RegisterAuth } from '@app/common/decorators/auth.decorator';

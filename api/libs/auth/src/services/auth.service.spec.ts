@@ -5,7 +5,6 @@ import { UserService } from '@app/user/services/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@app/user/entities/user.entity';
 import { CreateUserDto } from '@app/user/dto/modify-user.dto';
-import { Schema } from 'mongoose';
 import { LoginSessionDto } from '../dto/token.dto';
 import { Session } from '../entities/session.entity';
 import { OAuthLoginSessionDto } from '../dto/oauth.dto';
@@ -49,7 +48,7 @@ describe('AuthService', () => {
     it('should create a new session and return a login response', async () => {
       const user: User = {
         ...new User(),
-        id: new Schema.Types.ObjectId('id'),
+        id: 1,
       };
       const sessToken = 'mock-uuid';
       const loginSessionDto: LoginSessionDto = {
@@ -61,7 +60,7 @@ describe('AuthService', () => {
       const result = await service.login(user);
 
       expect(authRepository.create).toHaveBeenCalledWith({
-        user_id: user.id.toString(),
+        user_id: user.id,
         session_token: sessToken,
       });
       expect(result).toEqual(loginSessionDto);

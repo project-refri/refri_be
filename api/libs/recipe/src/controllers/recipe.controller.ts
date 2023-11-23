@@ -19,6 +19,7 @@ import {
   Post,
   Query,
   Ip,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -57,7 +58,7 @@ export class RecipeController {
     @Body() createRecipeDto: CreateRecipeDto,
     @ReqUser() user: User,
   ) {
-    createRecipeDto.owner = user.id.toString();
+    createRecipeDto.owner_id = user.id;
     return this.recipeService.create(createRecipeDto);
   }
 
@@ -116,7 +117,7 @@ export class RecipeController {
   @ApiGet(FindOneRecipeResponseDto)
   @Get(':id')
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Ip() ip: string,
     @ReqUser() user: User,
   ) {
@@ -135,7 +136,7 @@ export class RecipeController {
   @ApiPatch(UpdateRecipeResponseDto)
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateRecipeDto: UpdateRecipeDto,
   ) {
     return this.recipeService.update(id, updateRecipeDto);
@@ -150,7 +151,7 @@ export class RecipeController {
   @ApiDeleteNoContent()
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return this.recipeService.deleteOne(id);
   }
 }

@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { NotiService } from './noti.service';
-import { NotiRepository } from '../repository/noti.repository';
+import { NotiRepository } from '../repository/mongo/mongo.noti.repository';
 import { Messaging } from 'firebase-admin/messaging';
 
 describe('NotiService Test', () => {

@@ -1,9 +1,9 @@
 import { TestBed } from '@automock/jest';
 import { BadRequestException } from '@nestjs/common';
 import { CreateUserDto } from '../dto/modify-user.dto';
-import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { UserService } from './user.service';
+import { User } from '../entities/user.entity';
 
 describe('UserService', () => {
   let service: UserService;

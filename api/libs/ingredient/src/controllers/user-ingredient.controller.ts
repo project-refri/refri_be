@@ -17,6 +17,7 @@ import {
   HttpStatus,
   Param,
   ParseEnumPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -134,7 +135,7 @@ export class UserIngredientController {
   @Auth()
   @ApiGet(FindOneUserIngredientResponseDto)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ingredientService.findOne(id);
   }
 
@@ -147,7 +148,7 @@ export class UserIngredientController {
   @ApiPatch(UpdateUserIngredientResponseDto)
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateIngredientDto: UpdateUserIngredientDto,
   ) {
     return this.ingredientService.update(id, updateIngredientDto);
@@ -162,7 +163,7 @@ export class UserIngredientController {
   @ApiDeleteNoContent()
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return this.ingredientService.deleteOne(id);
   }
 }
