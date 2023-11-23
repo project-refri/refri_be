@@ -1,5 +1,5 @@
 import { User } from '@app/user/entities/user.entity';
-import { IsMongoId, IsUUID } from 'class-validator';
+import { IsInt, IsUUID } from 'class-validator';
 
 export class LoginSessionDto {
   session_token: string;
@@ -11,6 +11,6 @@ export class CreateSessionDto {
   @IsUUID()
   session_token: string;
 
-  @IsMongoId()
-  user_id: string;
+  @IsInt()
+  user_id: number;
 }

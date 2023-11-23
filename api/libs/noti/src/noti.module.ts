@@ -8,8 +8,11 @@ import { NotiRepository } from './repository/noti.repository';
 import { DeviceTokenRepository } from './repository/device-token.repository';
 import { DeviceTokenService } from './service/device-token.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Noti, NotiSchema } from './entity/noti.entity';
-import { DeviceToken, DeviceTokenSchema } from './entity/device-token.entity';
+import { Noti, NotiSchema } from './entity/mongo/mongo.noti.entity';
+import {
+  DeviceToken,
+  DeviceTokenSchema,
+} from './entity/mongo/mongo.device-token.entity';
 import { NotiController } from './controller/noti.controller';
 
 // export const FCM_MESSAGING = Symbol('FCM_MESSAGING');
@@ -44,11 +47,6 @@ import { NotiController } from './controller/noti.controller';
       inject: [ConfigService],
     },
   ],
-  exports: [
-    NotiService,
-    DeviceTokenService,
-    NotiRepository,
-    DeviceTokenRepository,
-  ],
+  exports: [NotiService, DeviceTokenService],
 })
 export class NotiModule {}

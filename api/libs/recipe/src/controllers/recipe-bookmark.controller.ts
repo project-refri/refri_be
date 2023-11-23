@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -47,7 +48,7 @@ export class RecipeBookmarkController {
     @Query() filterRecipeBookmarkDto: FilterRecipeBookmarkDto,
     @ReqUser() user: User,
   ) {
-    filterRecipeBookmarkDto.user_id = user.id.toString();
+    filterRecipeBookmarkDto.user_id = user.id;
     return await this.recipeBookmarkService.findAllRecipeBookmarked(
       filterRecipeBookmarkDto,
     );
@@ -56,7 +57,7 @@ export class RecipeBookmarkController {
   @Auth()
   @ApiDeleteNoContent()
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return await this.recipeBookmarkService.deleteOne(id);
   }
 }

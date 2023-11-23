@@ -16,6 +16,7 @@ import {
 } from '../dto/modify-ingredient.dto';
 import { UserIngredient } from '../entities/user-ingredient.entity';
 import { UserIngredientRepository } from '../repositories/user-ingredient.repository';
+import { CrudService } from '@app/common/crud.service';
 
 interface ImageProcessService {
   getBarcodeInfoFromUrl(
@@ -25,13 +26,23 @@ interface ImageProcessService {
 }
 
 @Injectable()
-export class UserIngredientService implements OnModuleInit {
+export class UserIngredientService
+  extends CrudService<
+    UserIngredient,
+    CreateUserIngredientDto,
+    UpdateUserIngredientDto,
+    FilterUserIngredientDto
+  >
+  implements OnModuleInit
+{
   private imageProcessService: ImageProcessService;
   constructor(
     private readonly userIngredientRepository: UserIngredientRepository,
     private readonly jwtService: JwtService,
     @Inject('IMAGE_PROCESS_SERVICE') private readonly client: ClientGrpc,
-  ) {}
+  ) {
+    super(userIngredientRepository);
+  }
 
   onModuleInit() {
     this.imageProcessService =
@@ -54,49 +65,5 @@ export class UserIngredientService implements OnModuleInit {
       ),
     );
     return ret;
-  }
-
-  async create(
-    createUserIngredientDto: CreateUserIngredientDto,
-  ): Promise<UserIngredient> {
-    return await this.userIngredientRepository.create(createUserIngredientDto);
-  }
-
-  async findAll(
-    filterUserIngredientDto: FilterUserIngredientDto,
-  ): Promise<UserIngredient[]> {
-    return await this.userIngredientRepository.findAll(filterUserIngredientDto);
-  }
-
-  async findOne(id: string): Promise<UserIngredient> {
-    const ret = await this.userIngredientRepository.findOne(id);
-    if (!ret) throw new NotFoundException('UserIngredient not found');
-    return ret;
-  }
-
-  async update(
-    id: string,
-    updateUserIngredientDto: UpdateUserIngredientDto,
-  ): Promise<UserIngredient> {
-    const ret = await this.userIngredientRepository.update(
-      id,
-      updateUserIngredientDto,
-    );
-    if (!ret) throw new NotFoundException('UserIngredient not found');
-    return ret;
-  }
-
-  async deleteOne(id: string): Promise<UserIngredient> {
-    const ret = await this.userIngredientRepository.deleteOne(id);
-    if (!ret) throw new NotFoundException('UserIngredient not found');
-    return ret;
-  }
-
-  async deleteAll(
-    filterUserIngredientDto: FilterUserIngredientDto,
-  ): Promise<any> {
-    return await this.userIngredientRepository.deleteAll(
-      filterUserIngredientDto,
-    );
   }
 }

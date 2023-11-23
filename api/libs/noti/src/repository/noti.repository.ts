@@ -1,22 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { CrudMongoRepository } from '@app/common/crud-mongo.repository';
-import { Noti, NotiDocument } from '../entity/noti.entity';
-import { CreateNotiDto, UpdateNotiDto } from '../dto/modify-noti.dto';
+import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { FilterNotiDto } from '../dto/filter-noti.dto';
+import { CreateNotiDto, UpdateNotiDto } from '../dto/modify-noti.dto';
+import { Noti } from '../entity/noti.entity';
+import { INotiRepository } from './noti.repository.interface';
+import { PrismaService } from '@app/common/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class NotiRepository extends CrudMongoRepository<
-  Noti,
-  CreateNotiDto,
-  UpdateNotiDto,
-  FilterNotiDto
-> {
-  constructor(
-    @InjectModel(Noti.name)
-    private readonly notiModel: Model<NotiDocument>,
-  ) {
-    super(notiModel);
+export class NotiRepository
+  extends CrudPrismaRepository<
+    Noti,
+    CreateNotiDto,
+    UpdateNotiDto,
+    FilterNotiDto
+  >
+  implements INotiRepository
+{
+  constructor(private readonly prisma: PrismaService) {
+    super(prisma, 'noti');
   }
 }

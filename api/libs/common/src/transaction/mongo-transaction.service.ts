@@ -7,7 +7,7 @@ import {
 } from '@toss/nestjs-aop';
 import { Connection } from 'mongoose';
 import { ClsService } from 'nestjs-cls';
-import { TRANSACTION_SESSION } from '../mongo.service';
+import { TRANSACTION_SESSION } from '../mongo/mongo.service';
 
 export const MONGO_TRANSACTIONAL = Symbol('MONGO_TRANSACTIONAL');
 

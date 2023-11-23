@@ -4,7 +4,7 @@ import { UserIngredientController } from './controllers/user-ingredient.controll
 import {
   UserIngredient,
   UserIngredientSchemaFactory,
-} from './entities/user-ingredient.entity';
+} from './entities/mongo/mongo.user-ingredient.entity';
 import { UserIngredientRepository } from './repositories/user-ingredient.repository';
 import { UserIngredientService } from './services/user-ingredient.service';
 import { ConfigService } from '@nestjs/config';
@@ -56,6 +56,6 @@ import * as grpc from '@grpc/grpc-js';
   ],
   controllers: [UserIngredientController],
   providers: [UserIngredientService, UserIngredientRepository],
-  exports: [UserIngredientService, UserIngredientRepository],
+  exports: [UserIngredientService],
 })
 export class IngredientModule {}

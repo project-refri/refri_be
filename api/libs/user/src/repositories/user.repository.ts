@@ -1,28 +1,25 @@
+import { PrismaService } from '@app/common/prisma/prisma.service';
+import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { IUserRepository } from './user.repository.interface';
+import { User } from '../entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
-import { User, UserDocument } from '../entities/user.entity';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';
 
 @Injectable()
-export class UserRepository {
-  constructor(
-    @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
-  ) {}
-
-  @Logable()
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const createdEntity = new this.userModel(createUserDto);
-    return await createdEntity.save();
-  }
-
-  @Logable()
-  async findAll(filterUserDto: FilterUserDto): Promise<User[]> {
-    return await this.userModel.find(filterUserDto).exec();
+export class UserRepository
+  extends CrudPrismaRepository<
+    User,
+    CreateUserDto,
+    UpdateUserDto,
+    FilterUserDto
+  >
+  implements IUserRepository
+{
+  constructor(private readonly prisma: PrismaService) {
+    super(prisma, 'user');
   }
 
   @Logable()
@@ -30,38 +27,30 @@ export class UserRepository {
     ttl: 60 * 1000,
     keyGenerator: (user: string) => `user:${user}`,
   })
-  async findOne(id: string): Promise<User> {
-    return await this.userModel.findOne({ id }).exec();
+  async findOne(id: number) {
+    return await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        device_tokens: {
+          select: {
+            fcm_device_token: true,
+          },
+        },
+      },
+    });
   }
 
   @Logable()
   async findByEmail(email: string): Promise<User> {
-    return await this.userModel.findOne({ email }).exec();
+    return await this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 
   @Logable()
   async findByUsername(username: string): Promise<User> {
-    return await this.userModel.findOne({ username }).exec();
-  }
-
-  @Logable()
-  @Cacheable({
-    keyGenerator: (user: string) => `user:${user}`,
-    action: 'del',
-  })
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    return await this.userModel
-      .findOneAndUpdate({ id }, updateUserDto, { new: true })
-      .exec();
-  }
-
-  @Logable()
-  async deleteOne(id: string): Promise<User> {
-    return await this.userModel.findOneAndDelete({ id }).exec();
-  }
-
-  @Logable()
-  async deleteAll(filterUserDto: FilterUserDto): Promise<any> {
-    return await this.userModel.deleteMany(filterUserDto).exec();
+    return await this.prisma.user.findUnique({
+      where: { username },
+    });
   }
 }

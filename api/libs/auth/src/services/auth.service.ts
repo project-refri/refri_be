@@ -49,7 +49,7 @@ export class AuthService {
   async login(user: User): Promise<LoginSessionDto> {
     const session_token = uuidv4();
     await this.authRepository.create({
-      user_id: user.id.toString(),
+      user_id: user.id,
       session_token,
     });
     return {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../services/auth.service';
 import { AuthController } from './auth.controller';
-import { AuthRepository } from '../repositories/auth.repository';
+import { AuthRepository } from '../repositories/mongo.auth.repository';
 import { UserService } from '@app/user/services/user.service';
 
 describe('AuthController', () => {

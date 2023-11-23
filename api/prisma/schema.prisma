@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource mysql {
+  provider     = "mysql"
+  url          = env("MYSQL_DATABASE_URI")
+  relationMode = "prisma"
+}
+
+model DeviceToken {
+  id               Int      @id @default(autoincrement())
+  fcm_device_token String
+  user_id          Int
+  user             User     @relation(fields: [user_id], references: [id])
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  @@index([user_id])
+  @@map("device_tokens")
+}
+
+model Ingredient {
+  id             Int              @id @default(autoincrement())
+  description    String
+  name           String           @unique()
+  thumbnail      String
+  icon           String
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  Useringredient UserIngredient[]
+
+  @@map("ingredients")
+}
+
+model Noti {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+  content    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
+  @@map("notis")
+}
+
+model RecipeBookmark {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+  recipe_id  Int
+  recipe     Recipe   @relation(fields: [recipe_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
+  @@index([recipe_id])
+  @@map("recipe_bookmarks")
+}
+
+model Recipe {
+  id              Int              @id @default(autoincrement())
+  mongo_id        String           @unique
+  name            String
+  description     String
+  owner_id        Int?
+  owner           User?            @relation(fields: [owner_id], references: [id])
+  thumbnail       String
+  origin_url      String
+  view_count      Int              @default(0)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  recipe_bookmark RecipeBookmark[]
+  recipe_view_log RecipeViewLog[]
+
+  @@index([owner_id])
+  @@map("recipes")
+}
+
+model RecipeViewLog {
+  id         Int      @id @default(autoincrement())
+  recipe_id  Int
+  recipe     Recipe   @relation(fields: [recipe_id], references: [id])
+  user_id    Int?
+  user       User?    @relation(fields: [user_id], references: [id])
+  user_ip    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([created_at])
+  @@index([recipe_id])
+  @@index([user_id])
+  @@map("recipe_view_logs")
+}
+
+model Session {
+  id            Int      @id @default(autoincrement())
+  session_token String   @unique()
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [id])
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([created_at])
+  @@index([user_id])
+  @@map("sessions")
+}
+
+model UserIngredient {
+  id                     Int         @id @default(autoincrement())
+  count                  Int
+  days_before_expiration Int
+  food_type              FoodType    @default(ETC)
+  icon                   String
+  name                   String
+  store_method           StoreMethod @default(REFRIGERATE)
+  ingredient_id          Int
+  ingredient             Ingredient  @relation(fields: [ingredient_id], references: [id])
+  user_id                Int
+  user                   User        @relation(fields: [user_id], references: [id])
+  created_at             DateTime    @default(now())
+  updated_at             DateTime    @updatedAt
+
+  @@index([ingredient_id])
+  @@index([user_id])
+  @@map("user_ingredients")
+}
+
+model User {
+  id               Int              @id @default(autoincrement())
+  username         String           @unique()
+  email            String           @unique()
+  introduction     String           @default("")
+  diet             Diet             @default(NORMAL)
+  thumbnail        String           @default("")
+  device_tokens    DeviceToken[]
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+  notis            Noti[]
+  recipe_bookmarks RecipeBookmark[]
+  recipe_view_logs RecipeViewLog[]
+  sessions         Session[]
+  user_ingredients UserIngredient[]
+  recipes          Recipe[]
+
+  @@map("users")
+}
+
+enum StoreMethod {
+  FREEZE
+  REFRIGERATE
+  ROOM_TEMPERATURE
+}
+
+enum FoodType {
+  PROTEIN
+  VEGETABLE
+  CARBOHYDRATE
+  FUNCTIONAL_FOOD
+  ETC
+}
+
+enum Diet {
+  NORMAL
+  DIET
+  VEGAN
+  KETO
+  WORKOUT
+}

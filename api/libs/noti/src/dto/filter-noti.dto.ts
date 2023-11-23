@@ -1,6 +1,6 @@
-import { IsMongoId } from 'class-validator';
+import { IsInt } from 'class-validator';
 
 export class FilterNotiDto {
-  @IsMongoId()
-  user_id: string;
+  @IsInt()
+  user_id: number;
 }

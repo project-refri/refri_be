@@ -1,5 +1,5 @@
 import { TestBed } from '@automock/jest';
-import { UserIngredientRepository } from './user-ingredient.repository';
+import { UserIngredientRepository } from './mongo.user-ingredient.repository';
 
 describe('IngredientRepository', () => {
   let repository: UserIngredientRepository;

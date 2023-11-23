@@ -13,7 +13,7 @@ describe('NotiService Test', () => {
 
     service = unit;
     notiRepository = unitRef.get(NotiRepository);
-    fcmMessaging = unitRef.get(Messaging);
+    fcmMessaging = unitRef.get<Messaging>('FCM_MESSAGING');
   });
 
   it('should be defined', () => {

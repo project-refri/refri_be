@@ -4,14 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
-import { FilterUserDto } from '../dto/filter-user.dto';
-import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { Logable } from '@app/common/log/log.decorator';
+import { ConfigService } from '@nestjs/config';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Logable()
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -23,6 +26,11 @@ export class UserService {
     if (dupEmail || dupUsername) {
       throw new BadRequestException('Duplicated email or username.');
     }
+    if (!createUserDto.thumbnail) {
+      createUserDto.thumbnail = `https://${this.configService.get<string>(
+        'AWS_S3_IMAGE_MAIN_BUCKET',
+      )}.s3.amazonaws.com/default-user-thumbnail.jpg`;
+    }
     return await this.userRepository.create(createUserDto);
   }
 
@@ -32,7 +40,7 @@ export class UserService {
   }
 
   @Logable()
-  async findOne(id: string): Promise<User> {
+  async findOne(id: number): Promise<User> {
     const ret = await this.userRepository.findOne(id);
     if (!ret) {
       throw new NotFoundException('User not found.');
@@ -46,7 +54,7 @@ export class UserService {
   }
 
   @Logable()
-  async update(id: string, updateDto: UpdateUserDto): Promise<User> {
+  async update(id: number, updateDto: UpdateUserDto): Promise<User> {
     const { username } = updateDto;
     const dupUsername = await this.userRepository.findByUsername(username);
     if (dupUsername) {
@@ -60,16 +68,11 @@ export class UserService {
   }
 
   @Logable()
-  async deleteOne(id: string): Promise<User> {
+  async deleteOne(id: number): Promise<User> {
     const ret = await this.userRepository.deleteOne(id);
     if (!ret) {
       throw new NotFoundException('User not found.');
     }
     return ret;
-  }
-
-  @Logable()
-  async deleteAll(filterDto: FilterUserDto): Promise<any> {
-    return await this.userRepository.deleteAll(filterDto);
   }
 }

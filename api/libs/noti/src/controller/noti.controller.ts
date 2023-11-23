@@ -3,8 +3,8 @@ import {
   Controller,
   Delete,
   Get,
-  Injectable,
   Param,
+  ParseIntPipe,
   Post,
 } from '@nestjs/common';
 import { NotiService } from '../service/noti.service';
@@ -44,7 +44,7 @@ export class NotiController {
     @Body() createDeviceTokenDto: CreateDeviceTokenDto,
     @ReqUser() user: User,
   ) {
-    createDeviceTokenDto.user_id = user.id.toString();
+    createDeviceTokenDto.user_id = user.id;
     return await this.deviceTokenService.create(createDeviceTokenDto);
   }
 
@@ -63,14 +63,14 @@ export class NotiController {
   @Get()
   async findAllNotis(@ReqUser() user: User) {
     return await this.notiService.findAll({
-      user_id: user.id.toString(),
+      user_id: user.id,
     });
   }
 
   @Auth()
   @ApiGet(FindOneNotiResponseDto)
   @Get(':id')
-  async findOneNoti(@Param('id') id: string) {
+  async findOneNoti(@Param('id', ParseIntPipe) id: number) {
     return await this.notiService.findOne(id);
   }
 
@@ -78,7 +78,7 @@ export class NotiController {
   @ApiPostOk(UpdateNotiResponseDto)
   @Post(':id')
   async updateNoti(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateNotiDto: UpdateNotiDto,
   ) {
     return await this.notiService.update(id, updateNotiDto);
@@ -87,7 +87,7 @@ export class NotiController {
   @Auth()
   @ApiDeleteNoContent()
   @Delete(':id')
-  async deleteNoti(@Param('id') id: string) {
+  async deleteNoti(@Param('id', ParseIntPipe) id: number) {
     return await this.notiService.deleteOne(id);
   }
 }

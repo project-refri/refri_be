@@ -1,12 +1,12 @@
 import { ApiHideProperty } from '@nestjs/swagger';
-import { IsMongoId, IsOptional } from 'class-validator';
+import { IsInt, IsOptional } from 'class-validator';
 
 export class CreateRecipeBookmarkDto {
   @ApiHideProperty()
   @IsOptional()
-  @IsMongoId()
-  user_id?: string;
+  @IsInt()
+  user_id?: string | number;
 
-  @IsMongoId()
-  recipe_id: string;
+  @IsInt()
+  recipe_id: string | number;
 }
