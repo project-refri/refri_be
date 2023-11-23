@@ -1,11 +1,11 @@
 import { TestBed } from '@automock/jest';
-import { RecipeRepository } from './recipe.repository';
+import { MongoRecipeRepository } from './mongo.recipe.repository';
 
 describe('RecipeRepository', () => {
-  let repository: RecipeRepository;
+  let repository: MongoRecipeRepository;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(RecipeRepository).compile();
+    const { unit, unitRef } = TestBed.create(MongoRecipeRepository).compile();
 
     repository = unit;
   });

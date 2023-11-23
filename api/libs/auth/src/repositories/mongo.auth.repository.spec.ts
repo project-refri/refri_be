@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthRepository } from './auth.repository';
+import { AuthRepository } from './mongo.auth.repository';
 
 describe('AuthRepository', () => {
   let authRepository: AuthRepository;

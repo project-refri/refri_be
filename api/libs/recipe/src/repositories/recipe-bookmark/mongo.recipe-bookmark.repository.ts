@@ -1,24 +1,28 @@
-import { CrudMongoRepository } from '@app/common/crud-mongo.repository';
+import { CrudMongoRepository } from '@app/common/repository/crud-mongo.repository';
 import {
   RecipeBookmark,
   RecipeBookmarkDocument,
-} from '../entities/recipe-bookmark.entity';
-import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/modify-recipe-bookmark.dto';
+} from '../../entities/mongo/mongo.recipe-bookmark.entity';
+import { CreateRecipeBookmarkDto } from '../../dto/recipe-bookmark/modify-recipe-bookmark.dto';
 import {
   FilterRecipeBookmarkDto,
   RecipeBookmarksAndCountDto,
-} from '../dto/recipe-bookmark/filter-recipe-bookmark.dto';
+} from '../../dto/recipe-bookmark/filter-recipe-bookmark.dto';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { transferObjectId } from '@app/common/utils/transfer-objectId';
 import { deleteProps } from '@app/common/utils/delete-props';
+import { IRecipeBookmarkRepository } from './recipe-bookmark.interface';
 
-export class RecipeBookmarkRepository extends CrudMongoRepository<
-  RecipeBookmark,
-  CreateRecipeBookmarkDto,
-  any,
-  FilterRecipeBookmarkDto
-> {
+export class RecipeBookmarkRepository
+  extends CrudMongoRepository<
+    RecipeBookmark,
+    CreateRecipeBookmarkDto,
+    any,
+    FilterRecipeBookmarkDto
+  >
+  implements IRecipeBookmarkRepository
+{
   constructor(
     @InjectModel(RecipeBookmark.name)
     private readonly recipeBookmarkModel: Model<RecipeBookmarkDocument>,

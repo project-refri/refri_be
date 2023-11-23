@@ -1,28 +1,28 @@
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Session, SessionDocument } from '../entities/session.entity';
+import { PrismaService } from '@app/common/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
+import { IAuthRepository } from './auth.repository.interface';
 import { CreateSessionDto } from '../dto/token.dto';
+import { Session } from '@prisma/client';
+import { CrudPrismaRepository } from '../../../common/src/repository/crud-prisma.repository';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';
 
-export class AuthRepository {
-  constructor(
-    @InjectModel(Session.name)
-    private readonly sessionModel: Model<SessionDocument>,
-  ) {}
-
-  @Logable()
-  async create(createSessionDto: CreateSessionDto): Promise<Session> {
-    const createdEntity = new this.sessionModel(createSessionDto);
-    return await createdEntity.save();
+@Injectable()
+export class AuthRepository
+  extends CrudPrismaRepository<Session, CreateSessionDto, any, any>
+  implements IAuthRepository
+{
+  constructor(private readonly prisma: PrismaService) {
+    super(prisma, 'session');
   }
 
-  async findAll(filterSessionDto: any): Promise<Session[]> {
-    return await this.sessionModel.find(filterSessionDto).exec();
-  }
-
-  async findOne(id: string): Promise<Session> {
-    return await this.sessionModel.findOne({ id }).exec();
+  async findOne(id: number): Promise<Session> {
+    return await this.prisma.session.findUnique({
+      where: { id },
+      include: {
+        user: true,
+      },
+    });
   }
 
   @Logable()
@@ -30,26 +30,17 @@ export class AuthRepository {
     ttl: 24 * 60 * 60 * 1000,
     keyGenerator: (session: string) => `session:${session}`,
   })
-  async findBySessionToken(session: string): Promise<Session> {
-    return (
-      await this.sessionModel
-        .findOne({ session_token: session })
-        .populate({
-          path: 'user',
-          populate: {
-            path: 'device_tokens',
+  async findBySessionToken(session: string): Promise<any> {
+    return await this.prisma.session.findUnique({
+      where: { session_token: session },
+      include: {
+        user: {
+          include: {
+            device_tokens: true,
           },
-        })
-        .exec()
-    )?.toObject();
-  }
-
-  async deleteOne(id: string): Promise<Session> {
-    return await this.sessionModel.findOneAndDelete({ id }).exec();
-  }
-
-  async deleteAll(filterSessionDto: any): Promise<any> {
-    return await this.sessionModel.deleteMany(filterSessionDto).exec();
+        },
+      },
+    });
   }
 
   @Logable()
@@ -57,9 +48,9 @@ export class AuthRepository {
     keyGenerator: (session: string) => `session:${session}`,
     action: 'del',
   })
-  async deleteBySessionToken(session: string) {
-    return await this.sessionModel
-      .findOneAndDelete({ session_token: session })
-      .exec();
+  async deleteBySessionToken(session: string): Promise<any> {
+    return await this.prisma.session.delete({
+      where: { session_token: session },
+    });
   }
 }

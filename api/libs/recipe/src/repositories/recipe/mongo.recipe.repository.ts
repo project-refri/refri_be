@@ -8,30 +8,64 @@ import {
   RecipesAndCountDto,
   TextSearchRecipeDto,
   TextSearchSortBy,
-} from '../dto/recipe/filter-recipe.dto';
+} from '../../dto/recipe/filter-recipe.dto';
 import {
-  CreateRecipeDto,
+  CreateMongoRecipeDto,
   UpdateRecipeDto,
-} from '../dto/recipe/modify-recipe.dto';
-import { Recipe, RecipeDocument } from '../entities/recipe.entity';
+} from '../../dto/recipe/modify-recipe.dto';
+import {
+  Recipe,
+  RecipeDocument,
+} from '../../entities/mongo/mongo.recipe.entity';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { deleteProps } from '@app/common/utils/delete-props';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';
 
 @Injectable()
-export class RecipeRepository {
+export class MongoRecipeRepository {
   constructor(
     @InjectModel(Recipe.name)
     private readonly recipeModel: Model<RecipeDocument>,
   ) {}
 
-  async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
+  async create(createRecipeDto: CreateMongoRecipeDto): Promise<Recipe> {
     const createdEntity = new this.recipeModel(createRecipeDto);
     return (await createdEntity.save())?.toObject();
   }
 
   async findAll(filterRecipeDto: FilterRecipeDto): Promise<RecipesAndCountDto> {
+    const { page, limit } = filterRecipeDto;
+    const filterDto = deleteNull(
+      deleteProps(filterRecipeDto, ['page', 'limit']),
+    );
+    const filteredPipe = this.recipeModel
+      .aggregate()
+      .match(filterDto)
+      .project({
+        _id: 0,
+        __v: 0,
+        recipe_raw_text: 0,
+        recipe_steps: 0,
+        ingredient_requirements: 0,
+      })
+      .sort({ created_at: -1 })
+      .facet({
+        recipes: [{ $skip: (page - 1) * limit }, { $limit: limit }],
+        count: [{ $count: 'count' }],
+      })
+      .pipeline();
+
+    const ret = await this.recipeModel.aggregate(filteredPipe).exec();
+    return new RecipesAndCountDto(
+      ret[0].recipes,
+      ret[0].count.length > 0 ? ret[0].count[0].count : 0,
+    );
+  }
+
+  async findAllRecipe(
+    filterRecipeDto: FilterRecipeDto,
+  ): Promise<RecipesAndCountDto> {
     const { page, limit } = filterRecipeDto;
     const filterDto = deleteProps(deleteNull(filterRecipeDto), [
       'page',
@@ -109,7 +143,26 @@ export class RecipeRepository {
   @Logable()
   @Cacheable({
     ttl: 5 * 60 * 1000,
-    keyGenerator: (id: string) => `recipe:${id}`,
+    keyGenerator: (id: string) => `recipe-mongo:${id}`,
+  })
+  async findOneByMysqlId(id: number): Promise<RecipeDto> {
+    return (
+      await this.recipeModel
+        .findOne({ mysql_id: id })
+        .select({
+          _id: 0,
+          __v: 0,
+          recipe_raw_text: 0,
+          origin_url: 0,
+        })
+        .exec()
+    )?.toObject();
+  }
+
+  @Logable()
+  @Cacheable({
+    ttl: 5 * 60 * 1000,
+    keyGenerator: (id: string) => `recipe-mongo:${id}`,
   })
   async findOne(id: string): Promise<RecipeDto> {
     return (

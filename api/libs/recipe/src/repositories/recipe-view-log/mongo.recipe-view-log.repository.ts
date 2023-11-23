@@ -1,35 +1,34 @@
-import { CrudMongoRepository } from '@app/common/crud-mongo.repository';
+import { CrudMongoRepository } from '@app/common/repository/crud-mongo.repository';
 import {
   RecipeViewLog,
   RecipeViewLogDocument,
-} from '../entities/recipe-view-log.entity';
+} from '../../entities/mongo/mongo.recipe-view-log.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateRecipeViewLogDto } from '../dto/recipe-view-log/modify-recipe-view-log.dto';
+import { CreateRecipeViewLogDto } from '../../dto/recipe-view-log/modify-recipe-view-log.dto';
 import { calcPast1MonthDate } from '@app/common/utils/past-1-month';
-import { RecipeListViewResponseDto } from '../dto/recipe/filter-recipe.dto';
+import { RecipeListViewResponseDto } from '../../dto/recipe/filter-recipe.dto';
 import { Inject } from '@nestjs/common';
 import { REDIS_PROVIDER } from '@app/common/redis.module';
 import { RedisClientType } from 'redis';
-import { RecipeRepository } from './recipe.repository';
+import { MongoRecipeRepository } from '../recipe/mongo.recipe.repository';
 import { calcRemainMilliseconsByNextDay } from '@app/common/utils/remain-millisecons-by-next-day';
+import { IRecipeViewLogRepository } from './recipe-view-log.repository.interface';
 
-export class RecipeViewLogRepository extends CrudMongoRepository<
-  RecipeViewLog,
-  CreateRecipeViewLogDto,
-  any,
-  any
-> {
+export class RecipeViewLogRepository
+  extends CrudMongoRepository<RecipeViewLog, CreateRecipeViewLogDto, any, any>
+  implements IRecipeViewLogRepository
+{
   constructor(
     @InjectModel(RecipeViewLog.name)
     private readonly recipeViewLogModel: Model<RecipeViewLogDocument>,
     @Inject(REDIS_PROVIDER) private readonly redisClient: RedisClientType,
-    private readonly recipeRepository: RecipeRepository,
+    private readonly recipeRepository: MongoRecipeRepository,
   ) {
     super(recipeViewLogModel);
   }
 
-  async create(
+  override async create(
     createRecipeViewLogDto: CreateRecipeViewLogDto,
   ): Promise<RecipeViewLog> {
     const createdEntity = new this.recipeViewLogModel(createRecipeViewLogDto);
@@ -39,7 +38,7 @@ export class RecipeViewLogRepository extends CrudMongoRepository<
         this.redisClient.zIncrBy(
           'recipe-view-count',
           1,
-          createRecipeViewLogDto.recipe_id,
+          createRecipeViewLogDto.recipe_id.toString(),
         ),
       ])
     )[0];
@@ -66,7 +65,7 @@ export class RecipeViewLogRepository extends CrudMongoRepository<
     );
   }
 
-  async findAllViewedRecipesInPast1Month() {
+  private async findAllViewedRecipesInPast1Month() {
     return await this.recipeViewLogModel
       .aggregate()
       .match({
@@ -100,8 +99,7 @@ export class RecipeViewLogRepository extends CrudMongoRepository<
       );
       return recipes.map((recipe, index) => {
         return new RecipeListViewResponseDto(
-          recipe.id,
-          null,
+          recipe.id as any, // bypass type check
           recipe.name,
           recipe.thumbnail,
           recipe.description,
