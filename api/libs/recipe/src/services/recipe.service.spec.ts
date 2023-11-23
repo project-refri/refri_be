@@ -14,8 +14,8 @@ import { MongoRecipeRepository } from '../repositories/recipe/mongo.recipe.repos
 import { RecipeRepository } from '../repositories/recipe/recipe.repository';
 import { RecipeService } from './recipe.service';
 import { TestBed } from '@automock/jest';
-import { RecipeViewLogRepository } from '../repositories/recipe-view-log/mongo.recipe-view-log.repository';
-import { RecipeViewLog } from '../entities/mongo/mongo.recipe-view-log.entity';
+import { RecipeViewLogRepository } from '../repositories/recipe-view-log/recipe-view-log.repository';
+import { RecipeViewLog } from '../entities/recipe-view-log.entity';
 import { User } from '@app/user/entities/user.entity';
 import { Recipe } from '../entities/recipe.entity';
 

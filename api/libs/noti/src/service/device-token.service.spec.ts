@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { DeviceTokenService } from './device-token.service';
-import { DeviceTokenRepository } from '../repository/mongo/mongo.device-token.repository';
+import { DeviceTokenRepository } from '../repository/device-token.repository';
 
 describe('DeviceTokenService Test', () => {
   let service: DeviceTokenService;

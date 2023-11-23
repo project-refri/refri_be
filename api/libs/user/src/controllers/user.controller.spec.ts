@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../services/user.service';
 import { UserController } from './user.controller';
-import { UserRepository } from '../repositories/mongo.user.repository';
+import { UserRepository } from '../repositories/user.repository';
 import { AuthService } from '@app/auth/services/auth.service';
+import { ConfigService } from '@nestjs/config';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -15,6 +16,7 @@ describe('UserController', () => {
         { provide: UserRepository, useValue: {} },
         { provide: 'UserModel', useValue: {} },
         { provide: AuthService, useValue: {} },
+        { provide: ConfigService, useValue: {} },
       ],
     }).compile();
 
