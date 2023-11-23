@@ -10,10 +10,10 @@ import {
   FilterRecipeDto,
   RecipeListViewResponseDto,
   RecipesAndCountDto,
+  TextSearchRecipeDto,
 } from '../../dto/recipe/filter-recipe.dto';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { IRecipeRepository } from './recipe.repository.interface';
-import { TextSearchRecipeDto } from '../../../../../../data-process/src/recipe/dto/filter-recipe.dto';
 import { deleteProps } from '@app/common/utils/delete-props';
 
 @Injectable()
