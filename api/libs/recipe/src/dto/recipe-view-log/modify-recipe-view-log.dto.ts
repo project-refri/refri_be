@@ -1,14 +1,14 @@
-import { IsIP, IsMongoId, IsOptional } from 'class-validator';
+import { IsIP, IsInt, IsOptional } from 'class-validator';
 
 export class CreateRecipeViewLogDto {
   @IsOptional()
-  @IsMongoId()
-  user_id?: string;
+  @IsInt()
+  user_id?: number;
 
   @IsOptional()
   @IsIP()
-  user_ip?: string;
+  user_ip: string;
 
-  @IsMongoId()
-  recipe_id: string;
+  @IsInt()
+  recipe_id: number;
 }

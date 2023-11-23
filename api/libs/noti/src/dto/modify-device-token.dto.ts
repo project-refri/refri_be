@@ -1,6 +1,6 @@
 import { Optional } from '@nestjs/common';
 import { ApiHideProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateDeviceTokenDto {
   @IsString()
@@ -9,6 +9,6 @@ export class CreateDeviceTokenDto {
 
   @ApiHideProperty()
   @Optional()
-  @IsMongoId()
-  user_id: string;
+  @IsInt()
+  user_id: number;
 }

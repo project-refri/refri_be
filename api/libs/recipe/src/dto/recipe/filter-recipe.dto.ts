@@ -10,22 +10,21 @@ import {
   IsString,
 } from 'class-validator';
 import { Recipe } from '../../entities/recipe.entity';
+import { Recipe as MongoRecipe } from '../../entities/mongo/mongo.recipe.entity';
 import { OmitType } from '@nestjs/swagger';
-import { Schema, Types } from 'mongoose';
-import { User } from '@app/user/entities/user.entity';
 
 export class FilterRecipeDto extends PagenationDto {
   constructor(
     page: number,
     limit: number,
     name?: string,
-    owner?: string,
+    owner_id?: number,
     created_at?: Date,
     updated_at?: Date,
   ) {
     super(page, limit);
     this.name = name;
-    this.owner = owner;
+    this.owner_id = owner_id;
     this.created_at = created_at;
     this.updated_at = updated_at;
   }
@@ -35,10 +34,9 @@ export class FilterRecipeDto extends PagenationDto {
   @IsOptional()
   name?: string;
 
-  @IsString()
   @IsNotEmpty()
   @IsOptional()
-  owner?: string;
+  owner_id?: number;
 
   @IsDate()
   @IsOptional()
@@ -66,38 +64,34 @@ export class TextSearchRecipeDto extends PagenationDto {
   sort?: TextSearchSortBy;
 }
 
-export class RecipeDto extends OmitType(Recipe, [
+export class RecipeDto extends OmitType(MongoRecipe, [
   'recipe_raw_text',
   'origin_url',
-] as const) {}
+]) {}
 
-export class RecipeListViewResponseDto extends OmitType(Recipe, [
-  'recipe_raw_text',
-  'origin_url',
-  'recipe_steps',
-  'ingredient_requirements',
-] as const) {
+export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
   constructor(
-    id: Schema.Types.ObjectId = null,
-    owner: User = null,
-    name: string = null,
-    thumbnail: string = null,
-    description: string = null,
-    view_count: number = null,
-    created_at: Date = null,
-    updated_at: Date = null,
-  ) {
-    super();
-    this.id = id;
-    this.owner = null;
-    this.name = name;
-    this.thumbnail = thumbnail;
-    this.description = description;
-    this.view_count = view_count;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
-  }
+    public id: number = null,
+    public name: string = null,
+    public thumbnail: string = null,
+    public description: string = null,
+    public view_count: number = null,
+    public created_at: Date = null,
+    public updated_at: Date = null,
+  ) {}
+
+  origin_url?: string;
 }
+
+export type IRecipeListViewResponseDto = Omit<
+  Recipe,
+  | 'mongo_id'
+  | 'owner_id'
+  | 'recipe_raw_text'
+  | 'origin_url'
+  | 'recipe_steps'
+  | 'ingredient_requirements'
+>;
 
 export class RecipesResponseDto extends PagenationResponseDto {
   results: RecipeListViewResponseDto[];

@@ -2,6 +2,7 @@ import { OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
+  IsInt,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
@@ -67,7 +68,7 @@ export class RecipeStepDto {
   ingredients: IngredientRequirementDto[];
 }
 
-export class CreateRecipeDto {
+export class CreateMongoRecipeDto {
   constructor(
     name: string,
     description: string,
@@ -134,9 +135,45 @@ export class CreateRecipeDto {
   origin_url: string;
 }
 
+export class CreateRecipeDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsMongoId()
+  mongo_id: string;
+
+  @IsOptional()
+  @IsInt()
+  owner_id?: number;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsUrl()
+  @IsString()
+  thumbnail: string;
+
+  @IsUrl()
+  @IsString()
+  origin_url: string;
+
+  @IsOptional()
+  @IsInt()
+  view_count?: number;
+}
+
 export class UpdateRecipeDto extends PartialType(
-  OmitType(CreateRecipeDto, ['owner'] as const),
+  OmitType(CreateRecipeDto, ['owner_id'] as const),
 ) {
-  @IsNumber()
+  @IsInt()
+  view_count: number;
+}
+
+export class UpdateMongoRecipeDto extends PartialType(
+  OmitType(CreateMongoRecipeDto, ['owner'] as const),
+) {
+  @IsInt()
   view_count: number;
 }
