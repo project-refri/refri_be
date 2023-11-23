@@ -10,7 +10,8 @@ import { LogModule } from '@app/common/log/log.module';
 import { AopModule } from '@toss/nestjs-aop';
 import { NotiModule } from '@app/noti/noti.module';
 import { RedisModule } from '@app/common/redis.module';
-import { MongoModule } from '@app/common/mongo.module';
+import { MongoModule } from '@app/common/mongo/mongo.module';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MongoModule } from '@app/common/mongo.module';
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test.' : '.env.dev',
     }),
     MongoModule,
+    PrismaModule,
     RedisModule,
     AopModule,
     CacheModule,
