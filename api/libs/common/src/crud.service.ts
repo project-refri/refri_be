@@ -1,5 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { ICrudRepository } from './repository/crud.repository';
+import { Logable } from './log/log.decorator';
 
 export class CrudService<Entity, CreateDto, UpdateDto, FilterDto> {
   private repository: ICrudRepository<Entity, CreateDto, UpdateDto, FilterDto>;
@@ -9,15 +10,18 @@ export class CrudService<Entity, CreateDto, UpdateDto, FilterDto> {
     this.repository = repository;
   }
 
+  @Logable()
   async create(createDto: CreateDto): Promise<Entity> {
     return await this.repository.create(createDto);
   }
 
+  @Logable()
   async findAll(filterDto: FilterDto): Promise<Entity[]> {
     return await this.repository.findAll(filterDto);
   }
 
-  async findOne(id: string): Promise<Entity> {
+  @Logable()
+  async findOne(id: number): Promise<Entity> {
     const ret = await this.repository.findOne(id);
     if (!ret) {
       throw new NotFoundException(`Entity with id ${id} not found`);
@@ -25,7 +29,8 @@ export class CrudService<Entity, CreateDto, UpdateDto, FilterDto> {
     return ret;
   }
 
-  async update(id: string, updateDto: UpdateDto): Promise<Entity> {
+  @Logable()
+  async update(id: number, updateDto: UpdateDto): Promise<Entity> {
     const ret = await this.repository.update(id, updateDto);
     if (!ret) {
       throw new NotFoundException(`Entity with id ${id} not found`);
@@ -33,7 +38,8 @@ export class CrudService<Entity, CreateDto, UpdateDto, FilterDto> {
     return ret;
   }
 
-  async deleteOne(id: string): Promise<void> {
+  @Logable()
+  async deleteOne(id: number): Promise<void> {
     const ret = await this.repository.deleteOne(id);
     if (!ret) {
       throw new NotFoundException(`Entity with id ${id} not found`);

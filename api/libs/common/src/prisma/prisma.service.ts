@@ -14,7 +14,8 @@ export class PrismaService
     await this.$connect();
   }
 
-  async onApplicationShutdown() {
+  async onApplicationShutdown(signal?: string) {
+    console.log('PrismaService.onApplicationShutdown', signal);
     await this.$disconnect();
   }
 }
