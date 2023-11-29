@@ -11,7 +11,7 @@ import {
 } from '../../dto/recipe/filter-recipe.dto';
 import {
   CreateMongoRecipeDto,
-  UpdateRecipeDto,
+  UpdateMongoRecipeDto,
 } from '../../dto/recipe/modify-recipe.dto';
 import {
   Recipe,
@@ -220,7 +220,10 @@ export class MongoRecipeRepository {
     )?.toObject();
   }
 
-  async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
+  async update(
+    id: string,
+    updateRecipeDto: UpdateMongoRecipeDto,
+  ): Promise<Recipe> {
     return (
       await this.recipeModel
         .findOneAndUpdate({ id }, updateRecipeDto, { new: true })

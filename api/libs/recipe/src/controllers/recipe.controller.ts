@@ -29,6 +29,7 @@ import {
 import {
   CreateRecipeResponseDto,
   FindOneRecipeResponseDto,
+  FindRecentViewedResponseDto,
   FindRecipesResponseDto,
   FindTopViewdResponseDto,
   UpdateRecipeResponseDto,
@@ -97,7 +98,6 @@ export class RecipeController {
     @Query()
     textSearchRecipeDto: TextSearchRecipeDto,
   ) {
-    console.log(textSearchRecipeDto);
     return this.recipeService.findAllByFullTextSearch(textSearchRecipeDto);
   }
 
@@ -105,6 +105,20 @@ export class RecipeController {
   @Get('top-viewed')
   async findTopViewed() {
     return this.recipeService.findTopViewed();
+  }
+
+  @ApiGet(FindRecentViewedResponseDto)
+  @Auth()
+  @Get('recent-viewed')
+  async findAllRecentViewed(
+    @Query()
+    filterRecipeDto: FilterRecipeDto,
+    @ReqUser() user: User,
+  ) {
+    return this.recipeService.findAllRecentViewed(
+      filterRecipeDto,
+      new RecipeViewerIdentifier(user, null),
+    );
   }
 
   /**

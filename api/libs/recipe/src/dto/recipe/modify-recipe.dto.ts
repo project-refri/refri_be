@@ -5,10 +5,10 @@ import {
   IsInt,
   IsMongoId,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -103,6 +103,10 @@ export class CreateMongoRecipeDto {
   @IsNotEmpty()
   name: string;
 
+  @IsInt()
+  @Min(1)
+  mysql_id: number;
+
   @IsString()
   @IsNotEmpty()
   description: string;
@@ -167,13 +171,19 @@ export class CreateRecipeDto {
 export class UpdateRecipeDto extends PartialType(
   OmitType(CreateRecipeDto, ['owner_id'] as const),
 ) {
+  @IsOptional()
   @IsInt()
-  view_count: number;
+  view_count?: number;
 }
 
 export class UpdateMongoRecipeDto extends PartialType(
   OmitType(CreateMongoRecipeDto, ['owner'] as const),
 ) {
+  @IsOptional()
   @IsInt()
-  view_count: number;
+  view_count?: number;
+
+  @IsOptional()
+  @IsInt()
+  mysql_id?: number;
 }

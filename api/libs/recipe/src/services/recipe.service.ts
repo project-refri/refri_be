@@ -67,6 +67,19 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   @Logable()
+  async findAllRecentViewed(
+    filterRecipeDto: FilterRecipeDto,
+    identifier: RecipeViewerIdentifier,
+  ): Promise<RecipesResponseDto> {
+    const { page, limit } = filterRecipeDto;
+    const results = await this.recipeViewLogRepository.findAllRecentViewed(
+      filterRecipeDto,
+      identifier.user.id,
+    );
+    return results.toRecipesResponseDto(page, limit);
+  }
+
+  @Logable()
   async findOne(
     id: number,
     identifier: RecipeViewerIdentifier,
@@ -130,5 +143,28 @@ export class RecipeService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     await this.setAllViewedRecipesInPast1Month();
+
+    // let hasNext = true;
+    // let page = 0;
+
+    // while (hasNext) {
+    //   const ret = (
+    //     await this.recipeRepository.findAllRecipe({
+    //       page: ++page,
+    //       limit: 50,
+    //     })
+    //   ).toRecipesResponseDto(page, 50);
+    //   const { results, has_next } = ret;
+    //   if (results.length === 0) return;
+    //   hasNext = has_next;
+
+    //   await Promise.all(
+    //     results.map(async (recipe) => {
+    //       return this.mongoRecipeRepository.update(recipe.mongo_id, {
+    //         mysql_id: recipe.id,
+    //       });
+    //     }),
+    //   );
+    // }
   }
 }

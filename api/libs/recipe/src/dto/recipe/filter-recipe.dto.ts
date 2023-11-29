@@ -81,6 +81,8 @@ export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
   ) {}
 
   origin_url?: string;
+  mongo_id?: string;
+  mysql_id?: number;
 }
 
 export type IRecipeListViewResponseDto = Omit<

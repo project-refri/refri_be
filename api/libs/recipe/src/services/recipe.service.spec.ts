@@ -18,6 +18,7 @@ import { RecipeViewLogRepository } from '../repositories/recipe-view-log/recipe-
 import { RecipeViewLog } from '../entities/recipe-view-log.entity';
 import { User } from '@app/user/entities/user.entity';
 import { Recipe } from '../entities/recipe.entity';
+import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
 
 describe('RecipeService', () => {
   let service: RecipeService;
@@ -246,6 +247,56 @@ describe('RecipeService', () => {
         recipeViewLogRepository.findAll5MostViewedRecipesInPast1Month,
       ).toHaveBeenCalled();
       expect(result).toEqual([recipe]);
+    });
+  });
+
+  describe('findAllRecentViewed', () => {
+    it('should return an array of last elements of recipes', async () => {
+      recipeViewLogRepository.findAllRecentViewed.mockResolvedValue(
+        recipesAndCountLast,
+      );
+      recipesAndCountLast.toRecipesResponseDto.mockReturnValue(
+        recipesResponseDtoLast,
+      );
+
+      const result = await service.findAllRecentViewed(
+        filterRecipeDto,
+        new RecipeViewerIdentifier({ ...new User(), id: 1 }, null),
+      );
+
+      expect(recipeViewLogRepository.findAllRecentViewed).toHaveBeenCalledWith(
+        filterRecipeDto,
+        1,
+      );
+      expect(recipesAndCountLast.toRecipesResponseDto).toHaveBeenCalledWith(
+        filterRecipeDto.page,
+        filterRecipeDto.limit,
+      );
+      expect(result).toEqual(recipesResponseDtoLast);
+    });
+
+    it('should return an array of middle elements of recipes', async () => {
+      recipeViewLogRepository.findAllRecentViewed.mockResolvedValue(
+        recipesAndCountNotLast,
+      );
+      recipesAndCountNotLast.toRecipesResponseDto.mockReturnValue(
+        recipesResponseDtoNotLast,
+      );
+
+      const result = await service.findAllRecentViewed(
+        filterRecipeDto,
+        new RecipeViewerIdentifier({ ...new User(), id: 1 }, null),
+      );
+
+      expect(recipeViewLogRepository.findAllRecentViewed).toHaveBeenCalledWith(
+        filterRecipeDto,
+        1,
+      );
+      expect(recipesAndCountNotLast.toRecipesResponseDto).toHaveBeenCalledWith(
+        filterRecipeDto.page,
+        filterRecipeDto.limit,
+      );
+      expect(result).toEqual(recipesResponseDtoNotLast);
     });
   });
 
