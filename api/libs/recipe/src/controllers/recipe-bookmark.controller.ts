@@ -37,10 +37,16 @@ export class RecipeBookmarkController {
     @Body() createRecipeBookmarkDto: CreateRecipeBookmarkDto,
     @ReqUser() user: User,
   ) {
-    createRecipeBookmarkDto.user_id = user.id.toString();
+    createRecipeBookmarkDto.user_id = user.id;
     return await this.recipeBookmarkService.create(createRecipeBookmarkDto);
   }
 
+  /**
+   * ## Find All Bookmarked Recipe by User with pagenation
+   *
+   * Response DTO's id is recipe id.
+   * Recipe Bookmark id is recipe_bookmark_id.
+   */
   @Auth()
   @ApiGet(FindRecipeBookmarksResponseDto)
   @Get()
