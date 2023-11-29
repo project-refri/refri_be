@@ -9,7 +9,11 @@ import { RedisClientType } from 'redis';
 import { RecipeRepository } from '../recipe/recipe.repository';
 import { calcRemainMilliseconsByNextDay } from '@app/common/utils/remain-millisecons-by-next-day';
 import { calcPast1MonthDate } from '@app/common/utils/past-1-month';
-import { RecipeListViewResponseDto } from '@app/recipe/dto/recipe/filter-recipe.dto';
+import {
+  FilterRecipeDto,
+  RecipeListViewResponseDto,
+  RecipesAndCountDto,
+} from '@app/recipe/dto/recipe/filter-recipe.dto';
 
 export class RecipeViewLogRepository
   extends CrudPrismaRepository<RecipeViewLog, CreateRecipeViewLogDto, any, any>
@@ -69,6 +73,54 @@ export class RecipeViewLogRepository
       'recipe-view-count',
       Math.floor(calcRemainMilliseconsByNextDay() / 1000),
     );
+  }
+
+  async findAllRecentViewed(filterRecipeDto: FilterRecipeDto, userId: number) {
+    const { page, limit } = filterRecipeDto;
+    const [viewLogsWithRecipe, count] = await Promise.all([
+      this.prisma.recipeViewLog.findMany({
+        where: {
+          user_id: userId,
+        },
+        orderBy: {
+          created_at: 'desc',
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        select: {
+          recipe_id: true,
+          recipe: {
+            select: {
+              id: true,
+              name: true,
+              thumbnail: true,
+              description: true,
+              view_count: true,
+              created_at: true,
+              updated_at: true,
+            },
+          },
+        },
+      }),
+      this.prisma.recipeViewLog.count({
+        where: {
+          user_id: userId,
+        },
+      }),
+    ]);
+    const recipes = viewLogsWithRecipe.map(
+      (viewLogWithRecipe) =>
+        new RecipeListViewResponseDto(
+          viewLogWithRecipe.recipe.id,
+          viewLogWithRecipe.recipe.name,
+          viewLogWithRecipe.recipe.thumbnail,
+          viewLogWithRecipe.recipe.description,
+          viewLogWithRecipe.recipe.view_count,
+          viewLogWithRecipe.recipe.created_at,
+          viewLogWithRecipe.recipe.updated_at,
+        ),
+    );
+    return new RecipesAndCountDto(recipes, count);
   }
 
   async findAll5MostViewedRecipesInPast1Month(): Promise<

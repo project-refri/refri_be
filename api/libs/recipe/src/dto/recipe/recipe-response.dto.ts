@@ -21,6 +21,10 @@ export class FindTopViewdResponseDto extends OkResponse {
   data: RecipeListViewResponseDto[];
 }
 
+export class FindRecentViewedResponseDto extends OkResponse {
+  data: RecipeListViewResponseDto[];
+}
+
 export class FindOneRecipeResponseDto extends OkResponse {
   data: RecipeDto;
 }
