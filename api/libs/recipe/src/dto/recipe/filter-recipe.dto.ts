@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { Recipe } from '../../entities/recipe.entity';
 import { Recipe as MongoRecipe } from '../../entities/mongo/mongo.recipe.entity';
-import { OmitType } from '@nestjs/swagger';
+import { ApiHideProperty, OmitType } from '@nestjs/swagger';
 
 export class FilterRecipeDto extends PagenationDto {
   constructor(
@@ -71,17 +71,36 @@ export class RecipeDto extends OmitType(MongoRecipe, [
 
 export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
   constructor(
-    public id: number = null,
-    public name: string = null,
-    public thumbnail: string = null,
-    public description: string = null,
-    public view_count: number = null,
-    public created_at: Date = null,
-    public updated_at: Date = null,
-  ) {}
+    id: number = null,
+    name: string = null,
+    thumbnail: string = null,
+    description: string = null,
+    view_count: number = null,
+    created_at: Date = null,
+    updated_at: Date = null,
+  ) {
+    this.id = id;
+    this.name = name;
+    this.thumbnail = thumbnail;
+    this.description = description;
+    this.view_count = view_count;
+    this.created_at = created_at;
+    this.updated_at = updated_at;
+  }
 
+  id: number;
+  name: string;
+  thumbnail: string;
+  description: string;
+  view_count: number;
+  created_at: Date;
+  updated_at: Date;
+
+  @ApiHideProperty()
   origin_url?: string;
+  @ApiHideProperty()
   mongo_id?: string;
+  @ApiHideProperty()
   mysql_id?: number;
 }
 
