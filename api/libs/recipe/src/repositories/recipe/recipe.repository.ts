@@ -47,6 +47,7 @@ export class RecipeRepository
         view_count: true,
         created_at: true,
         updated_at: true,
+        mongo_id: true,
       },
       orderBy: { created_at: 'desc' },
       skip: (page - 1) * limit,

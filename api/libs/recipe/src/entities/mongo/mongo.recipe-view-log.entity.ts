@@ -5,7 +5,6 @@ import {
   SchemaOptions,
   ToObjectOptions,
 } from 'mongoose';
-// import { schemaOptions } from '@app/common/utils/schema-option';
 import { Recipe } from './mongo.recipe.entity';
 
 const toObjectOptions: ToObjectOptions = {
