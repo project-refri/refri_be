@@ -119,16 +119,28 @@ export class MongoRecipeRepository {
           ? 'score'
           : textSearchRecipeDto.sort]: -1,
       })
-      .project({
-        _id: 0,
-        __v: 0,
-        recipe_raw_text: 0,
-        origin_url: 0,
-        recipe_steps: 0,
-        ingredient_requirements: 0,
-      })
       .facet({
-        recipes: [{ $skip: (page - 1) * limit }, { $limit: limit }],
+        recipes: [
+          {
+            $addFields: {
+              mongo_id: '$id',
+              id: '$mysql_id',
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              __v: 0,
+              mysql_id: 0,
+              recipe_raw_text: 0,
+              origin_url: 0,
+              recipe_steps: 0,
+              ingredient_requirements: 0,
+            },
+          },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+        ],
         count: [{ $count: 'count' }],
       })
       .pipeline();
