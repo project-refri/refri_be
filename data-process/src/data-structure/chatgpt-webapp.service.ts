@@ -95,6 +95,15 @@ export class ChatGPTWebappSession {
       this.page.clickButtonWithDelay(
         xPath('//*[@id="radix-:ro:"]/div[2]/div/div[4]/button'),
       ),
+      this.page.clickButtonWithDelay(
+        xPath('//*[@id="radix-:rf:"]/div[2]/div/div[4]/button'),
+      ),
+      this.page.clickButtonWithDelay(
+        xPath('//*[@id="radix-:rb:"]/div[2]/div/div[4]/button'),
+      ),
+      this.page.clickButtonWithDelay(
+        xPath('//*[@id="radix-:rg:"]/div[2]/div/div[4]/button'),
+      ),
     ]);
     await new Promise((r) => setTimeout(r, 2 * 1000));
   }

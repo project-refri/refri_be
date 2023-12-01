@@ -12,7 +12,10 @@ import { WebAutomationModule } from '../web-automation/web-automation.module';
     {
       provide: 'OPENAI',
       useFactory: async (configService: ConfigService) => {
-        return new OpenAI({ apiKey: configService.get('CHATGPT_API_KEY') });
+        return new OpenAI({
+          apiKey: configService.get('CHATGPT_API_KEY'),
+          timeout: 15 * 60 * 1000,
+        });
       },
       inject: [ConfigService],
     },

@@ -1,5 +1,6 @@
 export const chatGPTQueryString = `
-위에서 제시한 레시피에 대한 글을 보고 아래의 요구사항을 모두 만족하면서, 예시로 적어둔 json 포맷의 code로 알려줘.
+이제부터 레시피에 대한 글을 제시할 거야.
+레시피에 대한 글을 보고 아래의 요구사항을 모두 만족하면서, 예시로 적어둔 json 포맷으로 알려줘.
 
 아래는 예시의 json 포맷이다.
 
@@ -52,14 +53,8 @@ JSON Format:
 temperature: 0.0
 `;
 
-export const chatGPTQueryJsonFormat = `
-{"name":"레시피 제목","description":"레시피에 대한 한줄 설명","thumbnail":"레시피 대표 이미지","ingredient_requirements":[{"name":"재료 이름1","amount":"재료 양"},{"name":"재료 이름2","amount":"재료 양"}],"recipe_steps":[{"description":"조리법 설명1","image":["이미지 url1","이미지 url2","이미지 url3"],"ingredients":[{"name":"필요한 재료 이름1","amount":"재료 양"},{"name":"필요한 재료 이름2","amount":"재료 양"}]},{"description":"조리법 설명2","images":["이미지 url1","이미지 url2","이미지 url3"],"ingredients":[{"name":"필요한 재료 이름1","amount":"재료 양"}]}]}
-
-temperature: 0.0
-`;
-
 export const chatGPTQueryStringAdder = (recipeTextFromHtml: string) => `
-아래 글은 레시피에 대한 글이다. 답변은 하지 말고, 다음 질문을 받아줘.
+아래 글은 레시피에 대한 글이다. 이 글을 보고 위의 요구사항을 모두 만족하면서, 예시로 적어둔 json 포맷으로 알려줘.
 
 Text:
 """
