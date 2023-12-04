@@ -54,7 +54,7 @@ temperature: 0.0
 `;
 
 export const chatGPTQueryStringAdder = (recipeTextFromHtml: string) => `
-아래 글은 레시피에 대한 글이다. 이 글을 보고 위의 요구사항을 모두 만족하면서, 예시로 적어둔 json 포맷으로 알려줘.
+아래에 제시하는 레시피 텍스트 데이터를 요구사항을 만족하는 JSON 포맷으로 구조화해줘.
 
 Text:
 """
@@ -67,7 +67,7 @@ export const chatGPTQueryRawTextFormat = `레시피에 대한 내용만 추출�
 JSON Format:
 """
 {
-  "recipe_raw_text": "레시피 제목\\n레시피에 대한 간단한 소개\\n레시피 대표 이미지 url\\n필요한 재료 목록\\n - 재료 이름1: 재료 양\\n- 재료 이름2: 재료 양\\n조리법 목록\\n  1. 조리법 설명1\\n  2. 조리법 설명2\\n  3. 조리법 설명3\\n"
+  "recipe_raw_text": "레시피 제목\\n레시피에 대한 소개\\n레시피 대표 이미지 url\\n필요한 재료 목록\\n - 재료 이름1: 재료 양\\n - 재료 이름2: 재료 양\\n조리법 목록\\n  1. 조리법 설명1\\n    - image url1\\n    - image url2\\n    - 재료 이름1: 재료 양\\n    - 재료 이름2: 재료 양\\n  2. 조리법 설명2\\n    - image url1\\n    - image url2\\n    - 재료 이름1: 재료 양\\n    - 재료 이름2: 재료 양\\n  3. 조리법 설명3\\n    - image url1\\n    - image url2\\n    - 재료 이름1: 재료 양\\n    - 재료 이름2: 재료 양"
 }
 """
 
