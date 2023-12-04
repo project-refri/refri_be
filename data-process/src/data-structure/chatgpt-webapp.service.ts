@@ -114,9 +114,9 @@ export class ChatGPTWebappSession {
       response = await (
         await this.page.getElementByCssSelector(
           xPath(
-            `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
-              this.history.length + 1
-            }]/div/div/div[2]/div/div[1]/div/div/pre/div/div[2]`,
+            `//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[1]/div/div/div/div[${
+              this.history.length + 2
+            }]/div/div/div[2]/div[2]/div[1]/div/div`,
           ),
         )
       ).evaluate((e) => e.textContent);
@@ -124,9 +124,9 @@ export class ChatGPTWebappSession {
       response = await (
         await this.page.getElementByCssSelector(
           xPath(
-            `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
-              this.history.length + 1
-            }]/div/div/div[2]/div/div[1]`,
+            `//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[1]/div/div/div/div[${
+              this.history.length + 2
+            }]/div/div/div[2]/div[2]/div[1]/div/div/pre/div/div[2]/code`,
           ),
         )
       ).evaluate((e) => e.textContent);
@@ -139,9 +139,9 @@ export class ChatGPTWebappSession {
     const response = await (
       await this.page.getElementByCssSelector(
         xPath(
-          `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
-            this.history.length + 1
-          }]/div/div/div[2]/div/div[1]`,
+          `//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[1]/div/div/div/div[${
+            this.history.length + 2
+          }]/div/div/div[2]/div[2]/div[1]/div/div`,
         ),
       )
     ).evaluate((e) => e.textContent);
@@ -160,7 +160,7 @@ export class ChatGPTWebappSession {
   private async sendInput() {
     await this.page.clickButtonWithDelay(
       xPath(
-        '//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[2]/form/div/div[2]/div/button',
+        '//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[2]/form/div/div/div/button',
       ),
     );
     await new Promise((r) => setTimeout(r, 3000));
@@ -169,16 +169,15 @@ export class ChatGPTWebappSession {
   private async waitForResponse() {
     for (;;) {
       await this.page.waitForDOMChangeByXPath(
-        `//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div[${
-          this.history.length + 1
-        }]/div/div/div[2]/div/div[1]`,
+        `//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[1]/div/div/div/div[${
+          this.history.length + 2
+        }]/div/div/div[2]/div[2]/div[1]/div/div`,
       );
       const button = await this.page.getElementByCssSelector(
         xPath(
-          '//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[2]/form/div/div[1]/div/div[2]/div/button',
+          '//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[2]/form/div/div[1]/div/div[2]/div/button',
         ),
       );
-
       if (
         button &&
         (await button.evaluate((e) => e.textContent)) !== 'Regenerate'
@@ -210,7 +209,7 @@ export class ChatGPTWebappSession {
       } catch (e) {
         const button = await this.page.getElementByCssSelector(
           xPath(
-            '//*[@id="__next"]/div[1]/div[2]/main/div[1]/div[2]/form/div/div[1]/div/div[2]/div/button',
+            '//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[2]/form/div/div[1]/div/div[2]/div/button',
           ),
         );
         if (!!button) {
