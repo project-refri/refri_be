@@ -96,6 +96,7 @@ export class MongoRecipeRepository {
     );
   }
 
+  @Logable()
   async findAllByFullTextSearch(
     textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesAndCountDto> {
@@ -153,14 +154,65 @@ export class MongoRecipeRepository {
   }
 
   @Logable()
+  async findAllByFullTextSearch2(
+    textSearchRecipeDto: TextSearchRecipeDto,
+  ): Promise<RecipesAndCountDto> {
+    const { page, limit } = textSearchRecipeDto;
+    const aggrpipe = this.recipeModel
+      .aggregate()
+      .match({
+        $text: {
+          $search: textSearchRecipeDto.searchQuery,
+        },
+      })
+      .sort({
+        score: { $meta: 'textScore' },
+      })
+      .project({
+        score: { $meta: 'textScore' },
+        _id: 0,
+        __v: 0,
+        recipe_raw_text: 0,
+        origin_url: 0,
+        recipe_steps: 0,
+        ingredient_requirements: 0,
+      })
+      .facet({
+        recipes: [
+          {
+            $addFields: {
+              mongo_id: '$id',
+              id: '$mysql_id',
+            },
+          },
+          {
+            $project: {
+              mysql_id: 0,
+            },
+          },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+        ],
+        count: [{ $count: 'count' }],
+      })
+      .pipeline();
+
+    const ret = await this.recipeModel.aggregate(aggrpipe).exec();
+    return new RecipesAndCountDto(
+      ret[0].recipes,
+      ret[0].count.length > 0 ? ret[0].count[0].count : 0,
+    );
+  }
+
+  @Logable()
   @Cacheable({
     ttl: 5 * 60 * 1000,
-    keyGenerator: (id: string) => `recipe-mongo:${id}`,
+    keyGenerator: (mySqlId: number) => `recipe:id:mysql-${mySqlId}`,
   })
-  async findOneByMysqlId(id: number): Promise<RecipeDto> {
+  async findOneByMysqlId(mySqlId: number): Promise<RecipeDto> {
     return (
       await this.recipeModel
-        .findOne({ mysql_id: id })
+        .findOne({ mysql_id: mySqlId })
         .select({
           _id: 0,
           __v: 0,
@@ -174,7 +226,7 @@ export class MongoRecipeRepository {
   @Logable()
   @Cacheable({
     ttl: 5 * 60 * 1000,
-    keyGenerator: (id: string) => `recipe-mongo:${id}`,
+    keyGenerator: (id: string) => `recipe:id:mongo-${id}`,
   })
   async findOne(id: string): Promise<RecipeDto> {
     return (
@@ -224,10 +276,14 @@ export class MongoRecipeRepository {
     ).map((recipe) => recipe.toObject());
   }
 
-  async increaseViewCount(id: string): Promise<Recipe> {
+  async increaseViewCountByMySqlId(mySqlId: number): Promise<Recipe> {
     return (
       await this.recipeModel
-        .findOneAndUpdate({ id }, { $inc: { view_count: 1 } }, { new: true })
+        .findOneAndUpdate(
+          { mysql_id: mySqlId },
+          { $inc: { view_count: 1 } },
+          { new: true },
+        )
         .exec()
     )?.toObject();
   }
