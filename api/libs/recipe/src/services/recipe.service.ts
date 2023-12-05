@@ -13,6 +13,7 @@ import {
   TextSearchRecipeDto,
 } from '../dto/recipe/filter-recipe.dto';
 import {
+  CreateMongoRecipeDto,
   CreateRecipeDto,
   UpdateRecipeDto,
 } from '../dto/recipe/modify-recipe.dto';
@@ -23,6 +24,8 @@ import { Logable } from '@app/common/log/log.decorator';
 import { RecipeViewLogRepository } from '../repositories/recipe-view-log/recipe-view-log.repository';
 import { Cacheable } from '@app/common/cache/cache.service';
 import { Recipe } from '../entities/recipe.entity';
+import { deleteProps } from '@app/common/utils/delete-props';
+import { deleteNull } from '@app/common/utils/delete-null';
 
 @Injectable()
 export class RecipeService implements OnApplicationBootstrap {
@@ -35,8 +38,23 @@ export class RecipeService implements OnApplicationBootstrap {
   ) {}
 
   @Logable()
-  async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
-    return await this.recipeRepository.create(createRecipeDto);
+  async create(createRecipeDto: CreateMongoRecipeDto): Promise<Recipe> {
+    const mongoRecipe = await this.mongoRecipeRepository.create(
+      deleteNull(createRecipeDto),
+    );
+    const recipe = await this.recipeRepository.create(
+      deleteProps(
+        {
+          ...createRecipeDto,
+          mongo_id: mongoRecipe.id.toString(),
+        },
+        ['recipe_steps', 'ingredient_requirements', 'recipe_raw_text'],
+      ),
+    );
+    await this.mongoRecipeRepository.update(mongoRecipe.id.toString(), {
+      mysql_id: recipe.id,
+    });
+    return recipe;
   }
 
   @Logable()
@@ -111,7 +129,10 @@ export class RecipeService implements OnApplicationBootstrap {
     id: number,
     identifier: RecipeViewerIdentifier,
   ): Promise<boolean> {
-    const ret = await this.recipeRepository.increaseViewCount(id);
+    const ret = await Promise.all([
+      this.recipeRepository.increaseViewCount(id),
+      this.mongoRecipeRepository.increaseViewCountByMySqlId(id),
+    ]);
     if (!ret) throw new NotFoundException('Recipe not found');
     const recipeViewLog = await this.recipeViewLogRepository.create({
       recipe_id: id,
@@ -149,17 +170,24 @@ export class RecipeService implements OnApplicationBootstrap {
 
     // while (hasNext) {
     //   const ret = (
-    //     await this.recipeRepository.findAllRecipe({
+    //     await this.mongoRecipeRepository.findAllRecipe({
     //       page: ++page,
-    //       limit: 50,
+    //       limit: 10,
+    //       mysql_id: null,
     //     })
-    //   ).toRecipesResponseDto(page, 50);
+    //   ).toRecipesResponseDto(page, 10);
     //   const { results, has_next } = ret;
     //   if (results.length === 0) return;
     //   hasNext = has_next;
 
-    //   await Promise.all(
+    //   const mysqlRecipes = await Promise.all(
     //     results.map(async (recipe) => {
+    //       return this.recipeRepository.findOneByMongoId(recipe.id as any);
+    //     }),
+    //   );
+
+    //   await Promise.all(
+    //     mysqlRecipes.map(async (recipe) => {
     //       return this.mongoRecipeRepository.update(recipe.mongo_id, {
     //         mysql_id: recipe.id,
     //       });

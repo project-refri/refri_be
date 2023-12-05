@@ -23,7 +23,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
-  CreateRecipeDto,
+  CreateMongoRecipeDto,
   UpdateRecipeDto,
 } from '../dto/recipe/modify-recipe.dto';
 import {
@@ -55,11 +55,7 @@ export class RecipeController {
   @Auth()
   @ApiPostCreated(CreateRecipeResponseDto)
   @Post()
-  async create(
-    @Body() createRecipeDto: CreateRecipeDto,
-    @ReqUser() user: User,
-  ) {
-    createRecipeDto.owner_id = user.id;
+  async create(@Body() createRecipeDto: CreateMongoRecipeDto) {
     return this.recipeService.create(createRecipeDto);
   }
 
@@ -74,13 +70,7 @@ export class RecipeController {
   @Auth()
   @ApiGet(FindRecipesResponseDto)
   @Get()
-  async findAll(
-    @ReqUser() user: User,
-    @Query() filterRecipeDto: FilterRecipeDto,
-  ) {
-    // const filterRecipeDto: FilterRecipeDto = queryBuilder({
-    //   user_id: user.id.toString(),
-    // });
+  async findAll(@Query() filterRecipeDto: FilterRecipeDto) {
     return this.recipeService.findAll(filterRecipeDto);
   }
 

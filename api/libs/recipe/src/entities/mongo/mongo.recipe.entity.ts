@@ -30,7 +30,7 @@ export class Recipe {
   })
   id: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true, unique: true, index: true })
+  @Prop({ required: false, index: true })
   mysql_id: number;
 
   @Prop({ required: true })
@@ -68,3 +68,5 @@ export class Recipe {
 }
 
 export const RecipeSchema = SchemaFactory.createForClass(Recipe);
+
+RecipeSchema.index({ '$**': 'text' });
