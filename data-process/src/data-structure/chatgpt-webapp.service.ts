@@ -116,7 +116,7 @@ export class ChatGPTWebappSession {
           xPath(
             `//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[1]/div/div/div/div[${
               this.history.length + 2
-            }]/div/div/div[2]/div[2]/div[1]/div/div`,
+            }]/div/div/div[2]/div[2]/div[1]/div/div/pre/div/div[2]/code`,
           ),
         )
       ).evaluate((e) => e.textContent);
@@ -126,7 +126,7 @@ export class ChatGPTWebappSession {
           xPath(
             `//*[@id="__next"]/div[1]/div[2]/main/div[2]/div[1]/div/div/div/div[${
               this.history.length + 2
-            }]/div/div/div[2]/div[2]/div[1]/div/div/pre/div/div[2]/code`,
+            }]/div/div/div[2]/div[2]/div[1]/div/div`,
           ),
         )
       ).evaluate((e) => e.textContent);

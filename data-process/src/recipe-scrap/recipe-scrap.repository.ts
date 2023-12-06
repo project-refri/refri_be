@@ -40,7 +40,7 @@ export class RecipeScrapRepository {
   async findAllRecipeScrapRequestOrderByRecent() {
     return await this.recipeScrapReqModel
       .find({ status: RecipeScrapRequestStatus.PENDING })
-      .sort({ createdAt: -1 })
+      .sort({ created_at: -1 })
       .exec();
   }
 

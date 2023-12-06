@@ -18,9 +18,10 @@ class IngredientRequirementDto {
     this.amount = amount;
   }
 
+  @IsOptional()
   @IsMongoId()
   @IsString()
-  ingredient_id: string;
+  ingredient_id?: string;
 
   @IsString()
   @IsNotEmpty()

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { schemaOptions } from 'src/common/schema.option';
 
 export type RecipeScrapRequestDocument = HydratedDocument<RecipeScrapRequest>;
 
@@ -9,7 +10,7 @@ export enum RecipeScrapRequestStatus {
   ERROR = 'ERROR',
 }
 
-@Schema()
+@Schema(schemaOptions)
 export class RecipeScrapRequest {
   @Prop({
     required: true,

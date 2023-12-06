@@ -33,7 +33,7 @@ export class RecipeScrapController {
   }
 
   @Post('reject/:recipe_id')
-  async rejectRecipeScrapRequest(@Param('recipe_id') id: string) {
+  async rejectRecipeScrapRequest(@Param('recipe_id') id: number) {
     return await this.recipeScrapService.rejectRecipeScrapRequest(id);
   }
 }

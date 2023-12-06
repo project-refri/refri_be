@@ -1,8 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { RecipeScrapService } from './recipe-scrap/recipe-scrap.service';
-import { RecipeService } from './recipe/services/recipe.service';
-import { Recipe } from './recipe/entities/recipe.entity';
 import * as util from 'util';
 import {} from './recipe-scrap/dto/modify-recipe-scrap-req.dto';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -51,7 +49,6 @@ async function bootstrap() {
 async function bootstrap2() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
-  const recipeService = app.get(RecipeService);
   const recipeScrapService = app.get(RecipeScrapService);
   const webAutomationService = app.get(WebAutomationService);
   const dataStructureService = app.get(DataStructureService);
