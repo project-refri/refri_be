@@ -1,7 +1,7 @@
 import { OmitType } from '@nestjs/swagger';
-import { CreateRecipeDto } from 'src/recipe/dto/modify-recipe.dto';
+import { CreateMongoRecipeDto } from 'src/recipe-scrap/dto/create-recipe.dto';
 
-export class RecipeStructuredDto extends OmitType(CreateRecipeDto, [
+export class RecipeStructuredDto extends OmitType(CreateMongoRecipeDto, [
   'origin_url',
   'owner',
 ] as const) {}
