@@ -417,15 +417,20 @@ describe('RecipeService', () => {
     it('should delete well', async () => {
       const recipe = new Recipe();
       recipeRepository.deleteOne.mockResolvedValue(recipe);
+      mongoRecipeRepository.deleteOneByMysqlId.mockResolvedValue(
+        new MongoRecipe(),
+      );
 
       const result = await service.deleteOne(1);
 
       expect(recipeRepository.deleteOne).toHaveBeenCalledWith(1);
+      expect(mongoRecipeRepository.deleteOneByMysqlId).toHaveBeenCalledWith(1);
       expect(result).toEqual(recipe);
     });
 
     it('should throw NotFoundException', async () => {
       recipeRepository.deleteOne.mockResolvedValue(null);
+      mongoRecipeRepository.deleteOneByMysqlId.mockResolvedValue(null);
 
       await expect(service.deleteOne(1)).rejects.toThrowError(
         'Recipe not found',

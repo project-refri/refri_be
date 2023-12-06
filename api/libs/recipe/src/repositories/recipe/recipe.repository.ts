@@ -35,7 +35,7 @@ export class RecipeRepository
   ): Promise<RecipesAndCountDto> {
     const { page, limit } = filterRecipeDto;
     const filterDto = deleteNull<FilterRecipeDto>(
-      deleteProps<FilterRecipeDto>(filterRecipeDto, ['page', 'limit']),
+      deleteProps(filterRecipeDto, ['page', 'limit']),
     );
     const recipeProms = this.prisma.recipe.findMany({
       where: filterDto,
@@ -99,5 +99,22 @@ export class RecipeRepository
       where: { id },
       data: { view_count: { increment: 1 } },
     });
+  }
+
+  async deleteOne(id: number): Promise<Recipe> {
+    const deleteRecipe = this.prisma.recipe.delete({ where: { id } });
+    const deleteRecipeViewLog = this.prisma.recipeViewLog.deleteMany({
+      where: { recipe_id: id },
+    });
+    const deleteRecipeBookmark = this.prisma.recipeBookmark.deleteMany({
+      where: { recipe_id: id },
+    });
+    return (
+      await this.prisma.$transaction([
+        deleteRecipeViewLog,
+        deleteRecipeBookmark,
+        deleteRecipe,
+      ])
+    )[2];
   }
 }
