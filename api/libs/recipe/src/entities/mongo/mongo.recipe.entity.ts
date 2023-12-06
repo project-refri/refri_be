@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { schemaOptions } from '@app/common/utils/schema-option';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
 export class IngredientRequirement {
-  ingredient_id: MongooseSchema.Types.ObjectId;
+  ingredient_id: Types.ObjectId;
 
   name: string;
 
@@ -26,9 +26,9 @@ export class Recipe {
     required: true,
     unique: true,
     auto: true,
-    type: MongooseSchema.Types.ObjectId,
+    type: Types.ObjectId,
   })
-  id: MongooseSchema.Types.ObjectId;
+  id: Types.ObjectId;
 
   @Prop({ required: false, index: true })
   mysql_id: number;
@@ -39,8 +39,8 @@ export class Recipe {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ required: false, type: MongooseSchema.Types.ObjectId })
-  owner: MongooseSchema.Types.ObjectId;
+  @Prop({ required: false, type: Types.ObjectId })
+  owner: Types.ObjectId;
 
   @Prop({ required: true, type: Array<IngredientRequirement> })
   ingredient_requirements: Array<IngredientRequirement>;

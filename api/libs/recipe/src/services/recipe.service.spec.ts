@@ -7,7 +7,7 @@ import {
   TextSearchRecipeDto,
 } from '../dto/recipe/filter-recipe.dto';
 import {
-  CreateRecipeDto,
+  CreateMongoRecipeDto,
   UpdateRecipeDto,
 } from '../dto/recipe/modify-recipe.dto';
 import { MongoRecipeRepository } from '../repositories/recipe/mongo.recipe.repository';
@@ -18,7 +18,9 @@ import { RecipeViewLogRepository } from '../repositories/recipe-view-log/recipe-
 import { RecipeViewLog } from '../entities/recipe-view-log.entity';
 import { User } from '@app/user/entities/user.entity';
 import { Recipe } from '../entities/recipe.entity';
+import { Recipe as MongoRecipe } from '../entities/mongo/mongo.recipe.entity';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
+import { Types } from 'mongoose';
 
 describe('RecipeService', () => {
   let service: RecipeService;
@@ -75,13 +77,25 @@ describe('RecipeService', () => {
 
   describe('create', () => {
     it('should create a new recipe', async () => {
-      const createRecipeDto = {} as CreateRecipeDto;
-      const recipe = new Recipe();
+      const createRecipeDto = {} as CreateMongoRecipeDto;
+      const mongoId = new Types.ObjectId();
+      const recipe: Recipe = { ...new Recipe(), id: 1 },
+        mongoRecipe: MongoRecipe = {
+          ...new MongoRecipe(),
+          id: mongoId,
+        };
       recipeRepository.create.mockResolvedValue(recipe);
+      mongoRecipeRepository.create.mockResolvedValue(mongoRecipe);
 
       const result = await service.create(createRecipeDto);
 
-      expect(recipeRepository.create).toHaveBeenCalledWith(createRecipeDto);
+      expect(mongoRecipeRepository.create).toHaveBeenCalledWith(
+        createRecipeDto,
+      );
+      expect(recipeRepository.create).toHaveBeenCalledWith({
+        ...createRecipeDto,
+        mongo_id: mongoId.toString(),
+      });
       expect(result).toEqual(recipe);
     });
   });
@@ -213,6 +227,9 @@ describe('RecipeService', () => {
       const recipe = new RecipeDto();
       mongoRecipeRepository.findOneByMysqlId.mockResolvedValue(recipe);
       recipeRepository.increaseViewCount.mockResolvedValue(new Recipe());
+      mongoRecipeRepository.increaseViewCountByMySqlId.mockResolvedValue(
+        new MongoRecipe(),
+      );
       recipeViewLogRepository.create.mockResolvedValue(new RecipeViewLog());
 
       const result = await service.findOne(1, {
@@ -303,6 +320,9 @@ describe('RecipeService', () => {
   describe('viewRecipe', () => {
     it('should return true', async () => {
       recipeRepository.increaseViewCount.mockResolvedValue(new Recipe());
+      mongoRecipeRepository.increaseViewCountByMySqlId.mockResolvedValue(
+        new MongoRecipe(),
+      );
       recipeViewLogRepository.create.mockResolvedValue(new RecipeViewLog());
 
       const result = await service.viewRecipe(1, {
@@ -324,6 +344,7 @@ describe('RecipeService', () => {
 
     it('should throw NotFoundException', async () => {
       recipeRepository.increaseViewCount.mockResolvedValue(null);
+      mongoRecipeRepository.increaseViewCountByMySqlId.mockResolvedValue(null);
 
       await expect(
         service.viewRecipe(1, {

@@ -133,7 +133,7 @@ export class RecipeService implements OnApplicationBootstrap {
       this.recipeRepository.increaseViewCount(id),
       this.mongoRecipeRepository.increaseViewCountByMySqlId(id),
     ]);
-    if (!ret) throw new NotFoundException('Recipe not found');
+    if (!ret[0] || !ret[1]) throw new NotFoundException('Recipe not found');
     const recipeViewLog = await this.recipeViewLogRepository.create({
       recipe_id: id,
       user_id: identifier.user ? identifier.user.id : undefined,
