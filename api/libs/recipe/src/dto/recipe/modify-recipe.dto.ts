@@ -2,6 +2,7 @@ import { OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
+  IsDate,
   IsInt,
   IsMongoId,
   IsNotEmpty,
@@ -16,12 +17,13 @@ class IngredientRequirementDto {
   constructor(ingredient_id: string, name: string, amount: string) {
     this.ingredient_id = ingredient_id;
     this.name = name;
-    this.amount = amount;
+    this.amount = amount ?? '적당량';
   }
 
   @IsMongoId()
+  @IsOptional()
   @IsString()
-  ingredient_id: string;
+  ingredient_id?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -40,14 +42,15 @@ export class RecipeStepDto {
   ) {
     this.description = description;
     this.images = images;
-    this.ingredients = ingredients.map(
-      (item) =>
-        new IngredientRequirementDto(
-          item.ingredient_id,
-          item.name,
-          item.amount,
-        ),
-    );
+    this.ingredients =
+      ingredients?.map(
+        (item) =>
+          new IngredientRequirementDto(
+            item.ingredient_id,
+            item.name,
+            item.amount,
+          ),
+      ) ?? [];
   }
   @IsString()
   @IsNotEmpty()
@@ -63,7 +66,6 @@ export class RecipeStepDto {
   images: string[];
 
   @ValidateNested()
-  @ArrayNotEmpty()
   @IsArray()
   ingredients: IngredientRequirementDto[];
 }
@@ -150,6 +152,10 @@ export class UpdateRecipeDto extends PartialType(
   @IsOptional()
   @IsMongoId()
   mongo_id?: string;
+
+  @IsOptional()
+  @IsDate()
+  created_at?: Date;
 }
 
 export class UpdateMongoRecipeDto extends PartialType(

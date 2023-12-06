@@ -15,11 +15,11 @@ class IngredientRequirementDto {
   constructor(ingredient_id: string, name: string, amount: string) {
     this.ingredient_id = ingredient_id;
     this.name = name;
-    this.amount = amount;
+    this.amount = amount ?? '적당량';
   }
 
-  @IsOptional()
   @IsMongoId()
+  @IsOptional()
   @IsString()
   ingredient_id?: string;
 
@@ -40,14 +40,15 @@ export class RecipeStepDto {
   ) {
     this.description = description;
     this.images = images;
-    this.ingredients = ingredients.map(
-      (item) =>
-        new IngredientRequirementDto(
-          item.ingredient_id,
-          item.name,
-          item.amount,
-        ),
-    );
+    this.ingredients =
+      ingredients?.map(
+        (item) =>
+          new IngredientRequirementDto(
+            item.ingredient_id,
+            item.name,
+            item.amount,
+          ),
+      ) ?? [];
   }
   @IsString()
   @IsNotEmpty()
@@ -63,7 +64,6 @@ export class RecipeStepDto {
   images: string[];
 
   @ValidateNested()
-  @ArrayNotEmpty()
   @IsArray()
   ingredients: IngredientRequirementDto[];
 }
@@ -72,7 +72,7 @@ export class CreateMongoRecipeDto {
   constructor(
     name: string,
     description: string,
-    owner: string,
+    owner_id: string,
     ingredient_requirements: IngredientRequirementDto[],
     recipe_steps: RecipeStepDto[],
     thumbnail: string,
@@ -81,7 +81,7 @@ export class CreateMongoRecipeDto {
   ) {
     this.name = name;
     this.description = description;
-    this.owner = owner;
+    this.owner_id = owner_id;
     this.ingredient_requirements = ingredient_requirements.map(
       (item) =>
         new IngredientRequirementDto(
@@ -115,7 +115,7 @@ export class CreateMongoRecipeDto {
   @IsMongoId()
   @IsString()
   @IsOptional()
-  owner?: string;
+  owner_id?: string;
 
   @ValidateNested()
   @ArrayNotEmpty()

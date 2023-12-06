@@ -3,5 +3,5 @@ import { CreateMongoRecipeDto } from 'src/recipe-scrap/dto/create-recipe.dto';
 
 export class RecipeStructuredDto extends OmitType(CreateMongoRecipeDto, [
   'origin_url',
-  'owner',
+  'owner_id',
 ] as const) {}

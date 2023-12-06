@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Types, Schema as MongoSchema } from 'mongoose';
 import { schemaOptions } from 'src/common/schema.option';
 
 export type RecipeScrapRequestDocument = HydratedDocument<RecipeScrapRequest>;
@@ -16,15 +16,15 @@ export class RecipeScrapRequest {
     required: true,
     unique: true,
     auto: true,
-    type: Types.ObjectId,
+    type: MongoSchema.Types.ObjectId,
   })
   id: Types.ObjectId;
 
   @Prop({ required: true, unique: true })
   url: string;
 
-  @Prop({ required: false, type: Types.ObjectId })
-  user: Types.ObjectId;
+  @Prop({ required: false, type: MongoSchema.Types.ObjectId })
+  user_id: Types.ObjectId;
 
   @Prop({
     required: true,
