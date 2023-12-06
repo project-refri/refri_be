@@ -190,7 +190,6 @@ export class DataStructureService {
     recipeTextFromHtml: string,
   ): Promise<RecipeStructuredDto> {
     const session = await this.chatGPTWebappService.getSession();
-    await session.sendMessage(chatGPTQueryString, false);
 
     const recipeStructured = JSON.parse(
       await session.sendMessage(chatGPTQueryStringAdder(recipeTextFromHtml)),

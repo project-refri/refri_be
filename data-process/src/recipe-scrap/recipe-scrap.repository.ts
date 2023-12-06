@@ -27,6 +27,12 @@ export class RecipeScrapRepository {
     return await this.recipeScrapReqModel.findOne({ url }).exec();
   }
 
+  async findOneByRecipeId(recipeId: number) {
+    return await this.recipeScrapReqModel
+      .findOne({ recipe_id: recipeId })
+      .exec();
+  }
+
   async findAll() {
     return await this.recipeScrapReqModel.find().exec();
   }
@@ -34,15 +40,15 @@ export class RecipeScrapRepository {
   async findAllRecipeScrapRequestOrderByRecent() {
     return await this.recipeScrapReqModel
       .find({ status: RecipeScrapRequestStatus.PENDING })
-      .sort({ createdAt: -1 })
+      .sort({ created_at: -1 })
       .exec();
   }
 
-  async updateRecipeScrapRequestStatusToDone(id: string) {
+  async updateRecipeScrapRequestStatusToDone(id: string, recipeId: number) {
     return await this.recipeScrapReqModel
       .findOneAndUpdate(
         { id },
-        { status: RecipeScrapRequestStatus.DONE },
+        { status: RecipeScrapRequestStatus.DONE, recipe_id: recipeId },
         { new: true },
       )
       .exec();

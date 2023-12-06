@@ -1,8 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { RecipeScrapService } from './recipe-scrap/recipe-scrap.service';
-import { RecipeService } from './recipe/services/recipe.service';
-import { Recipe } from './recipe/entities/recipe.entity';
 import * as util from 'util';
 import {} from './recipe-scrap/dto/modify-recipe-scrap-req.dto';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -11,6 +9,7 @@ import { join } from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import { RecipeScrapRequest } from './recipe-scrap/entity/recipe-scrap-req.entity';
 import { WebAutomationService } from './web-automation/web-automation.service';
+import { DataStructureService } from './data-structure/data-structure.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -50,29 +49,26 @@ async function bootstrap() {
 async function bootstrap2() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
-  const recipeService = app.get(RecipeService);
   const recipeScrapService = app.get(RecipeScrapService);
   const webAutomationService = app.get(WebAutomationService);
+  const dataStructureService = app.get(DataStructureService);
 
-  const recipeExist = new Map<string, Recipe>();
-  const requestExist = new Set<string>();
+  // await webAutomationService.initBrowser();
 
-  await webAutomationService.initBrowser();
-  const page = await webAutomationService.getPage();
+  // const page = await webAutomationService.getPage();
+  // await page.gotoUrl(url);
+  // const htmlText = await page.extractHtml();
+  // const text = await webAutomationService.extractHtmlTextFromPageContent(
+  //   htmlText,
+  //   [
+  //     '#content_permallink_article > div > div > div.box_article_tit',
+  //     '#content_permallink_article > div > div > div.box_article',
+  //   ],
+  // );
+  // console.log(text);
 
-  const recipes: Recipe[] = (
-    await recipeService.findAll({ page: 1, limit: 1000 })
-  ).results as Recipe[];
-  const requests: RecipeScrapRequest[] = await recipeScrapService.findAll();
-
-  for (let i = 1; i < 415; i++) {
-    const url = `https://chef-choice.tistory.com/${i}`;
-    const recipe = await recipeService.findOneByOriginUrl(url);
-    const req = await recipeScrapService.findOneByUrl(url);
-    if (recipe && req) {
-      console.log('both exist', url);
-    }
-  }
+  // const ret = await dataStructureService.extractRecipeDataFromText(rawText);
+  // console.log(ret);
 }
 
 bootstrap();

@@ -1,4 +1,4 @@
-import { IsEnum, IsMongoId, IsOptional, IsUrl } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsUrl, Min } from 'class-validator';
 
 export class CreateRecipeScrapRequestDto {
   @IsUrl()
@@ -10,9 +10,10 @@ export class ConfirmRecipeScrapRequestDto {
   @IsOptional()
   origin_url?: string;
 
-  @IsMongoId()
+  @IsInt()
+  @Min(1)
   @IsOptional()
-  recipe_id?: string;
+  recipe_id?: number;
 
   @IsEnum(['confirm', 'reject'])
   confirm: 'confirm' | 'reject';

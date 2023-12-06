@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { schemaOptions } from 'src/common/schema.option';
 
 export type RecipeScrapRequestDocument = HydratedDocument<RecipeScrapRequest>;
 
@@ -9,21 +10,21 @@ export enum RecipeScrapRequestStatus {
   ERROR = 'ERROR',
 }
 
-@Schema()
+@Schema(schemaOptions)
 export class RecipeScrapRequest {
   @Prop({
     required: true,
     unique: true,
     auto: true,
-    type: MongooseSchema.Types.ObjectId,
+    type: Types.ObjectId,
   })
-  id: MongooseSchema.Types.ObjectId;
+  id: Types.ObjectId;
 
   @Prop({ required: true, unique: true })
   url: string;
 
-  @Prop({ required: false, type: MongooseSchema.Types.ObjectId })
-  user: MongooseSchema.Types.ObjectId;
+  @Prop({ required: false, type: Types.ObjectId })
+  user: Types.ObjectId;
 
   @Prop({
     required: true,
@@ -31,6 +32,12 @@ export class RecipeScrapRequest {
     default: RecipeScrapRequestStatus.PENDING,
   })
   status: RecipeScrapRequestStatus;
+
+  @Prop({ required: false })
+  recipe_id?: number;
+
+  @Prop({ required: false })
+  recipe_json?: string;
 
   @Prop({ required: false })
   created_at: Date;

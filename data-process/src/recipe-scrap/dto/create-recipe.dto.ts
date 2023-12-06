@@ -1,11 +1,13 @@
-import { OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
+  IsInt,
+  IsMongoId,
   IsNotEmpty,
-  IsNumber,
+  IsOptional,
   IsString,
   IsUrl,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -13,12 +15,13 @@ class IngredientRequirementDto {
   constructor(ingredient_id: string, name: string, amount: string) {
     this.ingredient_id = ingredient_id;
     this.name = name;
-    this.amount = amount ? amount : '적당량';
+    this.amount = amount;
   }
 
-  // @IsMongoId()
-  // @IsString()
-  ingredient_id: string;
+  @IsOptional()
+  @IsMongoId()
+  @IsString()
+  ingredient_id?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -37,23 +40,20 @@ export class RecipeStepDto {
   ) {
     this.description = description;
     this.images = images;
-    this.ingredients = ingredients
-      ? ingredients.map(
-          (item) =>
-            new IngredientRequirementDto(
-              item.ingredient_id,
-              item.name,
-              item.amount,
-            ),
-        )
-      : [];
+    this.ingredients = ingredients.map(
+      (item) =>
+        new IngredientRequirementDto(
+          item.ingredient_id,
+          item.name,
+          item.amount,
+        ),
+    );
   }
   @IsString()
   @IsNotEmpty()
   description: string;
 
   @IsArray()
-  @ArrayNotEmpty()
   @IsUrl(
     {},
     {
@@ -63,12 +63,12 @@ export class RecipeStepDto {
   images: string[];
 
   @ValidateNested()
-  // @ArrayNotEmpty()
+  @ArrayNotEmpty()
   @IsArray()
   ingredients: IngredientRequirementDto[];
 }
 
-export class CreateRecipeDto {
+export class CreateMongoRecipeDto {
   constructor(
     name: string,
     description: string,
@@ -103,14 +103,19 @@ export class CreateRecipeDto {
   @IsNotEmpty()
   name: string;
 
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  mysql_id?: number;
+
   @IsString()
   @IsNotEmpty()
   description: string;
 
-  // @IsMongoId()
-  // @IsString()
-  // @IsOptional()
-  owner: string;
+  @IsMongoId()
+  @IsString()
+  @IsOptional()
+  owner?: string;
 
   @ValidateNested()
   @ArrayNotEmpty()
@@ -133,11 +138,4 @@ export class CreateRecipeDto {
   @IsUrl()
   @IsString()
   origin_url: string;
-}
-
-export class UpdateRecipeDto extends PartialType(
-  OmitType(CreateRecipeDto, ['owner'] as const),
-) {
-  @IsNumber()
-  view_count: number;
 }
