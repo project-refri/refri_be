@@ -60,6 +60,12 @@ export class RecipeRepository
     return new RecipesAndCountDto(recipes, count);
   }
 
+  async findOneByMongoId(mongoId: string): Promise<Recipe> {
+    return this.prisma.recipe.findUnique({
+      where: { mongo_id: mongoId },
+    });
+  }
+
   async findAllByFullTextSearch(
     _textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesAndCountDto> {

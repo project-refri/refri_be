@@ -62,7 +62,7 @@ model RecipeBookmark {
 
 model Recipe {
   id              Int              @id @default(autoincrement())
-  mongo_id        String           @unique
+  mongo_id        String?          @unique
   name            String
   description     String
   owner_id        Int?

@@ -69,43 +69,14 @@ export class RecipeStepDto {
 }
 
 export class CreateMongoRecipeDto {
-  constructor(
-    name: string,
-    description: string,
-    owner: string,
-    ingredient_requirements: IngredientRequirementDto[],
-    recipe_steps: RecipeStepDto[],
-    thumbnail: string,
-    recipe_raw_text: string,
-    origin_url: string,
-  ) {
-    this.name = name;
-    this.description = description;
-    this.owner = owner;
-    this.ingredient_requirements = ingredient_requirements.map(
-      (item) =>
-        new IngredientRequirementDto(
-          item.ingredient_id,
-          item.name,
-          item.amount,
-        ),
-    );
-    this.recipe_steps = recipe_steps.map(
-      (item) =>
-        new RecipeStepDto(item.description, item.images, item.ingredients),
-    );
-    this.thumbnail = thumbnail;
-    this.recipe_raw_text = recipe_raw_text;
-    this.origin_url = origin_url;
-  }
-
   @IsString()
   @IsNotEmpty()
   name: string;
 
   @IsInt()
   @Min(1)
-  mysql_id: number;
+  @IsOptional()
+  mysql_id?: number;
 
   @IsString()
   @IsNotEmpty()
@@ -144,8 +115,9 @@ export class CreateRecipeDto {
   @IsNotEmpty()
   name: string;
 
+  @IsOptional()
   @IsMongoId()
-  mongo_id: string;
+  mongo_id?: string;
 
   @IsOptional()
   @IsInt()
@@ -174,6 +146,10 @@ export class UpdateRecipeDto extends PartialType(
   @IsOptional()
   @IsInt()
   view_count?: number;
+
+  @IsOptional()
+  @IsMongoId()
+  mongo_id?: string;
 }
 
 export class UpdateMongoRecipeDto extends PartialType(

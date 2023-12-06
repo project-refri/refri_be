@@ -5,6 +5,7 @@ import {
 import {
   IsDate,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -45,6 +46,10 @@ export class FilterRecipeDto extends PagenationDto {
   @IsDate()
   @IsOptional()
   updated_at?: Date;
+
+  @IsInt()
+  @IsOptional()
+  mysql_id?: number;
 }
 
 export enum TextSearchSortBy {
