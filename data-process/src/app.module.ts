@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataStructureModule } from './data-structure/data-structure.module';
-import { RecipeModule } from './recipe/recipe.module';
 // import { IngredientModule } from './ingredient/ingredient.module';
 import { WebAutomationModule } from './web-automation/web-automation.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -19,7 +18,6 @@ import { RecipeScrapModule } from './recipe-scrap/recipe-scrap.module';
     }),
     DataStructureModule,
     WebAutomationModule,
-    RecipeModule,
     // IngredientModule,
     RecipeScrapModule,
   ],
