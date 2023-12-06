@@ -157,16 +157,16 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   async deleteOne(id: number): Promise<Recipe> {
-    const ret = await this.recipeRepository.deleteOne(id);
-    if (!ret) throw new NotFoundException('Recipe not found');
-    return ret;
+    const ret = await Promise.all([
+      this.recipeRepository.deleteOne(id),
+      this.mongoRecipeRepository.deleteOneByMysqlId(id),
+    ]);
+    if (!ret[0] || !ret[1]) throw new NotFoundException('Recipe not found');
+    return ret[0];
   }
 
   async onApplicationBootstrap() {
     await this.setAllViewedRecipesInPast1Month();
-
-    // let hasNext = true;
-    // let page = 0;
 
     // while (hasNext) {
     //   const ret = (

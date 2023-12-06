@@ -303,6 +303,12 @@ export class MongoRecipeRepository {
     return (await this.recipeModel.findOneAndDelete({ id }).exec())?.toObject();
   }
 
+  async deleteOneByMysqlId(mysqlId: number): Promise<Recipe> {
+    return (
+      await this.recipeModel.findOneAndDelete({ mysql_id: mysqlId }).exec()
+    )?.toObject();
+  }
+
   async deleteAll(filterRecipeDto: FilterRecipeDto): Promise<any> {
     return await this.recipeModel.deleteMany(filterRecipeDto).exec();
   }
