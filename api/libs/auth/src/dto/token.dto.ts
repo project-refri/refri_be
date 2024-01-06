@@ -1,4 +1,4 @@
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import { IsInt, IsUUID } from 'class-validator';
 
 export class LoginSessionDto {

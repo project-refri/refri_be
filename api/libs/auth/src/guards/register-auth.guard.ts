@@ -6,8 +6,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AuthService } from '../services/auth.service';
-import { UserService } from '@app/user/services/user.service';
+import { AuthService } from '../auth.service';
+import { UserService } from '@app/user/user.service';
 
 @Injectable()
 export class RegisterAuthGuard implements CanActivate {

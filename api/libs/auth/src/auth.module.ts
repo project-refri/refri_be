@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
-import { AuthController } from './controllers/auth.controller';
-import { AuthService } from './services/auth.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthRepository } from './repositories/auth.repository';
 import { JwtModule } from '@nestjs/jwt';
@@ -11,7 +11,7 @@ import {
   Session,
   SessionSchema,
   SessionSchemaFactory,
-} from './entities/mongo.session.entity';
+} from './domain/mongo.session.entity';
 
 @Global()
 @Module({

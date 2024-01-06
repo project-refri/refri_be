@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserIngredientController } from './controllers/user-ingredient.controller';
+import { UserIngredientController } from './user-ingredient.controller';
 import {
   UserIngredient,
   UserIngredientSchemaFactory,
-} from './entities/mongo/mongo.user-ingredient.entity';
+} from '@app/ingredient/domain/mongo/mongo.user-ingredient.entity';
 import { UserIngredientRepository } from './repositories/user-ingredient.repository';
-import { UserIngredientService } from './services/user-ingredient.service';
+import { UserIngredientService } from './user-ingredient.service';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { ClientsModule, Transport } from '@nestjs/microservices';

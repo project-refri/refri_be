@@ -10,8 +10,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { FoodType } from '../types/food-type.enum';
-import { StoreMethod } from '../types/store-method.enum';
+import { FoodType } from '../domain/food-type.enum';
+import { StoreMethod } from '../domain/store-method.enum';
 
 export class CreateUserIngredientDto {
   @IsString()

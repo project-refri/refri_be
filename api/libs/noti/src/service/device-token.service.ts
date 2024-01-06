@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DeviceTokenRepository } from '../repository/device-token.repository';
 import { CreateDeviceTokenDto } from '../dto/modify-device-token.dto';
-import { DeviceToken } from '../entity/device-token.entity';
+import { DeviceToken } from '@app/noti/domain/device-token.entity';
 import { CrudService } from '@app/common/crud.service';
 import { FilterDeviceTokenDto } from '../dto/filter-device-token.dto';
 

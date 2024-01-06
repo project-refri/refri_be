@@ -1,4 +1,4 @@
-import { Diet } from '../types/diet.enum';
+import { Diet } from '../domain/diet.enum';
 
 export class FilterUserDto {
   nickname?: string;

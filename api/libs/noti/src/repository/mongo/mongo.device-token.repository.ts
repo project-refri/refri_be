@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   DeviceToken,
   DeviceTokenDocument,
-} from '../../entity/mongo/mongo.device-token.entity';
+} from '@app/noti/domain/mongo/mongo.device-token.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CrudMongoRepository } from '@app/common/repository/crud-mongo.repository';

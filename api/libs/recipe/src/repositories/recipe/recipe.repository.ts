@@ -1,7 +1,7 @@
 import { PrismaService } from '@app/common/prisma/prisma.service';
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { Injectable } from '@nestjs/common';
-import { Recipe } from '../../entities/recipe.entity';
+import { Recipe } from '@app/recipe/domain/recipe.entity';
 import {
   FilterRecipeDto,
   RecipeListViewResponseDto,

@@ -1,6 +1,9 @@
 import { Module, Provider } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Recipe, RecipeSchema } from './entities/mongo/mongo.recipe.entity';
+import {
+  Recipe,
+  RecipeSchema,
+} from '@app/recipe/domain/mongo/mongo.recipe.entity';
 import { RecipeService } from './services/recipe.service';
 import { RecipeController } from './controllers/recipe.controller';
 import { RecipeBookmarkController } from './controllers/recipe-bookmark.controller';

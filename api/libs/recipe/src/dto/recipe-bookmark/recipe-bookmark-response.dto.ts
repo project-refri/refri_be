@@ -3,7 +3,7 @@ import {
   OkResponse,
 } from '@app/common/dto/success-response.dto';
 import { RecipeBookmarksResponseDto } from './filter-recipe-bookmark.dto';
-import { RecipeBookmark } from '../../entities/recipe-bookmark.entity';
+import { RecipeBookmark } from '@app/recipe/domain/recipe-bookmark.entity';
 
 export class CreateRecipeBookmarkResponseDto extends CreatedResponse {
   data: RecipeBookmark;

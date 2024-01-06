@@ -6,7 +6,7 @@ import {
   ApiPostCreated,
 } from '@app/common/decorators/http-method.decorator';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import {
   Body,
   Controller,
@@ -14,12 +14,12 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Ip,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
-  Ip,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {

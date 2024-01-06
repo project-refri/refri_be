@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Session, SessionDocument } from '../entities/mongo.session.entity';
+import { Session, SessionDocument } from '../domain/mongo.session.entity';
 import { CreateSessionDto } from '../dto/token.dto';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';

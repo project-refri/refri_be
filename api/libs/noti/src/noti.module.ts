@@ -8,12 +8,12 @@ import { NotiRepository } from './repository/noti.repository';
 import { DeviceTokenRepository } from './repository/device-token.repository';
 import { DeviceTokenService } from './service/device-token.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Noti, NotiSchema } from './entity/mongo/mongo.noti.entity';
+import { Noti, NotiSchema } from '@app/noti/domain/mongo/mongo.noti.entity';
 import {
   DeviceToken,
   DeviceTokenSchema,
-} from './entity/mongo/mongo.device-token.entity';
-import { NotiController } from './controller/noti.controller';
+} from '@app/noti/domain/mongo/mongo.device-token.entity';
+import { NotiController } from './noti.controller';
 
 // export const FCM_MESSAGING = Symbol('FCM_MESSAGING');
 

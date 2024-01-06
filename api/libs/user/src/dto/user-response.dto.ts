@@ -1,5 +1,5 @@
 import { SuccessResponse } from '@app/common/dto/success-response.dto';
-import { User } from '../entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 
 export class CreateUserResponseDto extends SuccessResponse {
   data: User;

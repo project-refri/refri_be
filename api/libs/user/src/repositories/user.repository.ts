@@ -2,7 +2,7 @@ import { PrismaService } from '@app/common/prisma/prisma.service';
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { Injectable } from '@nestjs/common';
 import { IUserRepository } from './user.repository.interface';
-import { User } from '../entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import { CreateUserDto, UpdateUserDto } from '../dto/modify-user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { Logable } from '@app/common/log/log.decorator';

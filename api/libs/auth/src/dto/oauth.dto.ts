@@ -1,4 +1,4 @@
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class GoogleLoginDto {

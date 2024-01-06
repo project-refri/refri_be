@@ -1,5 +1,5 @@
-import { Recipe as PrismaRecipe } from '../../entities/recipe.entity';
-import { Recipe as MongoRecipe } from '../../entities/mongo/mongo.recipe.entity';
+import { Recipe as PrismaRecipe } from '@app/recipe/domain/recipe.entity';
+import { Recipe as MongoRecipe } from '@app/recipe/domain/mongo/mongo.recipe.entity';
 import { ICrudRepository } from '@app/common/repository/crud.repository';
 import {
   FilterRecipeDto,
@@ -22,6 +22,7 @@ export interface IRecipeRepository
   findAllByFullTextSearch(
     textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesAndCountDto>;
+
   findTopViewed(): Promise<RecipeListViewResponseDto[]>;
 
   findAllByIds(ids: number[]): Promise<RecipeListViewResponseDto[]>;

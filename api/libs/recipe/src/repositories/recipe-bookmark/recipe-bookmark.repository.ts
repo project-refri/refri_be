@@ -1,6 +1,6 @@
 import { PrismaService } from '@app/common/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { RecipeBookmark } from '../../entities/recipe-bookmark.entity';
+import { RecipeBookmark } from '@app/recipe/domain/recipe-bookmark.entity';
 import { CreateRecipeBookmarkDto } from '../../dto/recipe-bookmark/modify-recipe-bookmark.dto';
 import {
   FilterRecipeBookmarkDto,

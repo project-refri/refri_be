@@ -10,11 +10,28 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Recipe } from '../../entities/recipe.entity';
-import { Recipe as MongoRecipe } from '../../entities/mongo/mongo.recipe.entity';
+import { Recipe } from '@app/recipe/domain/recipe.entity';
+import { Recipe as MongoRecipe } from '@app/recipe/domain/mongo/mongo.recipe.entity';
 import { ApiHideProperty, OmitType } from '@nestjs/swagger';
 
 export class FilterRecipeDto extends PagenationDto {
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  name?: string;
+  @IsNotEmpty()
+  @IsOptional()
+  owner_id?: number;
+  @IsDate()
+  @IsOptional()
+  created_at?: Date;
+  @IsDate()
+  @IsOptional()
+  updated_at?: Date;
+  @IsInt()
+  @IsOptional()
+  mysql_id?: number;
+
   constructor(
     page: number,
     limit: number,
@@ -29,27 +46,6 @@ export class FilterRecipeDto extends PagenationDto {
     this.created_at = created_at;
     this.updated_at = updated_at;
   }
-
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  name?: string;
-
-  @IsNotEmpty()
-  @IsOptional()
-  owner_id?: number;
-
-  @IsDate()
-  @IsOptional()
-  created_at?: Date;
-
-  @IsDate()
-  @IsOptional()
-  updated_at?: Date;
-
-  @IsInt()
-  @IsOptional()
-  mysql_id?: number;
 }
 
 export enum TextSearchSortBy {
@@ -75,6 +71,20 @@ export class RecipeDto extends OmitType(MongoRecipe, [
 ]) {}
 
 export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
+  id: number;
+  name: string;
+  thumbnail: string;
+  description: string;
+  viewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  @ApiHideProperty()
+  originUrl?: string;
+  @ApiHideProperty()
+  mongoId?: string;
+  @ApiHideProperty()
+  mysqlId?: number;
+
   constructor(
     id: number = null,
     name: string = null,
@@ -92,21 +102,6 @@ export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
-
-  id: number;
-  name: string;
-  thumbnail: string;
-  description: string;
-  viewCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-
-  @ApiHideProperty()
-  originUrl?: string;
-  @ApiHideProperty()
-  mongoId?: string;
-  @ApiHideProperty()
-  mysqlId?: number;
 }
 
 export type IRecipeListViewResponseDto = Omit<

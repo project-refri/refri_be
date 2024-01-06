@@ -1,5 +1,5 @@
 import { CreateRecipeViewLogDto } from '@app/recipe/dto/recipe-view-log/modify-recipe-view-log.dto';
-import { RecipeViewLog } from '@app/recipe/entities/recipe-view-log.entity';
+import { RecipeViewLog } from '@app/recipe/domain/recipe-view-log.entity';
 import { IRecipeViewLogRepository } from './recipe-view-log.repository.interface';
 import { PrismaService } from '@app/common/prisma/prisma.service';
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';

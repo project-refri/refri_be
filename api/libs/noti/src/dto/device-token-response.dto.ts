@@ -1,5 +1,5 @@
 import { CreatedResponse } from '@app/common/dto/success-response.dto';
-import { DeviceToken } from '../entity/device-token.entity';
+import { DeviceToken } from '@app/noti/domain/device-token.entity';
 
 export class CreateDeviceTokenResponseDto extends CreatedResponse {
   data: DeviceToken;

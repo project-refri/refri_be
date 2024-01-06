@@ -2,7 +2,7 @@ import {
   CreatedResponse,
   OkResponse,
 } from '@app/common/dto/success-response.dto';
-import { Recipe } from '../../entities/recipe.entity';
+import { Recipe } from '@app/recipe/domain/recipe.entity';
 import {
   RecipeDto,
   RecipeListViewResponseDto,

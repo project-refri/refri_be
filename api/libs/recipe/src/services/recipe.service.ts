@@ -18,7 +18,7 @@ import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-ide
 import { Logable } from '@app/common/log/log.decorator';
 import { RecipeViewLogRepository } from '../repositories/recipe-view-log/recipe-view-log.repository';
 import { Cacheable } from '@app/common/cache/cache.service';
-import { Recipe } from '../entities/recipe.entity';
+import { Recipe } from '@app/recipe/domain/recipe.entity';
 import { deleteProps } from '@app/common/utils/delete-props';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { CreateMongoRecipeDto } from '../dto/recipe/create-mongo-recipe.dto';

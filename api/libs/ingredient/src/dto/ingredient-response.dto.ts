@@ -3,7 +3,7 @@ import {
   OkResponse,
 } from '@app/common/dto/success-response.dto';
 import { BarcodeInfos } from 'proto/image_process/BarcodeInfos';
-import { UserIngredient } from '../entities/mongo/mongo.user-ingredient.entity';
+import { UserIngredient } from '@app/ingredient/domain/mongo/mongo.user-ingredient.entity';
 
 export class CreateUserIngredientResponseDto extends CreatedResponse {
   data: UserIngredient;
