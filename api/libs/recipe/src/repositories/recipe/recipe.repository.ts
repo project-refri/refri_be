@@ -3,10 +3,6 @@ import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.reposit
 import { Injectable } from '@nestjs/common';
 import { Recipe } from '../../entities/recipe.entity';
 import {
-  CreateRecipeDto,
-  UpdateRecipeDto,
-} from '../../dto/recipe/modify-recipe.dto';
-import {
   FilterRecipeDto,
   RecipeListViewResponseDto,
   RecipesAndCountDto,
@@ -15,6 +11,8 @@ import {
 import { deleteNull } from '@app/common/utils/delete-null';
 import { IRecipeRepository } from './recipe.repository.interface';
 import { deleteProps } from '@app/common/utils/delete-props';
+import { CreateRecipeDto } from '@app/recipe/dto/recipe/create-recipe.dto';
+import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
 
 @Injectable()
 export class RecipeRepository
@@ -44,12 +42,12 @@ export class RecipeRepository
         name: true,
         description: true,
         thumbnail: true,
-        view_count: true,
-        created_at: true,
-        updated_at: true,
-        mongo_id: true,
+        viewCount: true,
+        createdAt: true,
+        updatedAt: true,
+        mongoId: true,
       },
-      orderBy: { created_at: 'desc' },
+      orderBy: { createdAt: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -62,7 +60,7 @@ export class RecipeRepository
 
   async findOneByMongoId(mongoId: string): Promise<Recipe> {
     return this.prisma.recipe.findUnique({
-      where: { mongo_id: mongoId },
+      where: { mongoId: mongoId },
     });
   }
 
@@ -74,7 +72,7 @@ export class RecipeRepository
 
   async findTopViewed() {
     return this.prisma.recipe.findMany({
-      orderBy: { view_count: 'desc' },
+      orderBy: { viewCount: 'desc' },
       take: 10,
     });
   }
@@ -87,9 +85,9 @@ export class RecipeRepository
         name: true,
         description: true,
         thumbnail: true,
-        view_count: true,
-        created_at: true,
-        updated_at: true,
+        viewCount: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
   }
@@ -97,17 +95,17 @@ export class RecipeRepository
   async increaseViewCount(id: number): Promise<Recipe> {
     return this.prisma.recipe.update({
       where: { id },
-      data: { view_count: { increment: 1 } },
+      data: { viewCount: { increment: 1 } },
     });
   }
 
   async deleteOne(id: number): Promise<Recipe> {
     const deleteRecipe = this.prisma.recipe.delete({ where: { id } });
     const deleteRecipeViewLog = this.prisma.recipeViewLog.deleteMany({
-      where: { recipe_id: id },
+      where: { recipeId: id },
     });
     const deleteRecipeBookmark = this.prisma.recipeBookmark.deleteMany({
-      where: { recipe_id: id },
+      where: { recipeId: id },
     });
     return (
       await this.prisma.$transaction([

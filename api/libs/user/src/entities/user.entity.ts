@@ -7,6 +7,6 @@ export class User implements UserType {
   introduction: string;
   diet: $Enums.Diet;
   thumbnail: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -38,7 +38,7 @@ export class RecipeViewLogRepository
         this.redisClient.zIncrBy(
           'recipe-view-count',
           1,
-          createRecipeViewLogDto.recipe_id.toString(),
+          createRecipeViewLogDto.recipeId.toString(),
         ),
       ])
     )[0];
@@ -104,8 +104,8 @@ export class RecipeViewLogRepository
           recipe.thumbnail,
           recipe.description,
           recipeIdsWithViews[index].score,
-          recipe.created_at,
-          recipe.updated_at,
+          recipe.createdAt,
+          recipe.updatedAt,
         );
       });
     }

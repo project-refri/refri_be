@@ -60,7 +60,7 @@ export class UserIngredientController {
     @Body() createIngredientDto: CreateUserIngredientDto,
     @ReqUser() user: User,
   ) {
-    createIngredientDto.user_id = user.id.toString();
+    createIngredientDto.userId = user.id.toString();
     return this.ingredientService.create(createIngredientDto);
   }
 

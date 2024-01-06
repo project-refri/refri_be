@@ -6,10 +6,6 @@ import {
   RecipesResponseDto,
   TextSearchRecipeDto,
 } from '../dto/recipe/filter-recipe.dto';
-import {
-  CreateMongoRecipeDto,
-  UpdateRecipeDto,
-} from '../dto/recipe/modify-recipe.dto';
 import { MongoRecipeRepository } from '../repositories/recipe/mongo.recipe.repository';
 import { RecipeRepository } from '../repositories/recipe/recipe.repository';
 import { RecipeService } from './recipe.service';
@@ -21,6 +17,8 @@ import { Recipe } from '../entities/recipe.entity';
 import { Recipe as MongoRecipe } from '../entities/mongo/mongo.recipe.entity';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
 import { Types } from 'mongoose';
+import { CreateMongoRecipeDto } from '../dto/recipe/create-mongo-recipe.dto';
+import { UpdateRecipeDto } from '../dto/recipe/update-recipe.dto';
 
 describe('RecipeService', () => {
   let service: RecipeService;

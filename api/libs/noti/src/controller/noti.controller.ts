@@ -44,7 +44,7 @@ export class NotiController {
     @Body() createDeviceTokenDto: CreateDeviceTokenDto,
     @ReqUser() user: User,
   ) {
-    createDeviceTokenDto.user_id = user.id;
+    createDeviceTokenDto.userId = user.id;
     return await this.deviceTokenService.create(createDeviceTokenDto);
   }
 
@@ -63,7 +63,7 @@ export class NotiController {
   @Get()
   async findAllNotis(@ReqUser() user: User) {
     return await this.notiService.findAll({
-      user_id: user.id,
+      userId: user.id,
     });
   }
 

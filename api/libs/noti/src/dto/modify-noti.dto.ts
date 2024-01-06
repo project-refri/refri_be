@@ -5,7 +5,7 @@ import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 export class CreateNotiDto {
   @Transform(({ value }) => parseInt(value))
   @IsInt()
-  user_id: number;
+  userId: number;
 
   @IsString()
   @IsNotEmpty()
@@ -13,5 +13,5 @@ export class CreateNotiDto {
 }
 
 export class UpdateNotiDto extends PartialType(
-  OmitType(CreateNotiDto, ['user_id'] as const),
+  OmitType(CreateNotiDto, ['userId'] as const),
 ) {}

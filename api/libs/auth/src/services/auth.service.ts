@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from '../repositories/auth.repository';
 import { CreateUserDto } from '@app/user/dto/modify-user.dto';
 import { HttpService } from '@nestjs/axios';
-import { GoogleLoginDto, OAuthLoginSessionDto } from '../dto/oauth.dto';
+import { GoogleLoginDto, KakaoLoginDto, OAuthLoginSessionDto } from "../dto/oauth.dto";
 import {
   GoogleApiResponseType,
   KakaoApiResponseType,
@@ -47,14 +47,14 @@ export class AuthService {
 
   @Logable()
   async login(user: User): Promise<LoginSessionDto> {
-    const session_token = uuidv4();
+    const sessionToken = uuidv4();
     await this.authRepository.create({
-      user_id: user.id,
-      session_token,
+      userId: user.id,
+      sessionToken,
     });
     return {
       user,
-      session_token,
+      sessionToken,
     };
   }
 
@@ -63,9 +63,9 @@ export class AuthService {
     const { email, username } = userInfo;
     const user = await this.userService.findByEmail(email);
     return {
-      is_exist: !!user,
+      isExist: !!user,
       ...(!!user ? await this.login(user) : {}),
-      register_token: !!user
+      registerToken: !!user
         ? undefined
         : this.jwtService.sign({ sub: email, username }),
     };
@@ -75,13 +75,13 @@ export class AuthService {
   async googleLogin(
     googleLoginDto: GoogleLoginDto,
   ): Promise<OAuthLoginSessionDto> {
-    const { access_token } = googleLoginDto;
+    const { accessToken } = googleLoginDto;
     const { data }: { data: GoogleApiResponseType } =
       await this.httpService.axiosRef.get(
         'https://www.googleapis.com/oauth2/v2/userinfo',
         {
           headers: {
-            Authorization: `Bearer ${access_token}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         },
       );
@@ -91,13 +91,13 @@ export class AuthService {
 
   @Logable()
   async kakaoLogin(
-    kakaoLoginDto: GoogleLoginDto,
+    kakaoLoginDto: KakaoLoginDto,
   ): Promise<OAuthLoginSessionDto> {
-    const { access_token } = kakaoLoginDto;
+    const { accessToken } = kakaoLoginDto;
     const { data }: { data: KakaoApiResponseType } =
       await this.httpService.axiosRef.get('https://kapi.kakao.com/v2/user/me', {
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
     const { email } = data.kakao_account;

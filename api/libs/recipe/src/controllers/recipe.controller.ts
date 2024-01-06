@@ -23,10 +23,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
-  CreateMongoRecipeDto,
-  UpdateRecipeDto,
-} from '../dto/recipe/modify-recipe.dto';
-import {
   CreateRecipeResponseDto,
   FindOneRecipeResponseDto,
   FindRecentViewedResponseDto,
@@ -41,6 +37,8 @@ import {
 } from '../dto/recipe/filter-recipe.dto';
 import { Public } from '@app/common/decorators/public.decorator';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
+import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
+import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
 
 @ApiTags('Recipe')
 @Controller('recipe')

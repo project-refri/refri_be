@@ -50,7 +50,7 @@ export class UserIngredientService
   }
 
   async getIngredientInfoFromBarcode(
-    getIngredientInfoDto: { image_url: string },
+    getIngredientInfoDto: { imageUrl: string },
     cred: string,
   ) {
     const metadata = new Metadata();
@@ -59,7 +59,7 @@ export class UserIngredientService
     const ret = await lastValueFrom(
       this.imageProcessService.getBarcodeInfoFromUrl(
         {
-          image_url: getIngredientInfoDto.image_url,
+          image_url: getIngredientInfoDto.imageUrl,
         },
         metadata,
       ),

@@ -31,9 +31,9 @@ export class UserRepository
     return await this.prisma.user.findUnique({
       where: { id },
       include: {
-        device_tokens: {
+        deviceTokens: {
           select: {
-            fcm_device_token: true,
+            fcmDeviceToken: true,
           },
         },
       },

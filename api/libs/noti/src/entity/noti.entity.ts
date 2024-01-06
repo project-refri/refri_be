@@ -2,8 +2,8 @@ import { Noti as NotiType } from '@prisma/client';
 
 export class Noti implements NotiType {
   id: number;
-  user_id: number;
+  userId: number;
   content: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

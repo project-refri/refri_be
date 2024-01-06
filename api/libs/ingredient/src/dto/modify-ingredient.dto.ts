@@ -21,19 +21,19 @@ export class CreateUserIngredientDto {
   @IsMongoId()
   @IsNotEmpty()
   @IsOptional()
-  ingredient_id?: string;
+  ingredientId?: string;
 
   @IsMongoId()
   @IsNotEmpty()
   @IsOptional()
   @ApiHideProperty()
-  user_id?: string;
+  userId?: string;
 
   @IsEnum(FoodType)
-  food_type: FoodType;
+  foodType: FoodType;
 
   @IsEnum(StoreMethod)
-  store_method: StoreMethod;
+  storeMethod: StoreMethod;
 
   @IsNumber()
   @Min(1)
@@ -43,7 +43,7 @@ export class CreateUserIngredientDto {
   @IsNumber()
   @Min(0)
   @Max(365)
-  days_before_expiration: number;
+  daysBeforeExpiration: number;
 }
 
 export class UpdateUserIngredientDto extends PartialType(
@@ -54,5 +54,5 @@ export class GetIngredientInfoDto {
   @IsString()
   @IsUrl()
   @IsNotEmpty()
-  image_url: string;
+  imageUrl: string;
 }

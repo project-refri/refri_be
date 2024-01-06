@@ -9,14 +9,6 @@ import { FilterUserIngredientDto } from '../dto/filter-ingredient.dto';
 
 type UserIngredient = MongoUserIngredient | PrismaUserIngredient;
 
-// export interface IUserIngredientRepository
-//   extends ICrudRepository<
-//     UserIngredient,
-//     CreateUserIngredientDto,
-//     UpdateUserIngredientDto,
-//     FilterUserIngredientDto
-//   > {}
-
 export type IUserIngredientRepository = ICrudRepository<
   UserIngredient,
   CreateUserIngredientDto,

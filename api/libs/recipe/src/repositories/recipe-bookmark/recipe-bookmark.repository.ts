@@ -39,13 +39,13 @@ export class RecipeBookmarkRepository
             name: true,
             description: true,
             thumbnail: true,
-            view_count: true,
-            created_at: true,
-            updated_at: true,
+            viewCount: true,
+            createdAt: true,
+            updatedAt: true,
           },
         },
       },
-      orderBy: { created_at: 'desc' },
+      orderBy: { createdAt: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -58,7 +58,7 @@ export class RecipeBookmarkRepository
     ]);
     return new RecipeBookmarksAndCountDto(
       recipeBookmarks.map((recipeBookmark) => ({
-        recipe_bookmark_id: recipeBookmark.id,
+        recipeBookmarkId: recipeBookmark.id,
         ...recipeBookmark.recipe,
       })),
       count,

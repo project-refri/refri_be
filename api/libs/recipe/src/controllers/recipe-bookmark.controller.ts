@@ -37,7 +37,7 @@ export class RecipeBookmarkController {
     @Body() createRecipeBookmarkDto: CreateRecipeBookmarkDto,
     @ReqUser() user: User,
   ) {
-    createRecipeBookmarkDto.user_id = user.id;
+    createRecipeBookmarkDto.userId = user.id;
     return await this.recipeBookmarkService.create(createRecipeBookmarkDto);
   }
 
@@ -54,7 +54,7 @@ export class RecipeBookmarkController {
     @Query() filterRecipeBookmarkDto: FilterRecipeBookmarkDto,
     @ReqUser() user: User,
   ) {
-    filterRecipeBookmarkDto.user_id = user.id;
+    filterRecipeBookmarkDto.userId = user.id;
     return await this.recipeBookmarkService.findAllRecipeBookmarked(
       filterRecipeBookmarkDto,
     );

@@ -70,8 +70,8 @@ export class TextSearchRecipeDto extends PagenationDto {
 }
 
 export class RecipeDto extends OmitType(MongoRecipe, [
-  'recipe_raw_text',
-  'origin_url',
+  'recipeRawText',
+  'originUrl',
 ]) {}
 
 export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
@@ -80,43 +80,38 @@ export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
     name: string = null,
     thumbnail: string = null,
     description: string = null,
-    view_count: number = null,
-    created_at: Date = null,
-    updated_at: Date = null,
+    viewCount: number = null,
+    createdAt: Date = null,
+    updatedAt: Date = null,
   ) {
     this.id = id;
     this.name = name;
     this.thumbnail = thumbnail;
     this.description = description;
-    this.view_count = view_count;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
+    this.viewCount = viewCount;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   id: number;
   name: string;
   thumbnail: string;
   description: string;
-  view_count: number;
-  created_at: Date;
-  updated_at: Date;
+  viewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
 
   @ApiHideProperty()
-  origin_url?: string;
+  originUrl?: string;
   @ApiHideProperty()
-  mongo_id?: string;
+  mongoId?: string;
   @ApiHideProperty()
-  mysql_id?: number;
+  mysqlId?: number;
 }
 
 export type IRecipeListViewResponseDto = Omit<
   Recipe,
-  | 'mongo_id'
-  | 'owner_id'
-  | 'recipe_raw_text'
-  | 'origin_url'
-  | 'recipe_steps'
-  | 'ingredient_requirements'
+  'mongoId' | 'ownerId' | 'owner' | 'originUrl'
 >;
 
 export class RecipesResponseDto extends PagenationResponseDto {
@@ -137,7 +132,7 @@ export class RecipesAndCountDto {
       results: this.recipes,
       page,
       count: this.recipes.length,
-      has_next: this.count > (page - 1) * limit + this.recipes.length,
+      hasNext: this.count > (page - 1) * limit + this.recipes.length,
     };
   }
 }

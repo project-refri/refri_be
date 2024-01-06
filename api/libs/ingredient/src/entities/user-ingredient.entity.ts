@@ -3,13 +3,13 @@ import { UserIngredient as UserIngredientType, $Enums } from '@prisma/client';
 export class UserIngredient implements UserIngredientType {
   id: number;
   name: string;
-  ingredient_id: number;
-  user_id: number;
-  food_type: $Enums.FoodType;
-  store_method: $Enums.StoreMethod;
+  ingredientId: number;
+  userId: number;
+  foodType: $Enums.FoodType;
+  storeMethod: $Enums.StoreMethod;
   count: number;
-  days_before_expiration: number;
+  daysBeforeExpiration: number;
   icon: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -32,7 +32,7 @@ export class SessionAuthGuard implements CanActivate {
     try {
       const session = await this.authService.findBySessionToken(sessionToken);
       request['user'] = session.user;
-      request['sessionToken'] = session.session_token;
+      request['sessionToken'] = session.sessionToken;
     } catch {
       throw new UnauthorizedException();
     }

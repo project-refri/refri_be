@@ -12,11 +12,6 @@ import {
   RecipesResponseDto,
   TextSearchRecipeDto,
 } from '../dto/recipe/filter-recipe.dto';
-import {
-  CreateMongoRecipeDto,
-  CreateRecipeDto,
-  UpdateRecipeDto,
-} from '../dto/recipe/modify-recipe.dto';
 import { MongoRecipeRepository } from '../repositories/recipe/mongo.recipe.repository';
 import { RecipeRepository } from '../repositories/recipe/recipe.repository';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
@@ -26,6 +21,8 @@ import { Cacheable } from '@app/common/cache/cache.service';
 import { Recipe } from '../entities/recipe.entity';
 import { deleteProps } from '@app/common/utils/delete-props';
 import { deleteNull } from '@app/common/utils/delete-null';
+import { CreateMongoRecipeDto } from '../dto/recipe/create-mongo-recipe.dto';
+import { UpdateRecipeDto } from '../dto/recipe/update-recipe.dto';
 
 @Injectable()
 export class RecipeService implements OnApplicationBootstrap {
@@ -48,11 +45,11 @@ export class RecipeService implements OnApplicationBootstrap {
           ...createRecipeDto,
           mongo_id: mongoRecipe.id.toString(),
         },
-        ['recipe_steps', 'ingredient_requirements', 'recipe_raw_text'],
+        ['recipeSteps', 'ingredientRequirements', 'recipeRawText'],
       ),
     );
     await this.mongoRecipeRepository.update(mongoRecipe.id.toString(), {
-      mysql_id: recipe.id,
+      mysqlId: recipe.id,
     });
     return recipe;
   }
@@ -135,9 +132,9 @@ export class RecipeService implements OnApplicationBootstrap {
     ]);
     if (!ret[0] || !ret[1]) throw new NotFoundException('Recipe not found');
     const recipeViewLog = await this.recipeViewLogRepository.create({
-      recipe_id: id,
-      user_id: identifier.user ? identifier.user.id : undefined,
-      user_ip: identifier.ip,
+      recipeId: id,
+      userId: identifier.user ? identifier.user.id : undefined,
+      userIp: identifier.ip,
     });
     return true;
   }
@@ -167,32 +164,5 @@ export class RecipeService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     await this.setAllViewedRecipesInPast1Month();
-
-    // while (hasNext) {
-    //   const ret = (
-    //     await this.mongoRecipeRepository.findAllRecipe({
-    //       page: ++page,
-    //       limit: 10,
-    //       mysql_id: null,
-    //     })
-    //   ).toRecipesResponseDto(page, 10);
-    //   const { results, has_next } = ret;
-    //   if (results.length === 0) return;
-    //   hasNext = has_next;
-
-    //   const mysqlRecipes = await Promise.all(
-    //     results.map(async (recipe) => {
-    //       return this.recipeRepository.findOneByMongoId(recipe.id as any);
-    //     }),
-    //   );
-
-    //   await Promise.all(
-    //     mysqlRecipes.map(async (recipe) => {
-    //       return this.mongoRecipeRepository.update(recipe.mongo_id, {
-    //         mysql_id: recipe.id,
-    //       });
-    //     }),
-    //   );
-    // }
   }
 }

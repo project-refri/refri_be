@@ -6,6 +6,6 @@ export class Ingredient implements IngredientType {
   description: string;
   thumbnail: string;
   icon: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -35,7 +35,7 @@ export class RecipeBookmarkRepository
   ): Promise<RecipeBookmarksAndCountDto> {
     const { page, limit } = filterRecipeBookmarkDto;
     const filterDto = deleteProps(
-      transferObjectId(filterRecipeBookmarkDto, ['user_id']),
+      transferObjectId(filterRecipeBookmarkDto, ['userId']),
       ['page', 'limit'],
     );
     const filteredAggrPipe = this.recipeBookmarkModel
