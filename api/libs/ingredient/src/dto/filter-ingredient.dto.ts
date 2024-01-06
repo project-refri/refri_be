@@ -8,8 +8,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { FoodType } from '../types/food-type.enum';
-import { StoreMethod } from '../types/store-method.enum';
+import { FoodType } from '../domain/food-type.enum';
+import { StoreMethod } from '../domain/store-method.enum';
 
 export class FilterUserIngredientDto {
   @IsString()
@@ -20,15 +20,15 @@ export class FilterUserIngredientDto {
   @IsString()
   @IsMongoId()
   @IsOptional()
-  user_id?: string;
+  userId?: string;
 
   @IsEnum(FoodType)
   @IsOptional()
-  food_type?: FoodType;
+  foodType?: FoodType;
 
   @IsEnum(StoreMethod)
   @IsOptional()
-  store_method?: StoreMethod;
+  storeMethod?: StoreMethod;
 
   @IsNumber()
   @Min(1)
@@ -40,5 +40,5 @@ export class FilterUserIngredientDto {
   @Min(0)
   @Max(365)
   @IsOptional()
-  days_before_expiration?: number;
+  daysBeforeExpiration?: number;
 }

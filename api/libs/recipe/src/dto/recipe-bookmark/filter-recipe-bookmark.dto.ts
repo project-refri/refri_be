@@ -4,26 +4,27 @@ import {
   PagenationResponseDto,
 } from '@app/common/dto/pagenation.dto';
 import { ApiHideProperty } from '@nestjs/swagger';
-import { Recipe } from '../../entities/recipe.entity';
+import { Recipe } from '@app/recipe/domain/recipe.entity';
 
 export class FilterRecipeBookmarkDto extends PagenationDto {
   @ApiHideProperty()
   @IsOptional()
   @IsInt()
-  user_id?: number;
+  userId?: number;
 }
 
 export interface IRecipeBookmarkListViewResponseDto
   extends Omit<
     Recipe,
-    | 'mongo_id'
-    | 'owner_id'
-    | 'recipe_raw_text'
-    | 'origin_url'
-    | 'recipe_steps'
-    | 'ingredient_requirements'
+    | 'mongoId'
+    | 'ownerId'
+    | 'owner'
+    | 'recipeRawText'
+    | 'originUrl'
+    | 'recipeSteps'
+    | 'ingredientRequirements'
   > {
-  recipe_bookmark_id: number;
+  recipeBookmarkId: number;
 }
 
 export class RecipeBookmarkListViewResponseDto
@@ -33,10 +34,10 @@ export class RecipeBookmarkListViewResponseDto
   name: string;
   description: string;
   thumbnail: string;
-  view_count: number;
-  recipe_bookmark_id: number;
-  created_at: Date;
-  updated_at: Date;
+  viewCount: number;
+  recipeBookmarkId: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class RecipeBookmarksResponseDto extends PagenationResponseDto {
@@ -60,7 +61,7 @@ export class RecipeBookmarksAndCountDto {
       results: this.recipes,
       page,
       count: this.recipes.length,
-      has_next: this.count > (page - 1) * limit + this.recipes.length,
+      hasNext: this.count > (page - 1) * limit + this.recipes.length,
     };
   }
 }

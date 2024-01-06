@@ -1,6 +1,6 @@
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { Injectable } from '@nestjs/common';
-import { DeviceToken } from '../entity/device-token.entity';
+import { DeviceToken } from '@app/noti/domain/device-token.entity';
 import { CreateDeviceTokenDto } from '../dto/modify-device-token.dto';
 import { FilterDeviceTokenDto } from '../dto/filter-device-token.dto';
 import { PrismaService } from '@app/common/prisma/prisma.service';

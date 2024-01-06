@@ -30,13 +30,13 @@ export class AuthRepository
     ttl: 24 * 60 * 60 * 1000,
     keyGenerator: (session: string) => `session:${session}`,
   })
-  async findBySessionToken(session: string): Promise<any> {
+  async findBySessionToken(session: string) {
     return await this.prisma.session.findUnique({
-      where: { session_token: session },
+      where: { sessionToken: session },
       include: {
         user: {
           include: {
-            device_tokens: true,
+            deviceTokens: true,
           },
         },
       },
@@ -50,7 +50,7 @@ export class AuthRepository
   })
   async deleteBySessionToken(session: string): Promise<any> {
     return await this.prisma.session.delete({
-      where: { session_token: session },
+      where: { sessionToken: session },
     });
   }
 }

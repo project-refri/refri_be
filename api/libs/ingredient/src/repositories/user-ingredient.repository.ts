@@ -1,5 +1,5 @@
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
-import { UserIngredient } from '../entities/user-ingredient.entity';
+import { UserIngredient } from '../domain/user-ingredient.entity';
 import {
   CreateUserIngredientDto,
   UpdateUserIngredientDto,

@@ -1,5 +1,5 @@
 import { CreateRecipeViewLogDto } from '@app/recipe/dto/recipe-view-log/modify-recipe-view-log.dto';
-import { RecipeViewLog } from '@app/recipe/entities/recipe-view-log.entity';
+import { RecipeViewLog } from '@app/recipe/domain/recipe-view-log.entity';
 import { IRecipeViewLogRepository } from './recipe-view-log.repository.interface';
 import { PrismaService } from '@app/common/prisma/prisma.service';
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
@@ -40,7 +40,7 @@ export class RecipeViewLogRepository
         this.redisClient.zIncrBy(
           'recipe-view-count',
           1,
-          createRecipeViewLogDto.recipe_id.toString(),
+          createRecipeViewLogDto.recipeId.toString(),
         ),
       ])
     )[0];
@@ -53,10 +53,10 @@ export class RecipeViewLogRepository
 
   async setAllViewedRecipesInPast1Month() {
     const recipesWithCount = await this.prisma.recipeViewLog.groupBy({
-      by: ['recipe_id'],
+      by: ['recipeId'],
       _count: true,
       where: {
-        created_at: {
+        createdAt: {
           gte: calcPast1MonthDate(),
         },
       },
@@ -65,7 +65,7 @@ export class RecipeViewLogRepository
       recipesWithCount.map((recipeWithCount) => {
         return this.redisClient.ZADD('recipe-view-count', {
           score: recipeWithCount._count,
-          value: recipeWithCount.recipe_id.toString(),
+          value: recipeWithCount.recipeId.toString(),
         });
       }),
     );
@@ -80,31 +80,31 @@ export class RecipeViewLogRepository
     const [viewLogsWithRecipe, count] = await Promise.all([
       this.prisma.recipeViewLog.findMany({
         where: {
-          user_id: userId,
+          userId: userId,
         },
         orderBy: {
-          created_at: 'desc',
+          createdAt: 'desc',
         },
         skip: (page - 1) * limit,
         take: limit,
         select: {
-          recipe_id: true,
+          recipeId: true,
           recipe: {
             select: {
               id: true,
               name: true,
               thumbnail: true,
               description: true,
-              view_count: true,
-              created_at: true,
-              updated_at: true,
+              viewCount: true,
+              createdAt: true,
+              updatedAt: true,
             },
           },
         },
       }),
       this.prisma.recipeViewLog.count({
         where: {
-          user_id: userId,
+          userId: userId,
         },
       }),
     ]);
@@ -115,9 +115,9 @@ export class RecipeViewLogRepository
           viewLogWithRecipe.recipe.name,
           viewLogWithRecipe.recipe.thumbnail,
           viewLogWithRecipe.recipe.description,
-          viewLogWithRecipe.recipe.view_count,
-          viewLogWithRecipe.recipe.created_at,
-          viewLogWithRecipe.recipe.updated_at,
+          viewLogWithRecipe.recipe.viewCount,
+          viewLogWithRecipe.recipe.createdAt,
+          viewLogWithRecipe.recipe.updatedAt,
         ),
     );
     return new RecipesAndCountDto(recipes, count);
@@ -147,39 +147,39 @@ export class RecipeViewLogRepository
           recipe.thumbnail,
           recipe.description,
           recipeIdsWithViews[index].score,
-          recipe.created_at,
-          recipe.updated_at,
+          recipe.createdAt,
+          recipe.updatedAt,
         );
       });
     }
     const recipeIds = await this.prisma.recipeViewLog.groupBy({
-      by: ['recipe_id'],
+      by: ['recipeId'],
       _count: {
-        created_at: true,
+        createdAt: true,
       },
       orderBy: {
         _count: {
-          created_at: 'desc',
+          createdAt: 'desc',
         },
       },
       take: 5,
       where: {
-        created_at: {
+        createdAt: {
           gte: calcPast1MonthDate(),
         },
       },
     });
     return await Promise.all(
       recipeIds.map(async (recipeId) => {
-        const recipe = await this.recipeRepository.findOne(recipeId.recipe_id);
+        const recipe = await this.recipeRepository.findOne(recipeId.recipeId);
         return new RecipeListViewResponseDto(
           recipe.id,
           recipe.name,
           recipe.thumbnail,
           recipe.description,
-          recipeId._count.created_at,
-          recipe.created_at,
-          recipe.updated_at,
+          recipeId._count.createdAt,
+          recipe.createdAt,
+          recipe.updatedAt,
         );
       }),
     );

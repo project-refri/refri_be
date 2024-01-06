@@ -1,6 +1,6 @@
 import { IntersectionType, OmitType, PartialType } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
-import { Diet } from '../types/diet.enum';
+import { Diet } from '../domain/diet.enum';
 
 export class CreateUserApiDto {
   @IsString()

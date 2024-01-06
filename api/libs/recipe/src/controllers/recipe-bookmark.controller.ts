@@ -22,7 +22,7 @@ import {
 } from '../dto/recipe-bookmark/recipe-bookmark-response.dto';
 import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/modify-recipe-bookmark.dto';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import { FilterRecipeBookmarkDto } from '../dto/recipe-bookmark/filter-recipe-bookmark.dto';
 
 @ApiTags('RecipeBookmark')
@@ -37,7 +37,7 @@ export class RecipeBookmarkController {
     @Body() createRecipeBookmarkDto: CreateRecipeBookmarkDto,
     @ReqUser() user: User,
   ) {
-    createRecipeBookmarkDto.user_id = user.id;
+    createRecipeBookmarkDto.userId = user.id;
     return await this.recipeBookmarkService.create(createRecipeBookmarkDto);
   }
 
@@ -54,7 +54,7 @@ export class RecipeBookmarkController {
     @Query() filterRecipeBookmarkDto: FilterRecipeBookmarkDto,
     @ReqUser() user: User,
   ) {
-    filterRecipeBookmarkDto.user_id = user.id;
+    filterRecipeBookmarkDto.userId = user.id;
     return await this.recipeBookmarkService.findAllRecipeBookmarked(
       filterRecipeBookmarkDto,
     );

@@ -1,6 +1,6 @@
 import { ICrudRepository } from '@app/common/repository/crud.repository';
-import { RecipeBookmark as PrismaRecipeBookmark } from '../../entities/recipe-bookmark.entity';
-import { RecipeBookmark as MongoRecipeBookmark } from '../../entities/mongo/mongo.recipe-bookmark.entity';
+import { RecipeBookmark as PrismaRecipeBookmark } from '@app/recipe/domain/recipe-bookmark.entity';
+import { RecipeBookmark as MongoRecipeBookmark } from '@app/recipe/domain/mongo/mongo.recipe-bookmark.entity';
 import { CreateRecipeBookmarkDto } from '@app/recipe/dto/recipe-bookmark/modify-recipe-bookmark.dto';
 import {
   FilterRecipeBookmarkDto,

@@ -3,7 +3,7 @@ import {
   NoContentResponse,
   OkResponse,
 } from '@app/common/dto/success-response.dto';
-import { Noti } from '../entity/noti.entity';
+import { Noti } from '@app/noti/domain/noti.entity';
 
 export class CreateNotiResponseDto extends CreatedResponse {
   data: Noti;

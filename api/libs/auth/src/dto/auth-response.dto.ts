@@ -1,5 +1,5 @@
 import { OkResponse } from '@app/common/dto/success-response.dto';
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import { LoginSessionDto } from './token.dto';
 import { OAuthLoginSessionDto } from './oauth.dto';
 

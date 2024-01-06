@@ -2,7 +2,7 @@ import { CrudMongoRepository } from '@app/common/repository/crud-mongo.repositor
 import {
   RecipeViewLog,
   RecipeViewLogDocument,
-} from '../../entities/mongo/mongo.recipe-view-log.entity';
+} from '@app/recipe/domain/mongo/mongo.recipe-view-log.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateRecipeViewLogDto } from '../../dto/recipe-view-log/modify-recipe-view-log.dto';
@@ -38,7 +38,7 @@ export class RecipeViewLogRepository
         this.redisClient.zIncrBy(
           'recipe-view-count',
           1,
-          createRecipeViewLogDto.recipe_id.toString(),
+          createRecipeViewLogDto.recipeId.toString(),
         ),
       ])
     )[0];
@@ -65,21 +65,6 @@ export class RecipeViewLogRepository
     );
   }
 
-  private async findAllViewedRecipesInPast1Month() {
-    return await this.recipeViewLogModel
-      .aggregate()
-      .match({
-        created_at: {
-          $gte: calcPast1MonthDate(),
-        },
-      })
-      .group({
-        _id: '$recipe_id',
-        count: { $sum: 1 },
-      })
-      .exec();
-  }
-
   async findAll5MostViewedRecipesInPast1Month(): Promise<
     RecipeListViewResponseDto[]
   > {
@@ -104,8 +89,8 @@ export class RecipeViewLogRepository
           recipe.thumbnail,
           recipe.description,
           recipeIdsWithViews[index].score,
-          recipe.created_at,
-          recipe.updated_at,
+          recipe.createdAt,
+          recipe.updatedAt,
         );
       });
     }
@@ -140,6 +125,21 @@ export class RecipeViewLogRepository
         origin_url: 0,
         recipe_steps: 0,
         ingredient_requirements: 0,
+      })
+      .exec();
+  }
+
+  private async findAllViewedRecipesInPast1Month() {
+    return await this.recipeViewLogModel
+      .aggregate()
+      .match({
+        created_at: {
+          $gte: calcPast1MonthDate(),
+        },
+      })
+      .group({
+        _id: '$recipe_id',
+        count: { $sum: 1 },
       })
       .exec();
   }

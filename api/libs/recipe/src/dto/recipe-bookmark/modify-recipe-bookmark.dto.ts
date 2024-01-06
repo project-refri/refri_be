@@ -5,8 +5,8 @@ export class CreateRecipeBookmarkDto {
   @ApiHideProperty()
   @IsOptional()
   @IsInt()
-  user_id?: number;
+  userId?: number;
 
   @IsInt()
-  recipe_id: number;
+  recipeId: number;
 }

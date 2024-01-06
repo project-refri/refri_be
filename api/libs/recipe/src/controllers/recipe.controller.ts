@@ -6,7 +6,7 @@ import {
   ApiPostCreated,
 } from '@app/common/decorators/http-method.decorator';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import {
   Body,
   Controller,
@@ -14,18 +14,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Ip,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
-  Ip,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  CreateMongoRecipeDto,
-  UpdateRecipeDto,
-} from '../dto/recipe/modify-recipe.dto';
 import {
   CreateRecipeResponseDto,
   FindOneRecipeResponseDto,
@@ -41,6 +37,8 @@ import {
 } from '../dto/recipe/filter-recipe.dto';
 import { Public } from '@app/common/decorators/public.decorator';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
+import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
+import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
 
 @ApiTags('Recipe')
 @Controller('recipe')

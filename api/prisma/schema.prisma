@@ -10,14 +10,14 @@ datasource mysql {
 }
 
 model DeviceToken {
-  id               Int      @id @default(autoincrement())
-  fcm_device_token String
-  user_id          Int
-  user             User     @relation(fields: [user_id], references: [id])
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  fcmDeviceToken String   @map("fcm_device_token")
+  userId         Int      @map("user_id")
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
-  @@index([user_id])
+  @@index([userId])
   @@map("device_tokens")
 }
 
@@ -27,123 +27,123 @@ model Ingredient {
   name           String           @unique()
   thumbnail      String
   icon           String
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @updatedAt
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
   Useringredient UserIngredient[]
 
   @@map("ingredients")
 }
 
 model Noti {
-  id         Int      @id @default(autoincrement())
-  user_id    Int
-  user       User     @relation(fields: [user_id], references: [id])
-  content    String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@index([user_id])
+  @@index([userId])
   @@map("notis")
 }
 
 model RecipeBookmark {
-  id         Int      @id @default(autoincrement())
-  user_id    Int
-  user       User     @relation(fields: [user_id], references: [id])
-  recipe_id  Int
-  recipe     Recipe   @relation(fields: [recipe_id], references: [id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  recipeId  Int      @map("recipeId")
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@index([user_id])
-  @@index([recipe_id])
+  @@index([userId])
+  @@index([recipeId])
   @@map("recipe_bookmarks")
 }
 
 model Recipe {
-  id              Int              @id @default(autoincrement())
-  mongo_id        String?          @unique
-  name            String
-  description     String
-  owner_id        Int?
-  owner           User?            @relation(fields: [owner_id], references: [id])
-  thumbnail       String
-  origin_url      String
-  view_count      Int              @default(0)
-  created_at      DateTime         @default(now())
-  updated_at      DateTime         @updatedAt
-  recipe_bookmark RecipeBookmark[]
-  recipe_view_log RecipeViewLog[]
+  id             Int              @id @default(autoincrement())
+  mongoId        String?          @unique
+  name           String
+  description    String
+  ownerId        Int?
+  owner          User?            @relation(fields: [ownerId], references: [id])
+  thumbnail      String
+  originUrl      String
+  viewCount      Int              @default(0)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  recipeBookmark RecipeBookmark[]
+  recipeViewLog  RecipeViewLog[]
 
-  @@index([owner_id])
+  @@index([ownerId])
   @@map("recipes")
 }
 
 model RecipeViewLog {
-  id         Int      @id @default(autoincrement())
-  recipe_id  Int
-  recipe     Recipe   @relation(fields: [recipe_id], references: [id])
-  user_id    Int?
-  user       User?    @relation(fields: [user_id], references: [id])
-  user_ip    String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  recipeId  Int      @map("recipe_id")
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  userIp    String   @map("user_ip")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@index([created_at])
-  @@index([recipe_id])
-  @@index([user_id])
+  @@index([createdAt])
+  @@index([recipeId])
+  @@index([userId])
   @@map("recipe_view_logs")
 }
 
 model Session {
-  id            Int      @id @default(autoincrement())
-  session_token String   @unique()
-  user_id       Int
-  user          User     @relation(fields: [user_id], references: [id])
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique() @map("session_token")
+  userId       Int      @map("user_id")
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  @@index([created_at])
-  @@index([user_id])
+  @@index([createdAt])
+  @@index([userId])
   @@map("sessions")
 }
 
 model UserIngredient {
-  id                     Int         @id @default(autoincrement())
-  count                  Int
-  days_before_expiration Int
-  food_type              FoodType    @default(ETC)
-  icon                   String
-  name                   String
-  store_method           StoreMethod @default(REFRIGERATE)
-  ingredient_id          Int
-  ingredient             Ingredient  @relation(fields: [ingredient_id], references: [id])
-  user_id                Int
-  user                   User        @relation(fields: [user_id], references: [id])
-  created_at             DateTime    @default(now())
-  updated_at             DateTime    @updatedAt
+  id                   Int         @id @default(autoincrement())
+  count                Int
+  daysBeforeExpiration Int         @map("days_before_expiration")
+  foodType             FoodType    @default(ETC) @map("food_type")
+  icon                 String
+  name                 String
+  storeMethod          StoreMethod @default(REFRIGERATE) @map("store_method")
+  ingredientId         Int         @map("ingredient_id")
+  ingredient           Ingredient  @relation(fields: [ingredientId], references: [id])
+  userId               Int         @map("user_id")
+  user                 User        @relation(fields: [userId], references: [id])
+  createdAt            DateTime    @default(now()) @map("created_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
 
-  @@index([ingredient_id])
-  @@index([user_id])
+  @@index([ingredientId])
+  @@index([userId])
   @@map("user_ingredients")
 }
 
 model User {
-  id               Int              @id @default(autoincrement())
-  username         String           @unique()
-  email            String           @unique()
-  introduction     String           @default("")
-  diet             Diet             @default(NORMAL)
-  thumbnail        String           @default("")
-  device_tokens    DeviceToken[]
-  created_at       DateTime         @default(now())
-  updated_at       DateTime         @updatedAt
-  notis            Noti[]
-  recipe_bookmarks RecipeBookmark[]
-  recipe_view_logs RecipeViewLog[]
-  sessions         Session[]
-  user_ingredients UserIngredient[]
-  recipes          Recipe[]
+  id              Int              @id @default(autoincrement())
+  username        String           @unique()
+  email           String           @unique()
+  introduction    String           @default("")
+  diet            Diet             @default(NORMAL)
+  thumbnail       String           @default("")
+  deviceTokens    DeviceToken[]
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  notis           Noti[]
+  recipeBookmarks RecipeBookmark[]
+  recipeViewLogs  RecipeViewLog[]
+  sessions        Session[]
+  userIngredients UserIngredient[]
+  recipes         Recipe[]
 
   @@map("users")
 }

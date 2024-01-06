@@ -1,21 +1,21 @@
-import { User } from '@app/user/entities/user.entity';
+import { User } from '@app/user/domain/user.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class GoogleLoginDto {
   @IsString()
   @IsNotEmpty()
-  access_token: string;
+  accessToken: string;
 }
 
 export class KakaoLoginDto {
   @IsString()
   @IsNotEmpty()
-  access_token: string;
+  accessToken: string;
 }
 
 export class OAuthLoginSessionDto {
-  is_exist: boolean;
-  session_token?: string;
+  isExist: boolean;
+  sessionToken?: string;
   user?: User;
-  register_token?: string;
+  registerToken?: string;
 }

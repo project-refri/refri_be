@@ -23,9 +23,5 @@ export class PagenationResponseDto {
 
   count: number;
 
-  has_next: boolean;
-
-  // has_prev: boolean;
-
-  // total_page?: number;
+  hasNext: boolean;
 }

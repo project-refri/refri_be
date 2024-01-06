@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CrudMongoRepository } from '@app/common/repository/crud-mongo.repository';
-import { Noti, NotiDocument } from '../../entity/mongo/mongo.noti.entity';
+import { Noti, NotiDocument } from '@app/noti/domain/mongo/mongo.noti.entity';
 import { CreateNotiDto, UpdateNotiDto } from '../../dto/modify-noti.dto';
 import { FilterNotiDto } from '../../dto/filter-noti.dto';
 

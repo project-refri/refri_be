@@ -2,7 +2,7 @@ import { CrudMongoRepository } from '@app/common/repository/crud-mongo.repositor
 import {
   RecipeBookmark,
   RecipeBookmarkDocument,
-} from '../../entities/mongo/mongo.recipe-bookmark.entity';
+} from '@app/recipe/domain/mongo/mongo.recipe-bookmark.entity';
 import { CreateRecipeBookmarkDto } from '../../dto/recipe-bookmark/modify-recipe-bookmark.dto';
 import {
   FilterRecipeBookmarkDto,
@@ -35,7 +35,7 @@ export class RecipeBookmarkRepository
   ): Promise<RecipeBookmarksAndCountDto> {
     const { page, limit } = filterRecipeBookmarkDto;
     const filterDto = deleteProps(
-      transferObjectId(filterRecipeBookmarkDto, ['user_id']),
+      transferObjectId(filterRecipeBookmarkDto, ['userId']),
       ['page', 'limit'],
     );
     const filteredAggrPipe = this.recipeBookmarkModel

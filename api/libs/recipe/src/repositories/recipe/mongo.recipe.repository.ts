@@ -9,18 +9,16 @@ import {
   TextSearchRecipeDto,
   TextSearchSortBy,
 } from '../../dto/recipe/filter-recipe.dto';
-import {
-  CreateMongoRecipeDto,
-  UpdateMongoRecipeDto,
-} from '../../dto/recipe/modify-recipe.dto';
+import { UpdateMongoRecipeDto } from '../../dto/recipe/update-mongo-recipe.dto';
 import {
   Recipe,
   RecipeDocument,
-} from '../../entities/mongo/mongo.recipe.entity';
+} from '@app/recipe/domain/mongo/mongo.recipe.entity';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { deleteProps } from '@app/common/utils/delete-props';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';
+import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
 
 @Injectable()
 export class MongoRecipeRepository {
