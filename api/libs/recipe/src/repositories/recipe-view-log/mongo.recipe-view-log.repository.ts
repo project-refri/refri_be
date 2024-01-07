@@ -5,15 +5,15 @@ import {
 } from '@app/recipe/domain/mongo/mongo.recipe-view-log.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateRecipeViewLogDto } from '../../dto/recipe-view-log/modify-recipe-view-log.dto';
+import { CreateRecipeViewLogDto } from '../../dto/recipe-view-log/create-recipe-view-log.dto';
 import { calcPast1MonthDate } from '@app/common/utils/past-1-month';
-import { RecipeListViewResponseDto } from '../../dto/recipe/filter-recipe.dto';
 import { Inject } from '@nestjs/common';
 import { REDIS_PROVIDER } from '@app/common/redis.module';
 import { RedisClientType } from 'redis';
 import { MongoRecipeRepository } from '../recipe/mongo.recipe.repository';
 import { calcRemainMilliseconsByNextDay } from '@app/common/utils/remain-millisecons-by-next-day';
 import { IRecipeViewLogRepository } from './recipe-view-log.repository.interface';
+import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
 
 export class RecipeViewLogRepository
   extends CrudMongoRepository<RecipeViewLog, CreateRecipeViewLogDto, any, any>
@@ -65,9 +65,7 @@ export class RecipeViewLogRepository
     );
   }
 
-  async findAll5MostViewedRecipesInPast1Month(): Promise<
-    RecipeListViewResponseDto[]
-  > {
+  async findAll5MostViewedRecipesInPast1Month(): Promise<RecipesItemDto[]> {
     if (await this.redisClient.EXISTS('recipe-view-count')) {
       const recipeIdsWithViews = await this.redisClient.zRangeWithScores(
         'recipe-view-count',
@@ -83,7 +81,7 @@ export class RecipeViewLogRepository
         ),
       );
       return recipes.map((recipe, index) => {
-        return new RecipeListViewResponseDto(
+        return new RecipesItemDto(
           recipe.id as any, // bypass type check
           recipe.name,
           recipe.thumbnail,

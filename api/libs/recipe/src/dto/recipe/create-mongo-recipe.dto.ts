@@ -2,7 +2,6 @@ import {
   ArrayNotEmpty,
   IsArray,
   IsInt,
-  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -13,12 +12,14 @@ import {
 import { IngredientRequirementDto } from './ingredient-requirement.dto';
 import { RecipeStepDto } from './recipe-step.dto';
 import { CreateRecipeDto } from './create-recipe.dto';
+import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class CreateMongoRecipeDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @ApiExpose({ name: 'mysql_id', isOptional: true })
   @IsInt()
   @Min(1)
   @IsOptional()
@@ -28,16 +29,19 @@ export class CreateMongoRecipeDto {
   @IsNotEmpty()
   description: string;
 
-  @IsMongoId()
-  @IsString()
+  @ApiExpose({ name: 'owner_id', isOptional: true })
+  @IsInt()
+  @Min(1)
   @IsOptional()
-  owner: string;
+  ownerId?: number;
 
+  @ApiExpose({ name: 'ingredient_requirements' })
   @ValidateNested()
   @ArrayNotEmpty()
   @IsArray()
   ingredientRequirements: IngredientRequirementDto[];
 
+  @ApiExpose({ name: 'recipe_steps' })
   @ValidateNested()
   @ArrayNotEmpty()
   @IsArray()
@@ -47,10 +51,12 @@ export class CreateMongoRecipeDto {
   @IsString()
   thumbnail: string;
 
+  @ApiExpose({ name: 'recipe_raw_text' })
   @IsString()
   @IsNotEmpty()
   recipeRawText: string;
 
+  @ApiExpose({ name: 'origin_url' })
   @IsUrl()
   @IsString()
   originUrl: string;

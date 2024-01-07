@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 import { FoodType } from '../domain/food-type.enum';
 import { StoreMethod } from '../domain/store-method.enum';
+import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class FilterUserIngredientDto {
   @IsString()
@@ -17,15 +18,18 @@ export class FilterUserIngredientDto {
   @IsOptional()
   name?: string;
 
+  @ApiExpose({ name: 'user_id', isOptional: true })
   @IsString()
   @IsMongoId()
   @IsOptional()
   userId?: string;
 
+  @ApiExpose({ name: 'food_type', isOptional: true })
   @IsEnum(FoodType)
   @IsOptional()
   foodType?: FoodType;
 
+  @ApiExpose({ name: 'store_method', isOptional: true })
   @IsEnum(StoreMethod)
   @IsOptional()
   storeMethod?: StoreMethod;
@@ -36,6 +40,7 @@ export class FilterUserIngredientDto {
   @IsOptional()
   count?: number;
 
+  @ApiExpose({ name: 'days_before_expiration', isOptional: true })
   @IsNumber()
   @Min(0)
   @Max(365)

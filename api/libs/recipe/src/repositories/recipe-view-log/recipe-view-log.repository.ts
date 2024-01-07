@@ -1,4 +1,4 @@
-import { CreateRecipeViewLogDto } from '@app/recipe/dto/recipe-view-log/modify-recipe-view-log.dto';
+import { CreateRecipeViewLogDto } from '@app/recipe/dto/recipe-view-log/create-recipe-view-log.dto';
 import { RecipeViewLog } from '@app/recipe/domain/recipe-view-log.entity';
 import { IRecipeViewLogRepository } from './recipe-view-log.repository.interface';
 import { PrismaService } from '@app/common/prisma/prisma.service';
@@ -9,11 +9,9 @@ import { RedisClientType } from 'redis';
 import { RecipeRepository } from '../recipe/recipe.repository';
 import { calcRemainMilliseconsByNextDay } from '@app/common/utils/remain-millisecons-by-next-day';
 import { calcPast1MonthDate } from '@app/common/utils/past-1-month';
-import {
-  FilterRecipeDto,
-  RecipeListViewResponseDto,
-  RecipesAndCountDto,
-} from '@app/recipe/dto/recipe/filter-recipe.dto';
+import { FilterRecipeDto } from '@app/recipe/dto/recipe/filter-recipe.dto';
+import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
+import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 
 export class RecipeViewLogRepository
   extends CrudPrismaRepository<RecipeViewLog, CreateRecipeViewLogDto, any, any>
@@ -110,7 +108,7 @@ export class RecipeViewLogRepository
     ]);
     const recipes = viewLogsWithRecipe.map(
       (viewLogWithRecipe) =>
-        new RecipeListViewResponseDto(
+        new RecipesItemDto(
           viewLogWithRecipe.recipe.id,
           viewLogWithRecipe.recipe.name,
           viewLogWithRecipe.recipe.thumbnail,
@@ -123,9 +121,7 @@ export class RecipeViewLogRepository
     return new RecipesAndCountDto(recipes, count);
   }
 
-  async findAll5MostViewedRecipesInPast1Month(): Promise<
-    RecipeListViewResponseDto[]
-  > {
+  async findAll5MostViewedRecipesInPast1Month(): Promise<RecipesItemDto[]> {
     if (await this.redisClient.EXISTS('recipe-view-count')) {
       const recipeIdsWithViews = await this.redisClient.zRangeWithScores(
         'recipe-view-count',
@@ -141,7 +137,7 @@ export class RecipeViewLogRepository
         ),
       );
       return recipes.map((recipe, index) => {
-        return new RecipeListViewResponseDto(
+        return new RecipesItemDto(
           recipe.id,
           recipe.name,
           recipe.thumbnail,
@@ -172,7 +168,7 @@ export class RecipeViewLogRepository
     return await Promise.all(
       recipeIds.map(async (recipeId) => {
         const recipe = await this.recipeRepository.findOne(recipeId.recipeId);
-        return new RecipeListViewResponseDto(
+        return new RecipesItemDto(
           recipe.id,
           recipe.name,
           recipe.thumbnail,

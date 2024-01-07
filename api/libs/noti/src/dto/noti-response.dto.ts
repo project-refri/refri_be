@@ -3,24 +3,24 @@ import {
   NoContentResponse,
   OkResponse,
 } from '@app/common/dto/success-response.dto';
-import { Noti } from '@app/noti/domain/noti.entity';
+import { NotiDto } from '@app/noti/dto/noti.dto';
 
 export class CreateNotiResponseDto extends CreatedResponse {
-  data: Noti;
+  data: NotiDto;
 }
 
 export class UpdateNotiResponseDto extends OkResponse {
-  data: Noti;
+  data: NotiDto;
 }
 
 export class FindNotisResponseDto extends OkResponse {
-  data: Noti[];
+  data: NotiDto[];
 }
 
 export class FindOneNotiResponseDto extends OkResponse {
-  data: Noti;
+  data: NotiDto;
 }
 
 export class DeleteNotiResponseDto extends NoContentResponse {
-  data: Noti;
+  data: NotiDto;
 }

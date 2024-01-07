@@ -31,14 +31,12 @@ import {
   UpdateRecipeResponseDto,
 } from '../dto/recipe/recipe-response.dto';
 import { RecipeService } from '../services/recipe.service';
-import {
-  FilterRecipeDto,
-  TextSearchRecipeDto,
-} from '../dto/recipe/filter-recipe.dto';
+import { FilterRecipeDto } from '../dto/recipe/filter-recipe.dto';
 import { Public } from '@app/common/decorators/public.decorator';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
 import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
 import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
+import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';
 
 @ApiTags('Recipe')
 @Controller('recipe')

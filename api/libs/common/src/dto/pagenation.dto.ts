@@ -1,27 +1,34 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Transform } from 'class-transformer';
 import { IsNumber, Min } from 'class-validator';
+import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class PagenationDto {
-  constructor(page: number, limit: number) {
-    this.page = page;
-    this.limit = limit;
-  }
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(1)
   page: number;
-
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(1)
   limit: number;
+
+  constructor(page: number, limit: number) {
+    this.page = page;
+    this.limit = limit;
+  }
 }
 
 export class PagenationResponseDto {
-  page: number;
+  public readonly page: number;
+  public readonly count: number;
 
-  count: number;
+  @ApiExpose({ name: 'has_next' })
+  public readonly hasNext: boolean;
 
-  hasNext: boolean;
+  constructor(page: number, count: number, hasNext: boolean) {
+    this.page = page;
+    this.count = count;
+    this.hasNext = hasNext;
+  }
 }

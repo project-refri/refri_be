@@ -1,36 +1,38 @@
-import {
-  PagenationDto,
-  PagenationResponseDto,
-} from '@app/common/dto/pagenation.dto';
+import { PagenationDto } from '@app/common/dto/pagenation.dto';
 import {
   IsDate,
-  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Recipe } from '@app/recipe/domain/recipe.entity';
-import { Recipe as MongoRecipe } from '@app/recipe/domain/mongo/mongo.recipe.entity';
-import { ApiHideProperty, OmitType } from '@nestjs/swagger';
+import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class FilterRecipeDto extends PagenationDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   name?: string;
+
+  @ApiExpose({ name: 'owner_id', isOptional: true })
   @IsNotEmpty()
   @IsOptional()
-  owner_id?: number;
+  ownerId?: number;
+
+  @ApiExpose({ name: 'created_at', isOptional: true })
   @IsDate()
   @IsOptional()
-  created_at?: Date;
+  createdAt?: Date;
+
+  @ApiExpose({ name: 'updated_at', isOptional: true })
   @IsDate()
   @IsOptional()
-  updated_at?: Date;
+  updatedAt?: Date;
+
+  @ApiExpose({ name: 'mysql_id', isOptional: true })
   @IsInt()
   @IsOptional()
-  mysql_id?: number;
+  mysqlId?: number;
 
   constructor(
     page: number,
@@ -42,92 +44,8 @@ export class FilterRecipeDto extends PagenationDto {
   ) {
     super(page, limit);
     this.name = name;
-    this.owner_id = owner_id;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
-  }
-}
-
-export enum TextSearchSortBy {
-  RELEVANCE = 'RELEVANCE',
-  CREATED_AT = 'created_at',
-  UPDATED_AT = 'updated_at',
-}
-
-export class TextSearchRecipeDto extends PagenationDto {
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  searchQuery?: string;
-
-  @IsEnum(TextSearchSortBy)
-  @IsOptional()
-  sort?: TextSearchSortBy;
-}
-
-export class RecipeDto extends OmitType(MongoRecipe, [
-  'recipeRawText',
-  'originUrl',
-]) {}
-
-export class RecipeListViewResponseDto implements IRecipeListViewResponseDto {
-  id: number;
-  name: string;
-  thumbnail: string;
-  description: string;
-  viewCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-  @ApiHideProperty()
-  originUrl?: string;
-  @ApiHideProperty()
-  mongoId?: string;
-  @ApiHideProperty()
-  mysqlId?: number;
-
-  constructor(
-    id: number = null,
-    name: string = null,
-    thumbnail: string = null,
-    description: string = null,
-    viewCount: number = null,
-    createdAt: Date = null,
-    updatedAt: Date = null,
-  ) {
-    this.id = id;
-    this.name = name;
-    this.thumbnail = thumbnail;
-    this.description = description;
-    this.viewCount = viewCount;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-  }
-}
-
-export type IRecipeListViewResponseDto = Omit<
-  Recipe,
-  'mongoId' | 'ownerId' | 'owner' | 'originUrl'
->;
-
-export class RecipesResponseDto extends PagenationResponseDto {
-  results: RecipeListViewResponseDto[];
-}
-
-export class RecipesAndCountDto {
-  recipes: RecipeListViewResponseDto[];
-  count: number;
-
-  constructor(recipes: RecipeListViewResponseDto[], count: number) {
-    this.recipes = recipes;
-    this.count = count;
-  }
-
-  toRecipesResponseDto(page: number, limit: number): RecipesResponseDto {
-    return {
-      results: this.recipes,
-      page,
-      count: this.recipes.length,
-      hasNext: this.count > (page - 1) * limit + this.recipes.length,
-    };
+    this.ownerId = owner_id;
+    this.createdAt = created_at;
+    this.updatedAt = updated_at;
   }
 }

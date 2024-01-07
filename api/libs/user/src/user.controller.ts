@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -26,6 +24,7 @@ import {
   ApiPostCreated,
 } from '@app/common/decorators/http-method.decorator';
 import { Auth } from '@app/common/decorators/auth.decorator';
+import { UserDto } from '@app/user/dto/user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -41,7 +40,8 @@ export class UserController {
   @Auth()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    return await this.userService.create(createUserDto);
+    const user = await this.userService.create(createUserDto);
+    return UserDto.from(user);
   }
 
   /**
@@ -53,7 +53,8 @@ export class UserController {
   @ApiGet(FindAllUserResponseDto)
   @Get()
   async findAll() {
-    return await this.userService.findAll({});
+    const users = await this.userService.findAll({});
+    return users.map((user) => UserDto.from(user));
   }
 
   /**
@@ -65,7 +66,8 @@ export class UserController {
   @ApiGet(FindOneUserResponseDto)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.userService.findOne(id);
+    const user = await this.userService.findOne(id);
+    return UserDto.from(user);
   }
 
   /**
@@ -80,7 +82,8 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return await this.userService.update(id, updateUserDto);
+    const user = await this.userService.update(id, updateUserDto);
+    return UserDto.from(user);
   }
 
   /**
@@ -92,9 +95,9 @@ export class UserController {
    */
   @Auth()
   @ApiDeleteNoContent()
-  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.userService.deleteOne(id);
+    const user = await this.userService.deleteOne(id);
+    return UserDto.from(user);
   }
 }
