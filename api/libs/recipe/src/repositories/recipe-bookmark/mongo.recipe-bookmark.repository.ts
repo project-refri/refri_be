@@ -3,16 +3,14 @@ import {
   RecipeBookmark,
   RecipeBookmarkDocument,
 } from '@app/recipe/domain/mongo/mongo.recipe-bookmark.entity';
-import { CreateRecipeBookmarkDto } from '../../dto/recipe-bookmark/modify-recipe-bookmark.dto';
-import {
-  FilterRecipeBookmarkDto,
-  RecipeBookmarksAndCountDto,
-} from '../../dto/recipe-bookmark/filter-recipe-bookmark.dto';
+import { CreateRecipeBookmarkDto } from '../../dto/recipe-bookmark/create-recipe-bookmark.dto';
+import { FilterRecipeBookmarkDto } from '../../dto/recipe-bookmark/filter-recipe-bookmark.dto';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { transferObjectId } from '@app/common/utils/transfer-objectId';
 import { deleteProps } from '@app/common/utils/delete-props';
 import { IRecipeBookmarkRepository } from './recipe-bookmark.interface';
+import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-count.dto';
 
 export class RecipeBookmarkRepository
   extends CrudMongoRepository<

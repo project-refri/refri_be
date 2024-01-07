@@ -1,11 +1,4 @@
-import {
-  FilterRecipeDto,
-  RecipeDto,
-  RecipeListViewResponseDto,
-  RecipesAndCountDto,
-  RecipesResponseDto,
-  TextSearchRecipeDto,
-} from '@app/recipe/dto/recipe/filter-recipe.dto';
+import { FilterRecipeDto } from '@app/recipe/dto/recipe/filter-recipe.dto';
 import { MongoRecipeRepository } from '@app/recipe/repositories/recipe/mongo.recipe.repository';
 import { RecipeRepository } from '@app/recipe/repositories/recipe/recipe.repository';
 import { RecipeService } from '@app/recipe/services/recipe.service';
@@ -19,6 +12,11 @@ import { RecipeViewerIdentifier } from '@app/recipe/dto/recipe-view-log/recipe-v
 import { Types } from 'mongoose';
 import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
 import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
+import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';
+import { RecipeDetailDto } from '@app/recipe/dto/recipe/recipe-detail.dto';
+import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
+import { RecipesResponseDto } from '@app/recipe/dto/recipe/recipes-response.dto';
+import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 
 describe('RecipeService', () => {
   let service: RecipeService;
@@ -36,12 +34,12 @@ describe('RecipeService', () => {
     limit: 10,
   };
   const recipesAndCountLast: jest.Mocked<RecipesAndCountDto> = {
-    recipes: [new RecipeListViewResponseDto(), new RecipeListViewResponseDto()],
+    recipes: [new RecipesItemDto(), new RecipesItemDto()],
     count: 2,
     toRecipesResponseDto: jest.fn(),
   };
   const recipesAndCountNotLast: jest.Mocked<RecipesAndCountDto> = {
-    recipes: [new RecipeListViewResponseDto(), new RecipeListViewResponseDto()],
+    recipes: [new RecipesItemDto(), new RecipesItemDto()],
     count: 15,
     toRecipesResponseDto: jest.fn(),
   };
@@ -245,7 +243,7 @@ describe('RecipeService', () => {
 
   describe('findOne', () => {
     it('should return a recipe', async () => {
-      const recipeDto = new RecipeDto();
+      const recipeDto = new RecipeDetailDto();
       mongoRecipeRepository.findOneByMysqlId.mockResolvedValue(recipeDto);
       recipeRepository.increaseViewCount.mockResolvedValue(recipe);
       mongoRecipeRepository.increaseViewCountByMySqlId.mockResolvedValue(
@@ -274,7 +272,7 @@ describe('RecipeService', () => {
 
   describe('findTopViewed', () => {
     it('should return an array of recipes', async () => {
-      const recipe = new RecipeListViewResponseDto();
+      const recipe = new RecipesItemDto();
       recipeViewLogRepository.findAll5MostViewedRecipesInPast1Month.mockResolvedValue(
         [recipe],
       );

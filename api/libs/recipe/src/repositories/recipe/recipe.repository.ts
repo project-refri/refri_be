@@ -2,17 +2,15 @@ import { PrismaService } from '@app/common/prisma/prisma.service';
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { Injectable } from '@nestjs/common';
 import { Recipe } from '@app/recipe/domain/recipe.entity';
-import {
-  FilterRecipeDto,
-  RecipeListViewResponseDto,
-  RecipesAndCountDto,
-  TextSearchRecipeDto,
-} from '../../dto/recipe/filter-recipe.dto';
+import { FilterRecipeDto } from '../../dto/recipe/filter-recipe.dto';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { IRecipeRepository } from './recipe.repository.interface';
 import { deleteProps } from '@app/common/utils/delete-props';
 import { CreateRecipeDto } from '@app/recipe/dto/recipe/create-recipe.dto';
 import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
+import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';
+import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
+import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 
 @Injectable()
 export class RecipeRepository
@@ -77,7 +75,7 @@ export class RecipeRepository
     });
   }
 
-  async findAllByIds(ids: number[]): Promise<RecipeListViewResponseDto[]> {
+  async findAllByIds(ids: number[]): Promise<RecipesItemDto[]> {
     return this.prisma.recipe.findMany({
       where: { id: { in: ids } },
       select: {

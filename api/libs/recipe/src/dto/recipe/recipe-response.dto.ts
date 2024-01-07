@@ -2,15 +2,13 @@ import {
   CreatedResponse,
   OkResponse,
 } from '@app/common/dto/success-response.dto';
-import { Recipe } from '@app/recipe/domain/recipe.entity';
-import {
-  RecipeDto,
-  RecipeListViewResponseDto,
-  RecipesResponseDto,
-} from './filter-recipe.dto';
+import { RecipeDetailDto } from '@app/recipe/dto/recipe/recipe-detail.dto';
+import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
+import { RecipesResponseDto } from '@app/recipe/dto/recipe/recipes-response.dto';
+import { RecipeDto } from '@app/recipe/dto/recipe/recipe.dto';
 
 export class CreateRecipeResponseDto extends CreatedResponse {
-  data: Recipe;
+  data: RecipeDto;
 }
 
 export class FindRecipesResponseDto extends OkResponse {
@@ -18,7 +16,7 @@ export class FindRecipesResponseDto extends OkResponse {
 }
 
 export class FindTopViewdResponseDto extends OkResponse {
-  data: RecipeListViewResponseDto[];
+  data: RecipesItemDto[];
 }
 
 export class FindRecentViewedResponseDto extends OkResponse {
@@ -26,9 +24,9 @@ export class FindRecentViewedResponseDto extends OkResponse {
 }
 
 export class FindOneRecipeResponseDto extends OkResponse {
-  data: RecipeDto;
+  data: RecipeDetailDto;
 }
 
 export class UpdateRecipeResponseDto extends OkResponse {
-  data: Recipe;
+  data: RecipeDto;
 }

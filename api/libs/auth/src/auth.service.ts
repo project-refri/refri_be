@@ -18,6 +18,7 @@ import { UserInfo } from './types/user-info.type';
 import { LoginSessionDto } from './dto/token.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Logable } from '@app/common/log/log.decorator';
+import { UserDto } from '@app/user/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -57,7 +58,7 @@ export class AuthService {
       sessionToken,
     });
     return {
-      user,
+      user: UserDto.from(user),
       sessionToken,
     };
   }

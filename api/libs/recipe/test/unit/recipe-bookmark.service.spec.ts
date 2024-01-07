@@ -1,12 +1,10 @@
 import { TestBed } from '@automock/jest';
 import { RecipeBookmarkRepository } from '@app/recipe/repositories/recipe-bookmark/recipe-bookmark.repository';
 import { RecipeBookmarkService } from '@app/recipe/services/recipe-bookmark.service';
-import {
-  FilterRecipeBookmarkDto,
-  RecipeBookmarkListViewResponseDto,
-  RecipeBookmarksAndCountDto,
-  RecipeBookmarksResponseDto,
-} from '@app/recipe/dto/recipe-bookmark/filter-recipe-bookmark.dto';
+import { FilterRecipeBookmarkDto } from '@app/recipe/dto/recipe-bookmark/filter-recipe-bookmark.dto';
+import { RecipeBookmarksItemDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-item.dto';
+import { RecipeBookmarksResponseDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-response.dto';
+import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-count.dto';
 
 describe('RecipeBookmarkService', () => {
   let service: RecipeBookmarkService;
@@ -17,19 +15,13 @@ describe('RecipeBookmarkService', () => {
     limit: 2,
   };
   const recipeBookmarksAndCountLast: jest.Mocked<RecipeBookmarksAndCountDto> = {
-    recipes: [
-      new RecipeBookmarkListViewResponseDto(),
-      new RecipeBookmarkListViewResponseDto(),
-    ],
+    recipes: [new RecipeBookmarksItemDto(), new RecipeBookmarksItemDto()],
     count: 2,
     toRecipeBookmarksResponseDto: jest.fn(),
   };
   const recipeBookmarksAndCountNotLast: jest.Mocked<RecipeBookmarksAndCountDto> =
     {
-      recipes: [
-        new RecipeBookmarkListViewResponseDto(),
-        new RecipeBookmarkListViewResponseDto(),
-      ],
+      recipes: [new RecipeBookmarksItemDto(), new RecipeBookmarksItemDto()],
       count: 15,
       toRecipeBookmarksResponseDto: jest.fn(),
     };

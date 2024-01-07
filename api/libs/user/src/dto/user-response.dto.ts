@@ -1,18 +1,18 @@
 import { SuccessResponse } from '@app/common/dto/success-response.dto';
-import { User } from '@app/user/domain/user.entity';
+import { UserDto } from '@app/user/dto/user.dto';
 
 export class CreateUserResponseDto extends SuccessResponse {
-  data: User;
+  data: UserDto;
 }
 
 export class UpdateUserResponseDto extends SuccessResponse {
-  data: User;
+  data: UserDto;
 }
 
 export class FindAllUserResponseDto extends SuccessResponse {
-  data: User[];
+  data: UserDto[];
 }
 
 export class FindOneUserResponseDto extends SuccessResponse {
-  data: User;
+  data: UserDto;
 }

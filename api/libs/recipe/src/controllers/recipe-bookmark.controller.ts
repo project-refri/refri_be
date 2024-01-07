@@ -20,7 +20,7 @@ import {
   CreateRecipeBookmarkResponseDto,
   FindRecipeBookmarksResponseDto,
 } from '../dto/recipe-bookmark/recipe-bookmark-response.dto';
-import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/modify-recipe-bookmark.dto';
+import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/create-recipe-bookmark.dto';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { User } from '@app/user/domain/user.entity';
 import { FilterRecipeBookmarkDto } from '../dto/recipe-bookmark/filter-recipe-bookmark.dto';

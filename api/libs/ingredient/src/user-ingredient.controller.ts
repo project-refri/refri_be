@@ -30,11 +30,7 @@ import {
   GetIngredientInfoResponseDto,
   UpdateUserIngredientResponseDto,
 } from './dto/ingredient-response.dto';
-import {
-  CreateUserIngredientDto,
-  GetIngredientInfoDto,
-  UpdateUserIngredientDto,
-} from './dto/modify-ingredient.dto';
+import { CreateUserIngredientDto } from './dto/create-user-ingredient.dto';
 import { UserIngredientService } from './user-ingredient.service';
 import { FoodType } from './domain/food-type.enum';
 import { StoreMethod } from './domain/store-method.enum';
@@ -42,6 +38,8 @@ import { FilterUserIngredientDto } from './dto/filter-ingredient.dto';
 import { queryBuilder } from '@app/common/utils/query-builder';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { User } from '@app/user/domain/user.entity';
+import { UpdateUserIngredientDto } from '@app/ingredient/dto/update-user-ingredient.dto';
+import { GetIngredientInfoDto } from '@app/ingredient/dto/get-ingredient-info.dto';
 
 @ApiTags('Ingredient')
 @Controller('ingredient')

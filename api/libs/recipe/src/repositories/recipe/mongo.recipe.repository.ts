@@ -1,14 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  FilterRecipeDto,
-  RecipeDto,
-  RecipeListViewResponseDto,
-  RecipesAndCountDto,
-  TextSearchRecipeDto,
-  TextSearchSortBy,
-} from '../../dto/recipe/filter-recipe.dto';
+import { FilterRecipeDto } from '../../dto/recipe/filter-recipe.dto';
 import { UpdateMongoRecipeDto } from '../../dto/recipe/update-mongo-recipe.dto';
 import {
   Recipe,
@@ -19,6 +12,13 @@ import { deleteProps } from '@app/common/utils/delete-props';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';
 import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
+import {
+  TextSearchRecipeDto,
+  TextSearchSortBy,
+} from '@app/recipe/dto/recipe/text-search.dto';
+import { RecipeDetailDto } from '@app/recipe/dto/recipe/recipe-detail.dto';
+import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
+import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 
 @Injectable()
 export class MongoRecipeRepository {
@@ -207,7 +207,7 @@ export class MongoRecipeRepository {
     ttl: 5 * 60 * 1000,
     keyGenerator: (mySqlId: number) => `recipe:id:mysql-${mySqlId}`,
   })
-  async findOneByMysqlId(mySqlId: number): Promise<RecipeDto> {
+  async findOneByMysqlId(mySqlId: number): Promise<RecipeDetailDto> {
     return (
       await this.recipeModel
         .findOne({ mysql_id: mySqlId })
@@ -226,7 +226,7 @@ export class MongoRecipeRepository {
     ttl: 5 * 60 * 1000,
     keyGenerator: (id: string) => `recipe:id:mongo-${id}`,
   })
-  async findOne(id: string): Promise<RecipeDto> {
+  async findOne(id: string): Promise<RecipeDetailDto> {
     return (
       await this.recipeModel
         .findOne({ id })
@@ -240,7 +240,7 @@ export class MongoRecipeRepository {
     )?.toObject();
   }
 
-  async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
+  async findTopViewed(): Promise<RecipesItemDto[]> {
     return (
       await this.recipeModel
         .find()
@@ -258,7 +258,7 @@ export class MongoRecipeRepository {
     ).map((recipe) => recipe.toObject());
   }
 
-  async findAllByIds(ids: string[]): Promise<RecipeListViewResponseDto[]> {
+  async findAllByIds(ids: string[]): Promise<RecipesItemDto[]> {
     return (
       await this.recipeModel
         .find({ id: { $in: ids } })

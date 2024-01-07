@@ -1,14 +1,12 @@
 import { PrismaService } from '@app/common/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { RecipeBookmark } from '@app/recipe/domain/recipe-bookmark.entity';
-import { CreateRecipeBookmarkDto } from '../../dto/recipe-bookmark/modify-recipe-bookmark.dto';
-import {
-  FilterRecipeBookmarkDto,
-  RecipeBookmarksAndCountDto,
-} from '../../dto/recipe-bookmark/filter-recipe-bookmark.dto';
+import { CreateRecipeBookmarkDto } from '../../dto/recipe-bookmark/create-recipe-bookmark.dto';
+import { FilterRecipeBookmarkDto } from '../../dto/recipe-bookmark/filter-recipe-bookmark.dto';
 import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { deleteProps } from '@app/common/utils/delete-props';
 import { IRecipeBookmarkRepository } from './recipe-bookmark.interface';
+import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-count.dto';
 
 @Injectable()
 export class RecipeBookmarkRepository

@@ -28,6 +28,8 @@ import { CreateDeviceTokenResponseDto } from './dto/device-token-response.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { User } from '@app/user/domain/user.entity';
+import { DeviceTokenDto } from '@app/noti/dto/device-token.dto';
+import { NotiDto } from '@app/noti/dto/noti.dto';
 
 @ApiTags('Noti')
 @Controller('noti')
@@ -45,7 +47,10 @@ export class NotiController {
     @ReqUser() user: User,
   ) {
     createDeviceTokenDto.userId = user.id;
-    return await this.deviceTokenService.create(createDeviceTokenDto);
+    const deviceToken = await this.deviceTokenService.create(
+      createDeviceTokenDto,
+    );
+    return DeviceTokenDto.from(deviceToken);
   }
 
   /**
@@ -55,23 +60,26 @@ export class NotiController {
   @ApiPostCreated(CreateNotiResponseDto)
   @Post()
   async createNoti(@Body() createNotiDto: CreateNotiDto) {
-    return await this.notiService.create(createNotiDto);
+    const noti = await this.notiService.create(createNotiDto);
+    return NotiDto.from(noti);
   }
 
   @Auth()
   @ApiGet(FindNotisResponseDto)
   @Get()
   async findAllNotis(@ReqUser() user: User) {
-    return await this.notiService.findAll({
+    const notis = await this.notiService.findAll({
       userId: user.id,
     });
+    return notis.map((noti) => NotiDto.from(noti));
   }
 
   @Auth()
   @ApiGet(FindOneNotiResponseDto)
   @Get(':id')
   async findOneNoti(@Param('id', ParseIntPipe) id: number) {
-    return await this.notiService.findOne(id);
+    const noti = await this.notiService.findOne(id);
+    return NotiDto.from(noti);
   }
 
   @Auth()
@@ -81,7 +89,8 @@ export class NotiController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateNotiDto: UpdateNotiDto,
   ) {
-    return await this.notiService.update(id, updateNotiDto);
+    const noti = await this.notiService.update(id, updateNotiDto);
+    return NotiDto.from(noti);
   }
 
   @Auth()

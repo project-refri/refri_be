@@ -4,14 +4,7 @@ import {
   NotFoundException,
   OnApplicationBootstrap,
 } from '@nestjs/common';
-import {
-  FilterRecipeDto,
-  RecipeDto,
-  RecipeListViewResponseDto,
-  RecipesAndCountDto,
-  RecipesResponseDto,
-  TextSearchRecipeDto,
-} from '../dto/recipe/filter-recipe.dto';
+import { FilterRecipeDto } from '../dto/recipe/filter-recipe.dto';
 import { MongoRecipeRepository } from '../repositories/recipe/mongo.recipe.repository';
 import { RecipeRepository } from '../repositories/recipe/recipe.repository';
 import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-identifier';
@@ -23,6 +16,11 @@ import { deleteProps } from '@app/common/utils/delete-props';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { CreateMongoRecipeDto } from '../dto/recipe/create-mongo-recipe.dto';
 import { UpdateRecipeDto } from '../dto/recipe/update-recipe.dto';
+import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';
+import { RecipeDetailDto } from '@app/recipe/dto/recipe/recipe-detail.dto';
+import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
+import { RecipesResponseDto } from '@app/recipe/dto/recipe/recipes-response.dto';
+import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 
 @Injectable()
 export class RecipeService implements OnApplicationBootstrap {
@@ -98,7 +96,7 @@ export class RecipeService implements OnApplicationBootstrap {
   async findOne(
     id: number,
     identifier: RecipeViewerIdentifier,
-  ): Promise<RecipeDto> {
+  ): Promise<RecipeDetailDto> {
     const ret = (
       await Promise.all([
         this.mongoRecipeRepository.findOneByMysqlId(id),
@@ -110,7 +108,7 @@ export class RecipeService implements OnApplicationBootstrap {
   }
 
   @Logable()
-  async findTopViewed(): Promise<RecipeListViewResponseDto[]> {
+  async findTopViewed(): Promise<RecipesItemDto[]> {
     return await this.recipeViewLogRepository.findAll5MostViewedRecipesInPast1Month();
   }
 
