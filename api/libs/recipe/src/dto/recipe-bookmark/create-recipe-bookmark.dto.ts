@@ -8,7 +8,7 @@ export class CreateRecipeBookmarkDto {
   @Expose({ name: 'user_id' })
   @IsOptional()
   @IsInt()
-  userId?: number;
+  userId: number;
 
   @ApiExpose({ name: 'recipe_id' })
   @IsInt()

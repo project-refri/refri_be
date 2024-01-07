@@ -53,7 +53,7 @@ export class UserController {
   @ApiGet(FindAllUserResponseDto)
   @Get()
   async findAll() {
-    const users = await this.userService.findAll({});
+    const users = await this.userService.findAll();
     return users.map((user) => UserDto.from(user));
   }
 

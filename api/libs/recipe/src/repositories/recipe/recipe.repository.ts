@@ -14,12 +14,7 @@ import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 
 @Injectable()
 export class RecipeRepository
-  extends CrudPrismaRepository<
-    Recipe,
-    CreateRecipeDto,
-    UpdateRecipeDto,
-    FilterRecipeDto
-  >
+  extends CrudPrismaRepository<Recipe, CreateRecipeDto, UpdateRecipeDto>
   implements IRecipeRepository
 {
   constructor(private readonly prisma: PrismaService) {
@@ -57,9 +52,10 @@ export class RecipeRepository
   }
 
   async findOneByMongoId(mongoId: string): Promise<Recipe> {
-    return this.prisma.recipe.findUnique({
+    const ret = await this.prisma.recipe.findUnique({
       where: { mongoId: mongoId },
     });
+    return new Recipe(ret);
   }
 
   async findAllByFullTextSearch(
@@ -91,10 +87,11 @@ export class RecipeRepository
   }
 
   async increaseViewCount(id: number): Promise<Recipe> {
-    return this.prisma.recipe.update({
+    const ret = await this.prisma.recipe.update({
       where: { id },
       data: { viewCount: { increment: 1 } },
     });
+    return new Recipe(ret);
   }
 
   async deleteOne(id: number): Promise<Recipe> {
@@ -105,12 +102,13 @@ export class RecipeRepository
     const deleteRecipeBookmark = this.prisma.recipeBookmark.deleteMany({
       where: { recipeId: id },
     });
-    return (
+    const ret = (
       await this.prisma.$transaction([
         deleteRecipeViewLog,
         deleteRecipeBookmark,
         deleteRecipe,
       ])
     )[2];
+    return new Recipe(ret);
   }
 }

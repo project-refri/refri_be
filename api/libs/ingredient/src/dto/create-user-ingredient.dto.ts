@@ -1,7 +1,7 @@
 import { ApiHideProperty } from '@nestjs/swagger';
 import {
   IsEnum,
-  IsMongoId,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -19,17 +19,19 @@ export class CreateUserIngredientDto {
   name: string;
 
   @ApiExpose({ name: 'ingredient_id', isOptional: true })
-  @IsMongoId()
+  @IsInt()
+  @Min(1)
   @IsNotEmpty()
   @IsOptional()
-  ingredientId?: string;
+  ingredientId: number;
 
   @ApiExpose({ name: 'user_id', isOptional: true })
-  @IsMongoId()
+  @IsInt()
+  @Min(1)
   @IsNotEmpty()
   @IsOptional()
   @ApiHideProperty()
-  userId?: string;
+  userId: number;
 
   @ApiExpose({ name: 'food_type' })
   @IsEnum(FoodType)
@@ -49,4 +51,9 @@ export class CreateUserIngredientDto {
   @Min(0)
   @Max(365)
   daysBeforeExpiration: number;
+
+  @ApiHideProperty()
+  @IsString()
+  @IsNotEmpty()
+  icon: string;
 }

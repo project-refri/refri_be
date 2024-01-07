@@ -15,8 +15,6 @@ import {
 } from '@app/noti/domain/mongo/mongo.device-token.entity';
 import { NotiController } from './noti.controller';
 
-// export const FCM_MESSAGING = Symbol('FCM_MESSAGING');
-
 @Module({
   imports: [
     MongooseModule.forFeature([

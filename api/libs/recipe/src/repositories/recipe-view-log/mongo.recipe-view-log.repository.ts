@@ -16,7 +16,7 @@ import { IRecipeViewLogRepository } from './recipe-view-log.repository.interface
 import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
 
 export class RecipeViewLogRepository
-  extends CrudMongoRepository<RecipeViewLog, CreateRecipeViewLogDto, any, any>
+  extends CrudMongoRepository<RecipeViewLog, CreateRecipeViewLogDto, any>
   implements IRecipeViewLogRepository
 {
   constructor(

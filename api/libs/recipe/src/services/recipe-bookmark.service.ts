@@ -11,8 +11,7 @@ import { RecipesResponseDto } from '@app/recipe/dto/recipe/recipes-response.dto'
 export class RecipeBookmarkService extends CrudService<
   RecipeBookmark,
   CreateRecipeBookmarkDto,
-  any,
-  FilterRecipeBookmarkDto
+  any
 > {
   constructor(
     private readonly recipeBookmarkRespository: RecipeBookmarkRepository,

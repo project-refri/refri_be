@@ -13,12 +13,7 @@ import { IRecipeBookmarkRepository } from './recipe-bookmark.interface';
 import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-count.dto';
 
 export class RecipeBookmarkRepository
-  extends CrudMongoRepository<
-    RecipeBookmark,
-    CreateRecipeBookmarkDto,
-    any,
-    FilterRecipeBookmarkDto
-  >
+  extends CrudMongoRepository<RecipeBookmark, CreateRecipeBookmarkDto, any>
   implements IRecipeBookmarkRepository
 {
   constructor(
