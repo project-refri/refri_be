@@ -8,7 +8,7 @@ import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
 type RecipeViewLog = MongoRecipeViewLog | PrismaRecipeViewLog;
 
 export interface IRecipeViewLogRepository
-  extends ICrudRepository<RecipeViewLog, CreateRecipeViewLogDto, any, any> {
+  extends ICrudRepository<RecipeViewLog, CreateRecipeViewLogDto, any> {
   checkIfRecipeViewCountKeyExists(): Promise<boolean>;
 
   setAllViewedRecipesInPast1Month(): Promise<void>;

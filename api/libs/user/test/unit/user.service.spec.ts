@@ -4,6 +4,7 @@ import { CreateUserDto } from '@app/user/dto/modify-user.dto';
 import { UserRepository } from '@app/user/repositories/user.repository';
 import { UserService } from '@app/user/user.service';
 import { User } from '@app/user/domain/user.entity';
+import { Diet } from '@app/user/domain/diet.enum';
 
 describe('UserService', () => {
   let service: UserService;
@@ -17,12 +18,16 @@ describe('UserService', () => {
   });
 
   describe('create', () => {
-    const mockUser: User = {
-      ...new User(),
-      username: 'test',
+    const mockUser: User = new User({
+      id: 1,
       email: 'test@example.com',
-    };
-
+      username: 'test',
+      introduction: '',
+      diet: Diet.NORMAL,
+      thumbnail: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     it('should create a new user', async () => {
       const createUserDto: CreateUserDto = {
         ...new CreateUserDto(),
@@ -89,11 +94,16 @@ describe('UserService', () => {
   });
 
   describe('findByEmail', () => {
-    const mockUser: User = {
-      ...new User(),
-      username: 'test',
+    const mockUser: User = new User({
+      id: 1,
       email: 'test@example.com',
-    };
+      username: 'test',
+      introduction: '',
+      diet: Diet.NORMAL,
+      thumbnail: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     it('should return the user with the given email', async () => {
       const email = 'test@example.com';
       userRepository.findByEmail.mockResolvedValue(mockUser);

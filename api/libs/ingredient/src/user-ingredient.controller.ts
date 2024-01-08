@@ -58,7 +58,7 @@ export class UserIngredientController {
     @Body() createIngredientDto: CreateUserIngredientDto,
     @ReqUser() user: User,
   ) {
-    createIngredientDto.userId = user.id.toString();
+    createIngredientDto.userId = user.id;
     return this.ingredientService.create(createIngredientDto);
   }
 
@@ -122,7 +122,7 @@ export class UserIngredientController {
       store_method,
       user_id: user.id.toString(),
     });
-    return this.ingredientService.findAll(filterIngredientDto);
+    return this.ingredientService.findAllByCond(filterIngredientDto);
   }
 
   /**

@@ -17,6 +17,7 @@ import { RecipeDetailDto } from '@app/recipe/dto/recipe/recipe-detail.dto';
 import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
 import { RecipesResponseDto } from '@app/recipe/dto/recipe/recipes-response.dto';
 import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
+import { Diet } from '@app/user/domain/diet.enum';
 
 describe('RecipeService', () => {
   let service: RecipeService;
@@ -55,7 +56,16 @@ describe('RecipeService', () => {
     count: 2,
     hasNext: false,
   };
-  const user = new User();
+  const user = new User({
+    id: 1,
+    email: 'test@test.com',
+    username: 'test',
+    introduction: '',
+    diet: Diet.NORMAL,
+    thumbnail: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
   const recipe = new Recipe({
     id: 1,
     name: 'test',
@@ -97,8 +107,11 @@ describe('RecipeService', () => {
 
   describe('create', () => {
     it('should create a new recipe', async () => {
-      const createRecipeDto = {} as CreateMongoRecipeDto;
+      const createMongoRecipeDto = new CreateMongoRecipeDto();
       const mongoId = new Types.ObjectId();
+      const createRecipeDto = createMongoRecipeDto.toCreateRecipeDto(
+        mongoId.toString(),
+      );
       const mongoRecipe: MongoRecipe = {
         ...new MongoRecipe(),
         id: mongoId,
@@ -106,15 +119,12 @@ describe('RecipeService', () => {
       recipeRepository.create.mockResolvedValue(recipe);
       mongoRecipeRepository.create.mockResolvedValue(mongoRecipe);
 
-      const result = await service.create(createRecipeDto);
+      const result = await service.create(createMongoRecipeDto);
 
       expect(mongoRecipeRepository.create).toHaveBeenCalledWith(
-        createRecipeDto,
+        createMongoRecipeDto,
       );
-      expect(recipeRepository.create).toHaveBeenCalledWith({
-        ...createRecipeDto,
-        mongo_id: mongoId.toString(),
-      });
+      expect(recipeRepository.create).toHaveBeenCalledWith(createRecipeDto);
       expect(result).toEqual(recipe);
     });
   });
@@ -253,10 +263,16 @@ describe('RecipeService', () => {
 
       const result = await service.findOne(1, {
         ip: '::1',
-        user: {
-          ...new User(),
+        user: new User({
           id: 1,
-        },
+          email: 'test@test.com',
+          username: 'test',
+          introduction: '',
+          diet: Diet.NORMAL,
+          thumbnail: '',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
       });
 
       expect(recipeRepository.increaseViewCount).toHaveBeenCalledWith(1);
@@ -297,7 +313,19 @@ describe('RecipeService', () => {
 
       const result = await service.findAllRecentViewed(
         filterRecipeDto,
-        new RecipeViewerIdentifier({ ...new User(), id: 1 }, null),
+        new RecipeViewerIdentifier(
+          new User({
+            id: 1,
+            email: 'test@test.com',
+            username: 'test',
+            introduction: '',
+            diet: Diet.NORMAL,
+            thumbnail: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }),
+          null,
+        ),
       );
 
       expect(recipeViewLogRepository.findAllRecentViewed).toHaveBeenCalledWith(
@@ -321,7 +349,19 @@ describe('RecipeService', () => {
 
       const result = await service.findAllRecentViewed(
         filterRecipeDto,
-        new RecipeViewerIdentifier({ ...new User(), id: 1 }, null),
+        new RecipeViewerIdentifier(
+          new User({
+            id: 1,
+            email: 'test@test.com',
+            username: 'test',
+            introduction: '',
+            diet: Diet.NORMAL,
+            thumbnail: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }),
+          null,
+        ),
       );
 
       expect(recipeViewLogRepository.findAllRecentViewed).toHaveBeenCalledWith(
@@ -346,10 +386,16 @@ describe('RecipeService', () => {
 
       const result = await service.viewRecipe(1, {
         ip: '::1',
-        user: {
-          ...new User(),
+        user: new User({
           id: 1,
-        },
+          email: 'test@test.com',
+          username: 'test',
+          introduction: '',
+          diet: Diet.NORMAL,
+          thumbnail: '',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
       });
 
       expect(recipeRepository.increaseViewCount).toHaveBeenCalledWith(1);
@@ -368,7 +414,16 @@ describe('RecipeService', () => {
       await expect(
         service.viewRecipe(1, {
           ip: '::1',
-          user: new User(),
+          user: new User({
+            id: 1,
+            email: 'test@test.com',
+            username: 'test',
+            introduction: '',
+            diet: Diet.NORMAL,
+            thumbnail: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }),
         }),
       ).rejects.toThrowError('Recipe not found');
     });

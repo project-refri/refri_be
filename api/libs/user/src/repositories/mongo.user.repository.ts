@@ -21,8 +21,12 @@ export class UserRepository implements IUserRepository {
     return await createdEntity.save();
   }
 
+  async findAll(): Promise<User[]> {
+    return await this.userModel.find().exec();
+  }
+
   @Logable()
-  async findAll(filterUserDto: FilterUserDto): Promise<User[]> {
+  async findAllByCond(filterUserDto: FilterUserDto): Promise<User[]> {
     return await this.userModel.find(filterUserDto).exec();
   }
 

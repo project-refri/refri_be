@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { FilterUserIngredientDto } from '../dto/filter-ingredient.dto';
 import { CreateUserIngredientDto } from '../dto/create-user-ingredient.dto';
 import {
   UserIngredient,
@@ -10,14 +9,14 @@ import {
 import { CrudMongoRepository } from '@app/common/repository/crud-mongo.repository';
 import { IUserIngredientRepository } from './user-ingredient.repository.interface';
 import { UpdateUserIngredientDto } from '@app/ingredient/dto/update-user-ingredient.dto';
+import { FilterUserIngredientDto } from '@app/ingredient/dto/filter-ingredient.dto';
 
 @Injectable()
 export class UserIngredientRepository
   extends CrudMongoRepository<
     UserIngredient,
     CreateUserIngredientDto,
-    UpdateUserIngredientDto,
-    FilterUserIngredientDto
+    UpdateUserIngredientDto
   >
   implements IUserIngredientRepository
 {
@@ -26,5 +25,11 @@ export class UserIngredientRepository
     private readonly userIngredientModel: Model<UserIngredientDocument>,
   ) {
     super(userIngredientModel);
+  }
+
+  async findAllByCond(
+    filterUserIngredientDto: FilterUserIngredientDto,
+  ): Promise<UserIngredient[]> {
+    throw new Error('Method not implemented.');
   }
 }

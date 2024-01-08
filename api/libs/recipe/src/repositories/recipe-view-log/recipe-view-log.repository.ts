@@ -2,7 +2,6 @@ import { CreateRecipeViewLogDto } from '@app/recipe/dto/recipe-view-log/create-r
 import { RecipeViewLog } from '@app/recipe/domain/recipe-view-log.entity';
 import { IRecipeViewLogRepository } from './recipe-view-log.repository.interface';
 import { PrismaService } from '@app/common/prisma/prisma.service';
-import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { REDIS_PROVIDER } from '@app/common/redis.module';
 import { Inject } from '@nestjs/common';
 import { RedisClientType } from 'redis';
@@ -13,20 +12,15 @@ import { FilterRecipeDto } from '@app/recipe/dto/recipe/filter-recipe.dto';
 import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
 import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 
-export class RecipeViewLogRepository
-  extends CrudPrismaRepository<RecipeViewLog, CreateRecipeViewLogDto, any, any>
-  implements IRecipeViewLogRepository
-{
+export class RecipeViewLogRepository implements IRecipeViewLogRepository {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(REDIS_PROVIDER) private readonly redisClient: RedisClientType,
     @Inject('PrismaRecipeRepository')
     private readonly recipeRepository: RecipeRepository,
-  ) {
-    super(prisma, 'recipeViewLog');
-  }
+  ) {}
 
-  override async create(
+  async create(
     createRecipeViewLogDto: CreateRecipeViewLogDto,
   ): Promise<RecipeViewLog> {
     const createdEntity = this.prisma.recipeViewLog.create({
@@ -42,7 +36,30 @@ export class RecipeViewLogRepository
         ),
       ])
     )[0];
-    return result;
+    return new RecipeViewLog({
+      id: result.id,
+      recipeId: result.recipeId,
+      userId: result.userId,
+      userIp: result.userIp,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+    });
+  }
+
+  async findOne(id: number): Promise<RecipeViewLog> {
+    const ret = await await this.prisma.recipeViewLog.findUnique({
+      where: {
+        id,
+      },
+    });
+    return new RecipeViewLog({
+      id: ret.id,
+      recipeId: ret.recipeId,
+      userId: ret.userId,
+      userIp: ret.userIp,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
+    });
   }
 
   async checkIfRecipeViewCountKeyExists(): Promise<boolean> {
@@ -179,5 +196,27 @@ export class RecipeViewLogRepository
         );
       }),
     );
+  }
+
+  async findAll(): Promise<RecipeViewLog[]> {
+    const ret = await this.prisma.recipeViewLog.findMany();
+    return ret.map((recipeViewLog) => {
+      return new RecipeViewLog({
+        id: recipeViewLog.id,
+        recipeId: recipeViewLog.recipeId,
+        userId: recipeViewLog.userId,
+        userIp: recipeViewLog.userIp,
+        createdAt: recipeViewLog.createdAt,
+        updatedAt: recipeViewLog.updatedAt,
+      });
+    });
+  }
+
+  async update(id: number, updateDto: any): Promise<RecipeViewLog> {
+    throw new Error('Method not implemented.');
+  }
+
+  async deleteOne(id: number): Promise<RecipeViewLog> {
+    throw new Error('Method not implemented.');
   }
 }

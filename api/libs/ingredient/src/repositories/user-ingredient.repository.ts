@@ -1,23 +1,65 @@
-import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
-import { UserIngredient } from '../domain/user-ingredient.entity';
-import { CreateUserIngredientDto } from '../dto/create-user-ingredient.dto';
-import { FilterUserIngredientDto } from '../dto/filter-ingredient.dto';
 import { IUserIngredientRepository } from './user-ingredient.repository.interface';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/common/prisma/prisma.service';
-import { UpdateUserIngredientDto } from '@app/ingredient/dto/update-user-ingredient.dto';
+import { FilterUserIngredientDto } from '@app/ingredient/dto/filter-ingredient.dto';
+import { FoodType, StoreMethod } from '@prisma/client';
+import { CreateUserIngredientDto } from '@app/ingredient/dto/create-user-ingredient.dto';
+import { UserIngredient } from '@app/ingredient/domain/user-ingredient.entity';
 
 @Injectable()
-export class UserIngredientRepository
-  extends CrudPrismaRepository<
-    UserIngredient,
-    CreateUserIngredientDto,
-    UpdateUserIngredientDto,
-    FilterUserIngredientDto
-  >
-  implements IUserIngredientRepository
-{
-  constructor(private readonly prisma: PrismaService) {
-    super(prisma, 'userIngredient');
+export class UserIngredientRepository implements IUserIngredientRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(dto: CreateUserIngredientDto) {
+    const ret = await this.prisma.userIngredient.create({
+      data: {
+        ...dto,
+        foodType: FoodType[dto.foodType],
+        storeMethod: StoreMethod[dto.storeMethod],
+      },
+    });
+    return new UserIngredient(ret);
+  }
+
+  async findAllByCond(filterUserIngredientDto: FilterUserIngredientDto) {
+    const ret = await this.prisma.userIngredient.findMany({
+      where: {
+        ...filterUserIngredientDto,
+        foodType: FoodType[filterUserIngredientDto.foodType],
+        storeMethod: StoreMethod[filterUserIngredientDto.storeMethod],
+      },
+    });
+    return ret.map((userIngredient) => new UserIngredient(userIngredient));
+  }
+
+  async findAll() {
+    const ret = await this.prisma.userIngredient.findMany();
+    return ret.map((userIngredient) => new UserIngredient(userIngredient));
+  }
+
+  async findOne(id: number) {
+    const ret = await this.prisma.userIngredient.findUnique({
+      where: { id },
+    });
+    return new UserIngredient(ret);
+  }
+
+  async update(id: number, dto: CreateUserIngredientDto) {
+    const ret = await this.prisma.userIngredient.update({
+      where: { id },
+      data: {
+        ...dto,
+        foodType: FoodType[dto.foodType],
+        storeMethod: StoreMethod[dto.storeMethod],
+      },
+    });
+    return new UserIngredient(ret);
+  }
+
+  async deleteOne(id: number) {
+    const ret = await this.prisma.userIngredient.delete({
+      where: { id },
+    });
+    return new UserIngredient(ret);
   }
 }

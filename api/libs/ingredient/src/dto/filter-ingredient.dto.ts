@@ -22,7 +22,7 @@ export class FilterUserIngredientDto {
   @IsString()
   @IsMongoId()
   @IsOptional()
-  userId?: string;
+  userId?: number;
 
   @ApiExpose({ name: 'food_type', isOptional: true })
   @IsEnum(FoodType)

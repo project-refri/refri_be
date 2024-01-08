@@ -35,8 +35,8 @@ export class UserService {
   }
 
   @Logable()
-  async findAll(filterDto: any): Promise<User[]> {
-    return await this.userRepository.findAll(filterDto);
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.findAll();
   }
 
   @Logable()

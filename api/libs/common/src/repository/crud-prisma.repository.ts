@@ -2,8 +2,8 @@ import { Logable } from '../log/log.decorator';
 import { PrismaService } from '../prisma/prisma.service';
 import { ICrudRepository } from './crud.repository';
 
-export class CrudPrismaRepository<Entity, CreateDto, UpdateDto, FilterDto>
-  implements ICrudRepository<Entity, CreateDto, UpdateDto, FilterDto>
+export class CrudPrismaRepository<Entity, CreateDto, UpdateDto>
+  implements ICrudRepository<Entity, CreateDto, UpdateDto>
 {
   constructor(
     private readonly prismaService: PrismaService,
@@ -18,10 +18,8 @@ export class CrudPrismaRepository<Entity, CreateDto, UpdateDto, FilterDto>
   }
 
   @Logable()
-  async findAll(filterDto: FilterDto): Promise<Entity[]> {
-    return await this.prismaService[this.entityName].findMany({
-      where: filterDto,
-    });
+  async findAll(): Promise<Entity[]> {
+    return await this.prismaService[this.entityName].findMany();
   }
 
   @Logable()

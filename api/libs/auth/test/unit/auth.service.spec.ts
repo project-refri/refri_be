@@ -8,6 +8,8 @@ import { CreateUserDto } from '@app/user/dto/modify-user.dto';
 import { LoginSessionDto } from '@app/auth/dto/token.dto';
 import { Session } from '@app/auth/domain/session.entity';
 import { OAuthLoginSessionDto } from '@app/auth/dto/oauth.dto';
+import { Diet } from '@app/user/domain/diet.enum';
+import { UserDto } from '@app/user/dto/user.dto';
 
 jest.mock('uuid', () => ({
   v4: () => 'mock-uuid',
@@ -31,7 +33,16 @@ describe('AuthService', () => {
   describe('register', () => {
     it('should register a new user and return a login response', async () => {
       const createUserDto: CreateUserDto = new CreateUserDto();
-      const user: User = new User();
+      const user: User = new User({
+        id: 1,
+        email: 'test@test.com',
+        username: 'test',
+        introduction: '',
+        diet: Diet.NORMAL,
+        thumbnail: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
       const loginSessionDto: LoginSessionDto = new LoginSessionDto();
       userService.create.mockResolvedValue(user);
       service.login = jest.fn().mockResolvedValue(loginSessionDto);
@@ -46,16 +57,30 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should create a new session and return a login response', async () => {
-      const user: User = {
-        ...new User(),
+      const user: User = new User({
         id: 1,
-      };
+        email: 'test@test.com',
+        username: 'test',
+        introduction: '',
+        diet: Diet.NORMAL,
+        thumbnail: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
       const sessToken = 'mock-uuid';
       const loginSessionDto: LoginSessionDto = {
         sessionToken: sessToken,
-        user,
+        user: UserDto.from(user),
       };
-      authRepository.create.mockResolvedValueOnce(new Session());
+      authRepository.create.mockResolvedValueOnce(
+        new Session({
+          id: 1,
+          sessionToken: sessToken,
+          userId: user.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
+      );
 
       const result = await service.login(user);
 
@@ -71,9 +96,16 @@ describe('AuthService', () => {
     it('should return whether user exists and login result', async () => {
       const email = 'test@test.com';
       const username = 'test';
-      const user = new User();
-      user.email = email;
-      user.username = username;
+      const user = new User({
+        id: 1,
+        email,
+        username,
+        introduction: '',
+        diet: Diet.NORMAL,
+        thumbnail: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
       const loginSessionDto: LoginSessionDto = {
         sessionToken: 'sessToken',

@@ -2,11 +2,10 @@ import { NotFoundException } from '@nestjs/common';
 import { ICrudRepository } from './repository/crud.repository';
 import { Logable } from './log/log.decorator';
 
-export class CrudService<Entity, CreateDto, UpdateDto, FilterDto> {
-  private repository: ICrudRepository<Entity, CreateDto, UpdateDto, FilterDto>;
-  constructor(
-    repository: ICrudRepository<Entity, CreateDto, UpdateDto, FilterDto>,
-  ) {
+export class CrudService<Entity, CreateDto, UpdateDto> {
+  private repository: ICrudRepository<Entity, CreateDto, UpdateDto>;
+
+  constructor(repository: ICrudRepository<Entity, CreateDto, UpdateDto>) {
     this.repository = repository;
   }
 
@@ -16,8 +15,8 @@ export class CrudService<Entity, CreateDto, UpdateDto, FilterDto> {
   }
 
   @Logable()
-  async findAll(filterDto: FilterDto): Promise<Entity[]> {
-    return await this.repository.findAll(filterDto);
+  async findAll(): Promise<Entity[]> {
+    return await this.repository.findAll();
   }
 
   @Logable()

@@ -58,6 +58,18 @@ export class RecipeDto {
   }
 
   static from(recipe: Recipe) {
-    return new RecipeDto(recipe);
+    return new RecipeDto({
+      id: recipe.id,
+      mongoId: recipe.mongoId,
+      name: recipe.name,
+      description: recipe.description,
+      ownerId: recipe.ownerId,
+      owner: recipe.owner,
+      thumbnail: recipe.thumbnail,
+      originUrl: recipe.originUrl,
+      viewCount: recipe.viewCount,
+      createdAt: recipe.createdAt,
+      updatedAt: recipe.updatedAt,
+    });
   }
 }

@@ -8,12 +8,7 @@ import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/reci
 type RecipeBookmark = MongoRecipeBookmark | PrismaRecipeBookmark;
 
 export interface IRecipeBookmarkRepository
-  extends ICrudRepository<
-    RecipeBookmark,
-    CreateRecipeBookmarkDto,
-    any,
-    FilterRecipeBookmarkDto
-  > {
+  extends ICrudRepository<RecipeBookmark, CreateRecipeBookmarkDto, any> {
   findAllRecipeBookmarked(
     filterRecipeBookmarkDto: FilterRecipeBookmarkDto,
   ): Promise<RecipeBookmarksAndCountDto>;

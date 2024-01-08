@@ -11,12 +11,7 @@ import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 type Recipe = PrismaRecipe | MongoRecipe;
 
 export interface IRecipeRepository
-  extends ICrudRepository<
-    Recipe,
-    CreateRecipeDto,
-    UpdateRecipeDto,
-    FilterRecipeDto
-  > {
+  extends ICrudRepository<Recipe, CreateRecipeDto, UpdateRecipeDto> {
   findAllByFullTextSearch(
     textSearchRecipeDto: TextSearchRecipeDto,
   ): Promise<RecipesAndCountDto>;

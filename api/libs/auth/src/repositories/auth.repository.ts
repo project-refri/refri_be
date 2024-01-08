@@ -1,27 +1,42 @@
 import { PrismaService } from '@app/common/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { IAuthRepository } from './auth.repository.interface';
-import { CreateSessionDto } from '../dto/token.dto';
-import { Session } from '@prisma/client';
-import { CrudPrismaRepository } from '../../../common/src/repository/crud-prisma.repository';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';
+import { CreateSessionDto } from '@app/auth/dto/token.dto';
+import { Session } from '@app/auth/domain/session.entity';
+import { User } from '@app/user/domain/user.entity';
 
 @Injectable()
-export class AuthRepository
-  extends CrudPrismaRepository<Session, CreateSessionDto, any, any>
-  implements IAuthRepository
-{
-  constructor(private readonly prisma: PrismaService) {
-    super(prisma, 'session');
+export class AuthRepository implements IAuthRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(dto: CreateSessionDto): Promise<Session> {
+    const ret = await this.prisma.session.create({
+      data: dto,
+    });
+    return new Session({
+      id: ret.id,
+      sessionToken: ret.sessionToken,
+      userId: ret.userId,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
+    });
   }
 
   async findOne(id: number): Promise<Session> {
-    return await this.prisma.session.findUnique({
+    const ret = await this.prisma.session.findUnique({
       where: { id },
       include: {
         user: true,
       },
+    });
+    return new Session({
+      id: ret.id,
+      sessionToken: ret.sessionToken,
+      userId: ret.userId,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
     });
   }
 
@@ -31,7 +46,7 @@ export class AuthRepository
     keyGenerator: (session: string) => `session:${session}`,
   })
   async findBySessionToken(session: string) {
-    return await this.prisma.session.findUnique({
+    const ret = await this.prisma.session.findUnique({
       where: { sessionToken: session },
       include: {
         user: {
@@ -41,6 +56,45 @@ export class AuthRepository
         },
       },
     });
+    return new Session({
+      id: ret.id,
+      sessionToken: ret.sessionToken,
+      user: new User(ret.user),
+      userId: ret.userId,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
+    });
+  }
+
+  async findAll() {
+    const ret = await this.prisma.session.findMany();
+    return ret.map(
+      (item) =>
+        new Session({
+          id: item.id,
+          sessionToken: item.sessionToken,
+          userId: item.userId,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+        }),
+    );
+  }
+
+  async update(id: number, dto: any): Promise<Session> {
+    throw new Error('Method not implemented.');
+  }
+
+  async deleteOne(id: number): Promise<Session> {
+    const ret = await this.prisma.session.delete({
+      where: { id },
+    });
+    return new Session({
+      id: ret.id,
+      sessionToken: ret.sessionToken,
+      userId: ret.userId,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
+    });
   }
 
   @Logable()
@@ -48,9 +102,16 @@ export class AuthRepository
     keyGenerator: (session: string) => `session:${session}`,
     action: 'del',
   })
-  async deleteBySessionToken(session: string): Promise<any> {
-    return await this.prisma.session.delete({
+  async deleteBySessionToken(session: string) {
+    const ret = await this.prisma.session.delete({
       where: { sessionToken: session },
+    });
+    return new Session({
+      id: ret.id,
+      sessionToken: ret.sessionToken,
+      userId: ret.userId,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
     });
   }
 }
