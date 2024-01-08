@@ -69,9 +69,7 @@ export class NotiController {
   @ApiGet(FindNotisResponseDto)
   @Get()
   async findAllNotis(@ReqUser() user: User) {
-    const notis = await this.notiService.findAll({
-      userId: user.id,
-    });
+    const notis = await this.notiService.findAll();
     return notis.map((noti) => NotiDto.from(noti));
   }
 
