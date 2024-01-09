@@ -1,5 +1,20 @@
 import { FoodType } from '@app/ingredient/domain/food-type.enum';
 import { StoreMethod } from '@app/ingredient/domain/store-method.enum';
+import { $Enums, UserIngredient as UserIngredientType } from '@prisma/client';
+
+export class UserIngredientEntity implements UserIngredientType {
+  public readonly id: number;
+  public readonly name: string;
+  public readonly ingredientId: number;
+  public readonly userId: number;
+  public readonly foodType: $Enums.FoodType;
+  public readonly storeMethod: $Enums.StoreMethod;
+  public readonly count: number;
+  public readonly daysBeforeExpiration: number;
+  public readonly icon: string;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+}
 
 export class UserIngredient {
   constructor(props: {

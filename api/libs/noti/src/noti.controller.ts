@@ -51,7 +51,7 @@ export class NotiController {
     const deviceToken = await this.deviceTokenService.create(
       createDeviceTokenDto,
     );
-    return DeviceTokenDto.from(deviceToken);
+    return DeviceTokenDto.fromEntity(deviceToken);
   }
 
   /**
@@ -62,7 +62,7 @@ export class NotiController {
   @Post()
   async createNoti(@Body() createNotiDto: CreateNotiDto) {
     const noti = await this.notiService.create(createNotiDto);
-    return NotiDto.from(noti);
+    return NotiDto.fromEntity(noti);
   }
 
   @Auth()
@@ -70,7 +70,7 @@ export class NotiController {
   @Get()
   async findAllNotis(@ReqUser() user: User) {
     const notis = await this.notiService.findAll();
-    return notis.map((noti) => NotiDto.from(noti));
+    return notis.map((noti) => NotiDto.fromEntity(noti));
   }
 
   @Auth()
@@ -78,7 +78,7 @@ export class NotiController {
   @Get(':id')
   async findOneNoti(@Param('id', ParseIntPipe) id: number) {
     const noti = await this.notiService.findOne(id);
-    return NotiDto.from(noti);
+    return NotiDto.fromEntity(noti);
   }
 
   @Auth()
@@ -89,7 +89,7 @@ export class NotiController {
     @Body() updateNotiDto: UpdateNotiDto,
   ) {
     const noti = await this.notiService.update(id, updateNotiDto);
-    return NotiDto.from(noti);
+    return NotiDto.fromEntity(noti);
   }
 
   @Auth()

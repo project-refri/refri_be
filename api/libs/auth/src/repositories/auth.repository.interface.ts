@@ -1,4 +1,4 @@
-import { Session as PrismaSession } from '../domain/session.entity';
+import { SessionEntity as PrismaSession } from '../domain/session.entity';
 import { CreateSessionDto } from '../dto/token.dto';
 import { Session as MongoSession } from '../domain/mongo.session.entity';
 import { ICrudRepository } from '@app/common/repository/crud.repository';

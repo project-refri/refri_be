@@ -1,4 +1,14 @@
-import { User } from '@app/user/domain/user.entity';
+import { User, UserEntity } from '@app/user/domain/user.entity';
+import { Session as SessionType } from '@prisma/client';
+
+export class SessionEntity implements SessionType {
+  public readonly id: number;
+  public readonly sessionToken: string;
+  public readonly user?: UserEntity;
+  public readonly userId: number;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+}
 
 export class Session {
   constructor(props: {

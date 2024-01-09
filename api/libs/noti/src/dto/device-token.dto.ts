@@ -1,4 +1,4 @@
-import { DeviceToken } from '@app/noti/domain/device-token.entity';
+import { DeviceTokenEntity } from '@app/noti/domain/device-token.entity';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class DeviceTokenDto {
@@ -30,7 +30,7 @@ export class DeviceTokenDto {
     this.updatedAt = props.updatedAt;
   }
 
-  static from(deviceToken: DeviceToken) {
+  static fromEntity(deviceToken: DeviceTokenEntity) {
     return new DeviceTokenDto({
       id: deviceToken.id,
       userId: deviceToken.userId,

@@ -1,4 +1,4 @@
-import { Noti } from '@app/noti/domain/noti.entity';
+import { NotiEntity } from '@app/noti/domain/noti.entity';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class NotiDto {
@@ -17,7 +17,6 @@ export class NotiDto {
 
   constructor(props: {
     id: number;
-
     userId: number;
     content: string;
     createdAt: Date;
@@ -30,7 +29,7 @@ export class NotiDto {
     this.updatedAt = props.updatedAt;
   }
 
-  static from(noti: Noti) {
+  static fromEntity(noti: NotiEntity) {
     return new NotiDto({
       id: noti.id,
       userId: noti.userId,

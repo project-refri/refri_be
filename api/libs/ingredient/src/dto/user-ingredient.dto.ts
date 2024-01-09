@@ -1,6 +1,6 @@
 import { FoodType } from '@app/ingredient/domain/food-type.enum';
 import { StoreMethod } from '@app/ingredient/domain/store-method.enum';
-import { UserIngredient } from '@app/ingredient/domain/user-ingredient.entity';
+import { UserIngredientEntity } from '@app/ingredient/domain/user-ingredient.entity';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class UserIngredientDto {
@@ -59,7 +59,7 @@ export class UserIngredientDto {
     this.updatedAt = props.updatedAt;
   }
 
-  static from(userIngredient: UserIngredient) {
+  static fromEntity(userIngredient: UserIngredientEntity) {
     return new UserIngredientDto({
       id: userIngredient.id,
       name: userIngredient.name,

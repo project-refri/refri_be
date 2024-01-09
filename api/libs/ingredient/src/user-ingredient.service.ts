@@ -5,7 +5,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { BarcodeInfos } from '../../../proto/image_process/BarcodeInfos';
 import { lastValueFrom, Observable } from 'rxjs';
 import { CreateUserIngredientDto } from './dto/create-user-ingredient.dto';
-import { UserIngredient } from './domain/user-ingredient.entity';
+import { UserIngredientEntity } from './domain/user-ingredient.entity';
 import { UserIngredientRepository } from './repositories/user-ingredient.repository';
 import { CrudService } from '@app/common/crud.service';
 import { UpdateUserIngredientDto } from '@app/ingredient/dto/update-user-ingredient.dto';
@@ -21,7 +21,7 @@ interface ImageProcessService {
 @Injectable()
 export class UserIngredientService
   extends CrudService<
-    UserIngredient,
+    UserIngredientEntity,
     CreateUserIngredientDto,
     UpdateUserIngredientDto
   >

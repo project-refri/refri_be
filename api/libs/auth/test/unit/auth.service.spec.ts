@@ -3,13 +3,13 @@ import { AuthService } from '@app/auth/auth.service';
 import { AuthRepository } from '@app/auth/repositories/auth.repository';
 import { UserService } from '@app/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@app/user/domain/user.entity';
+import { UserEntity } from '@app/user/domain/user.entity';
 import { CreateUserDto } from '@app/user/dto/modify-user.dto';
 import { LoginSessionDto } from '@app/auth/dto/token.dto';
-import { Session } from '@app/auth/domain/session.entity';
 import { OAuthLoginSessionDto } from '@app/auth/dto/oauth.dto';
-import { Diet } from '@app/user/domain/diet.enum';
 import { UserDto } from '@app/user/dto/user.dto';
+import { SessionEntity } from '@app/auth/domain/session.entity';
+import { Diet } from '@prisma/client';
 
 jest.mock('uuid', () => ({
   v4: () => 'mock-uuid',
@@ -33,7 +33,7 @@ describe('AuthService', () => {
   describe('register', () => {
     it('should register a new user and return a login response', async () => {
       const createUserDto: CreateUserDto = new CreateUserDto();
-      const user: User = new User({
+      const user: UserEntity = {
         id: 1,
         email: 'test@test.com',
         username: 'test',
@@ -42,7 +42,7 @@ describe('AuthService', () => {
         thumbnail: '',
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      };
       const loginSessionDto: LoginSessionDto = new LoginSessionDto();
       userService.create.mockResolvedValue(user);
       service.login = jest.fn().mockResolvedValue(loginSessionDto);
@@ -57,7 +57,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should create a new session and return a login response', async () => {
-      const user: User = new User({
+      const user: UserEntity = {
         id: 1,
         email: 'test@test.com',
         username: 'test',
@@ -66,21 +66,19 @@ describe('AuthService', () => {
         thumbnail: '',
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      };
       const sessToken = 'mock-uuid';
       const loginSessionDto: LoginSessionDto = {
         sessionToken: sessToken,
-        user: UserDto.from(user),
+        user: UserDto.fromEntity(user),
       };
-      authRepository.create.mockResolvedValueOnce(
-        new Session({
-          id: 1,
-          sessionToken: sessToken,
-          userId: user.id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }),
-      );
+      authRepository.create.mockResolvedValueOnce({
+        id: 1,
+        sessionToken: sessToken,
+        userId: user.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as SessionEntity);
 
       const result = await service.login(user);
 
@@ -96,7 +94,7 @@ describe('AuthService', () => {
     it('should return whether user exists and login result', async () => {
       const email = 'test@test.com';
       const username = 'test';
-      const user = new User({
+      const user: UserEntity = {
         id: 1,
         email,
         username,
@@ -105,7 +103,7 @@ describe('AuthService', () => {
         thumbnail: '',
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      };
 
       const loginSessionDto: LoginSessionDto = {
         sessionToken: 'sessToken',

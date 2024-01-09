@@ -4,48 +4,49 @@ import { PrismaService } from '@app/common/prisma/prisma.service';
 import { FilterUserIngredientDto } from '@app/ingredient/dto/filter-ingredient.dto';
 import { FoodType, StoreMethod } from '@prisma/client';
 import { CreateUserIngredientDto } from '@app/ingredient/dto/create-user-ingredient.dto';
-import { UserIngredient } from '@app/ingredient/domain/user-ingredient.entity';
+import { UserIngredientEntity } from '@app/ingredient/domain/user-ingredient.entity';
 
 @Injectable()
 export class UserIngredientRepository implements IUserIngredientRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateUserIngredientDto) {
-    const ret = await this.prisma.userIngredient.create({
+  async create(dto: CreateUserIngredientDto): Promise<UserIngredientEntity> {
+    return await this.prisma.userIngredient.create({
       data: {
         ...dto,
         foodType: FoodType[dto.foodType],
         storeMethod: StoreMethod[dto.storeMethod],
       },
     });
-    return new UserIngredient(ret);
   }
 
-  async findAllByCond(filterUserIngredientDto: FilterUserIngredientDto) {
-    const ret = await this.prisma.userIngredient.findMany({
+  async findAllByCond(
+    filterUserIngredientDto: FilterUserIngredientDto,
+  ): Promise<UserIngredientEntity[]> {
+    return await this.prisma.userIngredient.findMany({
       where: {
         ...filterUserIngredientDto,
         foodType: FoodType[filterUserIngredientDto.foodType],
         storeMethod: StoreMethod[filterUserIngredientDto.storeMethod],
       },
     });
-    return ret.map((userIngredient) => new UserIngredient(userIngredient));
   }
 
-  async findAll() {
-    const ret = await this.prisma.userIngredient.findMany();
-    return ret.map((userIngredient) => new UserIngredient(userIngredient));
+  async findAll(): Promise<UserIngredientEntity[]> {
+    return await this.prisma.userIngredient.findMany();
   }
 
-  async findOne(id: number) {
-    const ret = await this.prisma.userIngredient.findUnique({
+  async findOne(id: number): Promise<UserIngredientEntity> {
+    return await this.prisma.userIngredient.findUnique({
       where: { id },
     });
-    return new UserIngredient(ret);
   }
 
-  async update(id: number, dto: CreateUserIngredientDto) {
-    const ret = await this.prisma.userIngredient.update({
+  async update(
+    id: number,
+    dto: CreateUserIngredientDto,
+  ): Promise<UserIngredientEntity> {
+    return await this.prisma.userIngredient.update({
       where: { id },
       data: {
         ...dto,
@@ -53,13 +54,11 @@ export class UserIngredientRepository implements IUserIngredientRepository {
         storeMethod: StoreMethod[dto.storeMethod],
       },
     });
-    return new UserIngredient(ret);
   }
 
-  async deleteOne(id: number) {
-    const ret = await this.prisma.userIngredient.delete({
+  async deleteOne(id: number): Promise<UserIngredientEntity> {
+    return await this.prisma.userIngredient.delete({
       where: { id },
     });
-    return new UserIngredient(ret);
   }
 }
