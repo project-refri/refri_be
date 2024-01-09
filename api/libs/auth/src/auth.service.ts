@@ -1,4 +1,3 @@
-import { User } from '@app/user/domain/user.entity';
 import { UserService } from '@app/user/user.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -19,6 +18,7 @@ import { LoginSessionDto } from './dto/token.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Logable } from '@app/common/log/log.decorator';
 import { UserDto } from '@app/user/dto/user.dto';
+import { UserEntity } from '@app/user/domain/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -51,14 +51,14 @@ export class AuthService {
   }
 
   @Logable()
-  async login(user: User): Promise<LoginSessionDto> {
+  async login(user: UserEntity): Promise<LoginSessionDto> {
     const sessionToken = uuidv4();
     await this.authRepository.create({
       userId: user.id,
       sessionToken,
     });
     return {
-      user: UserDto.from(user),
+      user: UserDto.fromEntity(user),
       sessionToken,
     };
   }

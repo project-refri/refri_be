@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Session } from '@app/auth/domain/session.entity';
+import { SessionEntity } from '@app/auth/domain/session.entity';
 
 export class SessionDto {
   @ApiProperty({ name: 'id' })
@@ -33,7 +33,7 @@ export class SessionDto {
     this.updatedAt = updatedAt;
   }
 
-  static from(session: Session): SessionDto {
+  static fromEntity(session: SessionEntity): SessionDto {
     return new SessionDto(
       session.id,
       session.sessionToken,

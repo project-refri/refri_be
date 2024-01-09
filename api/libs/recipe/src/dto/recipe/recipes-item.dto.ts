@@ -1,22 +1,32 @@
-import { OmitType } from '@nestjs/swagger';
-import { RecipeDto } from '@app/recipe/dto/recipe/recipe.dto';
+import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
-export class RecipesItemDto extends OmitType(RecipeDto, [
-  'mongoId',
-  'ownerId',
-  'owner',
-  'originUrl',
-]) {
+export class RecipesItemDto {
+  public readonly id: number;
+
+  public readonly name: string;
+
+  public readonly thumbnail: string;
+
+  public readonly description: string;
+
+  @ApiExpose({ name: 'view_count' })
+  public readonly viewCount: number;
+
+  @ApiExpose({ name: 'created_at' })
+  public readonly createdAt: Date;
+
+  @ApiExpose({ name: 'updated_at' })
+  public readonly updatedAt: Date;
+
   constructor(
-    public readonly id: number = null,
-    public readonly name: string = null,
-    public readonly thumbnail: string = null,
-    public readonly description: string = null,
-    public readonly viewCount: number = null,
-    public readonly createdAt: Date = null,
-    public readonly updatedAt: Date = null,
+    id: number = null,
+    name: string = null,
+    thumbnail: string = null,
+    description: string = null,
+    viewCount: number = null,
+    createdAt: Date = null,
+    updatedAt: Date = null,
   ) {
-    super();
     this.id = id;
     this.name = name;
     this.thumbnail = thumbnail;

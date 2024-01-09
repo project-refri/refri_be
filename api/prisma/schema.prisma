@@ -50,7 +50,7 @@ model RecipeBookmark {
   id        Int      @id @default(autoincrement())
   userId    Int      @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
-  recipeId  Int      @map("recipeId")
+  recipeId  Int      @map("recipe_id")
   recipe    Recipe   @relation(fields: [recipeId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

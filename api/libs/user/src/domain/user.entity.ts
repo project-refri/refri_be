@@ -1,4 +1,50 @@
 import { Diet } from '@app/user/domain/diet.enum';
+import { $Enums, User as UserType } from '@prisma/client';
+import { CreateUserDto } from '@app/user/dto/modify-user.dto';
+
+export class UserEntity implements UserType {
+  public readonly id: number;
+  public readonly username: string;
+  public readonly email: string;
+  public readonly introduction: string;
+  public readonly diet: $Enums.Diet;
+  public readonly thumbnail: string;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+
+  constructor(props: {
+    id: number;
+    username: string;
+    email: string;
+    introduction: string;
+    diet: $Enums.Diet;
+    thumbnail: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    this.id = props.id;
+    this.username = props.username;
+    this.email = props.email;
+    this.introduction = props.introduction;
+    this.diet = props.diet;
+    this.thumbnail = props.thumbnail;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+  }
+
+  static from(user: User) {
+    return new UserEntity({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      introduction: user.introduction,
+      diet: $Enums.Diet[user.diet],
+      thumbnail: user.thumbnail,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
+  }
+}
 
 export class User {
   constructor(props: {
@@ -67,5 +113,18 @@ export class User {
 
   get updatedAt(): Date {
     return this._updatedAt;
+  }
+
+  static create(dto: CreateUserDto, datetime: Date) {
+    return new User({
+      id: null,
+      username: dto.username,
+      email: dto.email,
+      introduction: '자기소개입니다.',
+      diet: Diet.NORMAL,
+      thumbnail: dto.thumbnail,
+      createdAt: datetime,
+      updatedAt: datetime,
+    });
   }
 }

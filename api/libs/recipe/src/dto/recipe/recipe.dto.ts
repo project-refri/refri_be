@@ -1,6 +1,6 @@
-import { User } from '@app/user/domain/user.entity';
-import { Recipe } from '@app/recipe/domain/recipe.entity';
+import { RecipeEntity } from '@app/recipe/domain/recipe.entity';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
+import { UserDto } from '@app/user/dto/user.dto';
 
 export class RecipeDto {
   id: number;
@@ -15,7 +15,7 @@ export class RecipeDto {
   @ApiExpose({ name: 'owner_id' })
   ownerId: number | null;
 
-  owner?: User | null;
+  owner?: UserDto | null;
 
   thumbnail: string;
 
@@ -37,7 +37,7 @@ export class RecipeDto {
     name: string;
     description: string;
     ownerId: number | null;
-    owner?: User | null;
+    owner?: UserDto | null;
     thumbnail: string;
     originUrl: string;
     viewCount: number;
@@ -57,14 +57,14 @@ export class RecipeDto {
     this.updatedAt = props.updatedAt;
   }
 
-  static from(recipe: Recipe) {
+  static fromEntity(recipe: RecipeEntity) {
     return new RecipeDto({
       id: recipe.id,
       mongoId: recipe.mongoId,
       name: recipe.name,
       description: recipe.description,
       ownerId: recipe.ownerId,
-      owner: recipe.owner,
+      owner: UserDto.fromEntity(recipe.owner),
       thumbnail: recipe.thumbnail,
       originUrl: recipe.originUrl,
       viewCount: recipe.viewCount,

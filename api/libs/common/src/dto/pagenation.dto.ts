@@ -7,11 +7,11 @@ export class PagenationDto {
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(1)
-  page: number;
+  page: number = 1;
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(1)
-  limit: number;
+  limit: number = 1;
 
   constructor(page: number, limit: number) {
     this.page = page;

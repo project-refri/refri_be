@@ -1,8 +1,11 @@
 import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
 import { RecipesResponseDto } from '@app/recipe/dto/recipe/recipes-response.dto';
+import { Type } from 'class-transformer';
 
 export class RecipesAndCountDto {
+  @Type(() => RecipesItemDto)
   recipes: RecipesItemDto[];
+
   count: number;
 
   constructor(recipes: RecipesItemDto[], count: number) {

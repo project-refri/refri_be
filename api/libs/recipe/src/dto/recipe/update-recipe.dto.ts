@@ -1,23 +1,46 @@
 import { OmitType, PartialType } from '@nestjs/swagger';
 import { CreateRecipeDto } from './create-recipe.dto';
-import { IsDate, IsInt, IsMongoId, IsOptional } from 'class-validator';
+import {
+  IsInt,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
 export class UpdateRecipeDto extends PartialType(
   OmitType(CreateRecipeDto, ['ownerId'] as const),
 ) {
-  @ApiExpose({ name: 'view_count', isOptional: true })
+  @IsString()
   @IsOptional()
-  @IsInt()
-  viewCount?: number;
+  @IsNotEmpty()
+  name?: string;
 
   @ApiExpose({ name: 'mongo_id', isOptional: true })
   @IsOptional()
   @IsMongoId()
   mongoId?: string;
 
-  @ApiExpose({ name: 'created_at', isOptional: true })
+  @IsString()
   @IsOptional()
-  @IsDate()
-  createdAt?: Date;
+  @IsNotEmpty()
+  description?: string;
+
+  @IsUrl()
+  @IsOptional()
+  @IsString()
+  thumbnail?: string;
+
+  @ApiExpose({ name: 'origin_url ', isOptional: true })
+  @IsUrl()
+  @IsOptional()
+  @IsString()
+  originUrl?: string;
+
+  @ApiExpose({ name: 'view_count', isOptional: true })
+  @IsOptional()
+  @IsInt()
+  viewCount?: number;
 }

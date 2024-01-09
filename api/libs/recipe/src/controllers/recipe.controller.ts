@@ -6,7 +6,7 @@ import {
   ApiPostCreated,
 } from '@app/common/decorators/http-method.decorator';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { User } from '@app/user/domain/user.entity';
+import { UserEntity } from '@app/user/domain/user.entity';
 import {
   Body,
   Controller,
@@ -99,7 +99,7 @@ export class RecipeController {
   async findAllRecentViewed(
     @Query()
     filterRecipeDto: FilterRecipeDto,
-    @ReqUser() user: User,
+    @ReqUser() user: UserEntity,
   ) {
     return this.recipeService.findAllRecentViewed(
       filterRecipeDto,
@@ -119,7 +119,7 @@ export class RecipeController {
   async findOne(
     @Param('id', ParseIntPipe) id: number,
     @Ip() ip: string,
-    @ReqUser() user: User,
+    @ReqUser() user: UserEntity,
   ) {
     return await this.recipeService.findOne(
       id,

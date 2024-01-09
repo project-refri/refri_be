@@ -9,4 +9,10 @@ export class FilterRecipeBookmarkDto extends PagenationDto {
   @IsOptional()
   @IsInt()
   userId?: number;
+
+  @ApiHideProperty()
+  @Expose({ name: 'recipe_id' })
+  @IsOptional()
+  @IsInt()
+  recipeId?: number;
 }

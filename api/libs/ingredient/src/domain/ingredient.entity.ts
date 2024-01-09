@@ -1,3 +1,15 @@
+import { Ingredient as IngredientType } from '@prisma/client';
+
+export class IngredientEntity implements IngredientType {
+  public readonly id: number;
+  public readonly name: string;
+  public readonly description: string;
+  public readonly thumbnail: string;
+  public readonly icon: string;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+}
+
 export class Ingredient {
   constructor(props: {
     id: number;

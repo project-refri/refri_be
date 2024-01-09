@@ -58,7 +58,10 @@ export class AuthController {
   @Post('register')
   async register(@Body() createUserApiDto: CreateUserApiDto, @Req() req) {
     const userInfo: UserInfo = req.user;
-    const createUserDto: CreateUserDto = { ...createUserApiDto, ...userInfo };
+    const createUserDto: CreateUserDto = {
+      ...createUserApiDto,
+      email: userInfo.email,
+    };
     return await this.authService.register(createUserDto);
   }
 

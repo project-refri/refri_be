@@ -5,10 +5,49 @@ import { FilterRecipeBookmarkDto } from '@app/recipe/dto/recipe-bookmark/filter-
 import { RecipeBookmarksItemDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-item.dto';
 import { RecipeBookmarksResponseDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-response.dto';
 import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-count.dto';
+import { RecipeRepository } from '@app/recipe/repositories/recipe/recipe.repository';
+import { UserRepository } from '@app/user/repositories/user.repository';
+import { RecipeEntity } from '@app/recipe/domain/recipe.entity';
+import { UserEntity } from '@app/user/domain/user.entity';
+import { RecipeBookmarkEntity } from '@app/recipe/domain/recipe-bookmark.entity';
+import { RecipeBookmarkDuplicateException } from '@app/recipe/exception/domain.exception';
+import { Diet } from '@prisma/client';
 
 describe('RecipeBookmarkService', () => {
   let service: RecipeBookmarkService;
   let recipeBookmarkRepository: jest.Mocked<RecipeBookmarkRepository>;
+  let recipeRepository: jest.Mocked<RecipeRepository>;
+  let userRepository: jest.Mocked<UserRepository>;
+
+  const recipeEntity: RecipeEntity = {
+    id: 1,
+    name: 'recipe',
+    mongoId: 'mongoId',
+    ownerId: 1,
+    description: 'description',
+    thumbnail: 'thumbnail',
+    viewCount: 0,
+    originUrl: 'originUrl',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const userEntity: UserEntity = {
+    id: 1,
+    email: 'email',
+    username: 'name',
+    introduction: 'introduction',
+    diet: Diet.NORMAL,
+    thumbnail: 'thumbnail',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const recipeBookmarkEntity: RecipeBookmarkEntity = {
+    id: 1,
+    recipeId: 1,
+    userId: 1,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
   const filterRecipeBookmarkDto: FilterRecipeBookmarkDto = {
     page: 1,
@@ -43,10 +82,41 @@ describe('RecipeBookmarkService', () => {
 
     service = unit;
     recipeBookmarkRepository = unitRef.get(RecipeBookmarkRepository);
+    recipeRepository = unitRef.get<RecipeRepository>('PrismaRecipeRepository');
+    userRepository = unitRef.get(UserRepository);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('create', () => {
+    it('should return a recipeBookmark', async () => {
+      recipeBookmarkRepository.findAllByCond.mockResolvedValue([]);
+      recipeRepository.findOne.mockResolvedValue(recipeEntity);
+      userRepository.findOne.mockResolvedValue(userEntity);
+      recipeBookmarkRepository.create.mockResolvedValue(recipeBookmarkEntity);
+
+      const result = await service.create({
+        userId: 1,
+        recipeId: 1,
+      });
+
+      expect(result).toBeDefined();
+    });
+
+    it('should not create if recipeBookmark already exists', async () => {
+      recipeBookmarkRepository.findAllByCond.mockResolvedValue([
+        recipeBookmarkEntity,
+      ]);
+
+      await expect(
+        service.create({
+          userId: 1,
+          recipeId: 1,
+        }),
+      ).rejects.toThrow(RecipeBookmarkDuplicateException);
+    });
   });
 
   describe('findAllRecipeBookmarked', () => {
@@ -96,6 +166,18 @@ describe('RecipeBookmarkService', () => {
         filterRecipeBookmarkDto.limit,
       );
       expect(result).toEqual(recipeBookmarksResponseDtoNotLast);
+    });
+  });
+
+  describe('deleteOne', () => {
+    it('should delete a recipeBookmark', async () => {
+      recipeBookmarkRepository.deleteOne.mockResolvedValue(
+        recipeBookmarkEntity,
+      );
+
+      await service.deleteOne(1);
+
+      expect(recipeBookmarkRepository.deleteOne).toHaveBeenCalledWith(1);
     });
   });
 });

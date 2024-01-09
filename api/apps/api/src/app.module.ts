@@ -1,5 +1,5 @@
 import { ConfigModule } from '@nestjs/config';
-import { Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { UserModule } from '@app/user/user.module';
 import { AuthModule } from '@app/auth/auth.module';
 import { ImageModule } from '@app/image/image.module';
@@ -12,6 +12,7 @@ import { NotiModule } from '@app/noti/noti.module';
 import { RedisModule } from '@app/common/redis.module';
 import { MongoModule } from '@app/common/mongo/mongo.module';
 import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -31,6 +32,12 @@ import { PrismaModule } from '@app/common/prisma/prisma.module';
     IngredientModule,
     RecipeModule,
     NotiModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
   ],
 })
 export class AppModule {}

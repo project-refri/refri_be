@@ -1,4 +1,4 @@
-import { User } from '@app/user/domain/user.entity';
+import { UserEntity } from '@app/user/domain/user.entity';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 import { Diet } from '@app/user/domain/diet.enum';
 
@@ -43,7 +43,7 @@ export class UserDto {
     this.updatedAt = updatedAt;
   }
 
-  static from(user: User): UserDto {
+  static fromEntity(user: UserEntity): UserDto {
     return new UserDto(
       user.id,
       user.username,

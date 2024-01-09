@@ -1,3 +1,13 @@
+import { DeviceToken as DeviceTokenType } from '@prisma/client';
+
+export class DeviceTokenEntity implements DeviceTokenType {
+  public readonly id: number;
+  public readonly userId: number;
+  public readonly fcmDeviceToken: string;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+}
+
 export class DeviceToken {
   constructor(props: {
     id: number;

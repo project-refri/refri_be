@@ -1,3 +1,13 @@
+import { Noti as NotiType } from '@prisma/client';
+
+export class NotiEntity implements NotiType {
+  public readonly id: number;
+  public readonly userId: number;
+  public readonly content: string;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+}
+
 export class Noti {
   constructor(props: {
     id: number;

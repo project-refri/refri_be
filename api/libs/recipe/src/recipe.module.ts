@@ -12,6 +12,7 @@ import { RecipeBookmarkRepository } from './repositories/recipe-bookmark/recipe-
 import { RecipeViewLogRepository } from './repositories/recipe-view-log/recipe-view-log.repository';
 import { MongoRecipeRepository } from './repositories/recipe/mongo.recipe.repository';
 import { RecipeRepository as PrismaRecipeRepository } from './repositories/recipe/recipe.repository';
+import { UserModule } from '@app/user/user.module';
 
 const PrismaRecipeRepositoryProvider: Provider = {
   provide: 'PrismaRecipeRepository',
@@ -34,6 +35,7 @@ const MongoRecipeRepositoryProvider: Provider = {
         },
       },
     ]),
+    UserModule,
   ],
   controllers: [RecipeController, RecipeBookmarkController],
   providers: [

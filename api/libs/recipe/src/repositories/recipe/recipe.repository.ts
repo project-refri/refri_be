@@ -1,27 +1,31 @@
 import { PrismaService } from '@app/common/prisma/prisma.service';
-import { CrudPrismaRepository } from '@app/common/repository/crud-prisma.repository';
 import { Injectable } from '@nestjs/common';
-import { Recipe } from '@app/recipe/domain/recipe.entity';
+import { RecipeEntity } from '@app/recipe/domain/recipe.entity';
 import { FilterRecipeDto } from '../../dto/recipe/filter-recipe.dto';
 import { deleteNull } from '@app/common/utils/delete-null';
 import { IRecipeRepository } from './recipe.repository.interface';
 import { deleteProps } from '@app/common/utils/delete-props';
-import { CreateRecipeDto } from '@app/recipe/dto/recipe/create-recipe.dto';
-import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
 import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';
 import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
 import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
+import { CreateRecipeDto } from '@app/recipe/dto/recipe/create-recipe.dto';
+import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
 
 @Injectable()
-export class RecipeRepository
-  extends CrudPrismaRepository<Recipe, CreateRecipeDto, UpdateRecipeDto>
-  implements IRecipeRepository
-{
-  constructor(private readonly prisma: PrismaService) {
-    super(prisma, 'recipe');
+export class RecipeRepository implements IRecipeRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(dto: CreateRecipeDto): Promise<RecipeEntity> {
+    return await this.prisma.recipe.create({
+      data: dto,
+    });
   }
 
-  async findAllRecipe(
+  async findAll(): Promise<RecipeEntity[]> {
+    return await this.prisma.recipe.findMany();
+  }
+
+  async findAllByCond(
     filterRecipeDto: FilterRecipeDto,
   ): Promise<RecipesAndCountDto> {
     const { page, limit } = filterRecipeDto;
@@ -51,11 +55,10 @@ export class RecipeRepository
     return new RecipesAndCountDto(recipes, count);
   }
 
-  async findOneByMongoId(mongoId: string): Promise<Recipe> {
-    const ret = await this.prisma.recipe.findUnique({
+  async findOneByMongoId(mongoId: string): Promise<RecipeEntity> {
+    return await this.prisma.recipe.findUnique({
       where: { mongoId: mongoId },
     });
-    return new Recipe(ret);
   }
 
   async findAllByFullTextSearch(
@@ -64,7 +67,7 @@ export class RecipeRepository
     throw new Error('Method not implemented.');
   }
 
-  async findTopViewed() {
+  async findTopViewed(): Promise<RecipeEntity[]> {
     return this.prisma.recipe.findMany({
       orderBy: { viewCount: 'desc' },
       take: 10,
@@ -86,15 +89,25 @@ export class RecipeRepository
     });
   }
 
-  async increaseViewCount(id: number): Promise<Recipe> {
-    const ret = await this.prisma.recipe.update({
+  async findOne(id: number): Promise<RecipeEntity> {
+    return this.prisma.recipe.findUnique({ where: { id } });
+  }
+
+  async update(id: number, dto: UpdateRecipeDto): Promise<RecipeEntity> {
+    return await this.prisma.recipe.update({
+      where: { id },
+      data: dto,
+    });
+  }
+
+  async increaseViewCount(id: number): Promise<RecipeEntity> {
+    return await this.prisma.recipe.update({
       where: { id },
       data: { viewCount: { increment: 1 } },
     });
-    return new Recipe(ret);
   }
 
-  async deleteOne(id: number): Promise<Recipe> {
+  async deleteOne(id: number): Promise<RecipeEntity> {
     const deleteRecipe = this.prisma.recipe.delete({ where: { id } });
     const deleteRecipeViewLog = this.prisma.recipeViewLog.deleteMany({
       where: { recipeId: id },
@@ -102,13 +115,12 @@ export class RecipeRepository
     const deleteRecipeBookmark = this.prisma.recipeBookmark.deleteMany({
       where: { recipeId: id },
     });
-    const ret = (
+    return (
       await this.prisma.$transaction([
         deleteRecipeViewLog,
         deleteRecipeBookmark,
         deleteRecipe,
       ])
     )[2];
-    return new Recipe(ret);
   }
 }
