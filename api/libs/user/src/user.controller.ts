@@ -41,7 +41,7 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
-    return UserDto.from(user);
+    return UserDto.fromEntity(user);
   }
 
   /**
@@ -54,7 +54,7 @@ export class UserController {
   @Get()
   async findAll() {
     const users = await this.userService.findAll();
-    return users.map((user) => UserDto.from(user));
+    return users.map((user) => UserDto.fromEntity(user));
   }
 
   /**
@@ -67,7 +67,7 @@ export class UserController {
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const user = await this.userService.findOne(id);
-    return UserDto.from(user);
+    return UserDto.fromEntity(user);
   }
 
   /**
@@ -83,7 +83,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     const user = await this.userService.update(id, updateUserDto);
-    return UserDto.from(user);
+    return UserDto.fromEntity(user);
   }
 
   /**
@@ -98,6 +98,6 @@ export class UserController {
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     const user = await this.userService.deleteOne(id);
-    return UserDto.from(user);
+    return UserDto.fromEntity(user);
   }
 }

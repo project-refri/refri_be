@@ -1,13 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/modify-user.dto';
 import { UserRepository } from './repositories/user.repository';
 import { Logable } from '@app/common/log/log.decorator';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@app/user/domain/user.entity';
+import { User, UserEntity } from '@app/user/domain/user.entity';
+import {
+  UserEmailDuplicateException,
+  UserNameDuplicateException,
+} from '@app/user/exception/domain.exception';
 
 @Injectable()
 export class UserService {
@@ -17,30 +17,34 @@ export class UserService {
   ) {}
 
   @Logable()
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const { email, username } = createUserDto;
     const [dupEmail, dupUsername] = await Promise.all([
       this.userRepository.findByEmail(email),
       this.userRepository.findByUsername(username),
     ]);
-    if (dupEmail || dupUsername) {
-      throw new BadRequestException('Duplicated email or username.');
+    if (dupEmail) {
+      throw new UserEmailDuplicateException();
+    }
+    if (dupUsername) {
+      throw new UserNameDuplicateException();
     }
     if (!createUserDto.thumbnail) {
       createUserDto.thumbnail = `https://${this.configService.get<string>(
         'AWS_S3_IMAGE_MAIN_BUCKET',
       )}.s3.amazonaws.com/default-user-thumbnail.jpg`;
     }
-    return await this.userRepository.create(createUserDto);
+    const user = User.create(createUserDto, new Date());
+    return await this.userRepository.create(UserEntity.from(user));
   }
 
   @Logable()
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.findAll();
   }
 
   @Logable()
-  async findOne(id: number): Promise<User> {
+  async findOne(id: number): Promise<UserEntity> {
     const ret = await this.userRepository.findOne(id);
     if (!ret) {
       throw new NotFoundException('User not found.');
@@ -49,16 +53,16 @@ export class UserService {
   }
 
   @Logable()
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<UserEntity> {
     return await this.userRepository.findByEmail(email);
   }
 
   @Logable()
-  async update(id: number, updateDto: UpdateUserDto): Promise<User> {
+  async update(id: number, updateDto: UpdateUserDto): Promise<UserEntity> {
     const { username } = updateDto;
     const dupUsername = await this.userRepository.findByUsername(username);
     if (dupUsername) {
-      throw new BadRequestException('Duplicated username.');
+      throw new UserNameDuplicateException();
     }
     const ret = await this.userRepository.update(id, updateDto);
     if (!ret) {
@@ -68,7 +72,7 @@ export class UserService {
   }
 
   @Logable()
-  async deleteOne(id: number): Promise<User> {
+  async deleteOne(id: number): Promise<UserEntity> {
     const ret = await this.userRepository.deleteOne(id);
     if (!ret) {
       throw new NotFoundException('User not found.');

@@ -1,5 +1,60 @@
-import { User } from '@app/user/domain/user.entity';
-import { Recipe } from './recipe.entity';
+import { User, UserEntity } from '@app/user/domain/user.entity';
+import { Recipe, RecipeEntity } from './recipe.entity';
+import { RecipeViewLog as RecipeViewLogType } from '@prisma/client';
+import { CreateRecipeViewLogDto } from '@app/recipe/dto/recipe-view-log/create-recipe-view-log.dto';
+import {
+  RecipeNotExistsException,
+  UserNotExistsException,
+} from '@app/recipe/exception/domain.exception';
+import { isNil } from '@nestjs/common/utils/shared.utils';
+
+export class RecipeViewLogEntity implements RecipeViewLogType {
+  public readonly id: number;
+  public readonly recipeId: number;
+  public readonly recipe?: RecipeEntity;
+  public readonly userId: number | null;
+  public readonly user?: UserEntity;
+  public readonly userIp: string;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+
+  constructor(props: {
+    id: number;
+    recipeId: number;
+    recipe?: RecipeEntity;
+    userId?: number;
+    user?: UserEntity;
+    userIp: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    this.id = props.id;
+    this.recipeId = props.recipeId;
+    this.recipe = props.recipe;
+    this.userId = props.userId;
+    this.user = props.user;
+    this.userIp = props.userIp;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+  }
+
+  static from(recipeViewLog: RecipeViewLog) {
+    return new RecipeViewLogEntity({
+      id: recipeViewLog.id,
+      recipeId: recipeViewLog.recipeId,
+      recipe: recipeViewLog.recipe
+        ? RecipeEntity.from(recipeViewLog.recipe)
+        : undefined,
+      userId: recipeViewLog.userId,
+      user: recipeViewLog.user
+        ? UserEntity.from(recipeViewLog.user)
+        : undefined,
+      userIp: recipeViewLog.userIp,
+      createdAt: recipeViewLog.createdAt,
+      updatedAt: recipeViewLog.updatedAt,
+    });
+  }
+}
 
 export class RecipeViewLog {
   constructor(props: {
@@ -68,5 +123,27 @@ export class RecipeViewLog {
 
   get updatedAt(): Date {
     return this._updatedAt;
+  }
+
+  static create(
+    dto: CreateRecipeViewLogDto,
+    recipe: RecipeEntity,
+    user: UserEntity | null,
+    datetime: Date,
+  ) {
+    if (isNil(recipe)) {
+      throw new RecipeNotExistsException();
+    }
+    if (isNil(user) && isNil(dto.userIp)) {
+      throw new UserNotExistsException();
+    }
+    return new RecipeViewLog({
+      id: null,
+      recipeId: recipe.id,
+      userId: user?.id,
+      userIp: dto.userIp,
+      createdAt: datetime,
+      updatedAt: datetime,
+    });
   }
 }

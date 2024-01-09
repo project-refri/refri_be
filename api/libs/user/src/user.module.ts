@@ -31,6 +31,7 @@ import { ConfigService } from '@nestjs/config';
   ],
   exports: [
     UserService,
+    UserRepository,
     {
       provide: 'UserSchema',
       useValue: UserSchema,

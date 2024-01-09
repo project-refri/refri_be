@@ -1,5 +1,56 @@
-import { Recipe } from './recipe.entity';
-import { User } from '@app/user/domain/user.entity';
+import { Recipe, RecipeEntity } from './recipe.entity';
+import { User, UserEntity } from '@app/user/domain/user.entity';
+import { RecipeBookmark as RecipeBookmarkType } from '@prisma/client';
+import { CreateRecipeBookmarkDto } from '@app/recipe/dto/recipe-bookmark/create-recipe-bookmark.dto';
+import {
+  RecipeNotExistsException,
+  UserNotExistsException,
+} from '@app/recipe/exception/domain.exception';
+import { isNil } from '@nestjs/common/utils/shared.utils';
+
+export class RecipeBookmarkEntity implements RecipeBookmarkType {
+  public readonly id: number;
+  public readonly recipeId: number;
+  public readonly recipe?: RecipeEntity;
+  public readonly userId: number;
+  public readonly user?: UserEntity;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+
+  constructor(props: {
+    id: number;
+    recipeId: number;
+    recipe?: RecipeEntity;
+    userId: number;
+    user?: UserEntity;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    this.id = props.id;
+    this.recipeId = props.recipeId;
+    this.recipe = props.recipe;
+    this.userId = props.userId;
+    this.user = props.user;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+  }
+
+  static from(recipeBookmark: RecipeBookmark) {
+    return new RecipeBookmarkEntity({
+      id: recipeBookmark.id,
+      recipeId: recipeBookmark.recipeId,
+      recipe: recipeBookmark.recipe
+        ? RecipeEntity.from(recipeBookmark.recipe)
+        : undefined,
+      userId: recipeBookmark.userId,
+      user: recipeBookmark.user
+        ? UserEntity.from(recipeBookmark.user)
+        : undefined,
+      createdAt: recipeBookmark.createdAt,
+      updatedAt: recipeBookmark.updatedAt,
+    });
+  }
+}
 
 export class RecipeBookmark {
   constructor(props: {
@@ -60,5 +111,26 @@ export class RecipeBookmark {
 
   get updatedAt(): Date {
     return this._updatedAt;
+  }
+
+  static create(
+    dto: CreateRecipeBookmarkDto,
+    recipe: RecipeEntity,
+    user: UserEntity,
+    dateTime: Date,
+  ) {
+    if (isNil(recipe)) {
+      throw new RecipeNotExistsException();
+    }
+    if (isNil(user)) {
+      throw new UserNotExistsException();
+    }
+    return new RecipeBookmark({
+      id: null,
+      recipeId: recipe.id,
+      userId: user.id,
+      createdAt: dateTime,
+      updatedAt: dateTime,
+    });
   }
 }

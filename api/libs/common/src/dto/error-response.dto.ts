@@ -1,4 +1,10 @@
-import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 class ErrorResponse {
   success = false;
@@ -7,31 +13,36 @@ class ErrorResponse {
 }
 
 export class UnauthorizedResponse extends ErrorResponse {
-  error = 'Unauthorized';
-  @ApiExpose({ name: 'status_code' })
-  statusCode = 401;
+  error = {
+    name: UnauthorizedException.name,
+    message: 'Unauthorized',
+  };
 }
 
 export class BadRequestResponse extends ErrorResponse {
-  error = 'Bad Request';
-  @ApiExpose({ name: 'status_code' })
-  statusCode = 400;
+  error = {
+    name: BadRequestException.name,
+    message: 'Bad Request',
+  };
 }
 
 export class NotFoundResponse extends ErrorResponse {
-  error = 'Not Found';
-  @ApiExpose({ name: 'status_code' })
-  statusCode = 404;
+  error = {
+    name: NotFoundException.name,
+    message: 'Not Found',
+  };
 }
 
 export class ForbiddenResponse extends ErrorResponse {
-  error = 'Forbidden';
-  @ApiExpose({ name: 'status_code' })
-  statusCode = 403;
+  error = {
+    name: ForbiddenException.name,
+    message: 'Forbidden',
+  };
 }
 
 export class ConflictResponse extends ErrorResponse {
-  error = 'Conflict';
-  @ApiExpose({ name: 'status_code' })
-  statusCode = 409;
+  error = {
+    name: ConflictException.name,
+    message: 'Conflict',
+  };
 }

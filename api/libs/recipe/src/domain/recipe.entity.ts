@@ -1,4 +1,61 @@
-import { User } from '@app/user/domain/user.entity';
+import { User, UserEntity } from '@app/user/domain/user.entity';
+import { Recipe as RecipeType } from '@prisma/client';
+
+export class RecipeEntity implements RecipeType {
+  public readonly id: number;
+  public readonly mongoId: string | null;
+  public readonly name: string;
+  public readonly description: string;
+  public readonly ownerId: number | null;
+  public readonly owner?: UserEntity | null;
+  public readonly thumbnail: string;
+  public readonly originUrl: string;
+  public readonly viewCount: number;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
+
+  constructor(props: {
+    id: number;
+    mongoId: string | null;
+    name: string;
+    description: string;
+    ownerId: number | null;
+    owner?: UserEntity | null;
+    thumbnail: string;
+    originUrl: string;
+    viewCount: number;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    this.id = props.id;
+    this.mongoId = props.mongoId;
+    this.name = props.name;
+    this.description = props.description;
+    this.ownerId = props.ownerId;
+    this.owner = props.owner;
+    this.thumbnail = props.thumbnail;
+    this.originUrl = props.originUrl;
+    this.viewCount = props.viewCount;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+  }
+
+  static from(recipe: Recipe) {
+    return new RecipeEntity({
+      id: recipe.id,
+      mongoId: recipe.mongoId,
+      name: recipe.name,
+      description: recipe.description,
+      ownerId: recipe.ownerId,
+      owner: recipe.owner ? UserEntity.from(recipe.owner) : undefined,
+      thumbnail: recipe.thumbnail,
+      originUrl: recipe.originUrl,
+      viewCount: recipe.viewCount,
+      createdAt: recipe.createdAt,
+      updatedAt: recipe.updatedAt,
+    });
+  }
+}
 
 export class Recipe {
   constructor(props: {

@@ -4,36 +4,26 @@ import { FilterRecipeBookmarkDto } from '../../dto/recipe-bookmark/filter-recipe
 import { deleteProps } from '@app/common/utils/delete-props';
 import { IRecipeBookmarkRepository } from './recipe-bookmark.interface';
 import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-count.dto';
-import { CreateRecipeBookmarkDto } from '@app/recipe/dto/recipe-bookmark/create-recipe-bookmark.dto';
-import { RecipeBookmark } from '@app/recipe/domain/recipe-bookmark.entity';
+import { RecipeBookmarkEntity } from '@app/recipe/domain/recipe-bookmark.entity';
 
 @Injectable()
 export class RecipeBookmarkRepository implements IRecipeBookmarkRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createDto: CreateRecipeBookmarkDto) {
-    const ret = await this.prisma.recipeBookmark.create({
-      data: createDto,
-    });
-    return new RecipeBookmark({
-      id: ret.id,
-      recipeId: ret.recipeId,
-      userId: ret.userId,
-      createdAt: ret.createdAt,
-      updatedAt: ret.updatedAt,
+  async create(entity: RecipeBookmarkEntity): Promise<RecipeBookmarkEntity> {
+    return await this.prisma.recipeBookmark.create({
+      data: {
+        recipeId: entity.recipeId,
+        userId: entity.userId,
+        createdAt: entity.createdAt,
+        updatedAt: entity.updatedAt,
+      },
     });
   }
 
-  async findOne(id: number) {
-    const ret = await this.prisma.recipeBookmark.findUnique({
+  async findOne(id: number): Promise<RecipeBookmarkEntity> {
+    return await this.prisma.recipeBookmark.findUnique({
       where: { id },
-    });
-    return new RecipeBookmark({
-      id: ret.id,
-      recipeId: ret.recipeId,
-      userId: ret.userId,
-      createdAt: ret.createdAt,
-      updatedAt: ret.updatedAt,
     });
   }
 
@@ -78,24 +68,28 @@ export class RecipeBookmarkRepository implements IRecipeBookmarkRepository {
     );
   }
 
-  async findAll(): Promise<RecipeBookmark[]> {
-    throw new Error('Method not implemented.');
-  }
-
-  async update(id: number, updateDto: any): Promise<RecipeBookmark> {
-    throw new Error('Method not implemented.');
-  }
-
-  async deleteOne(id: number) {
-    const ret = await this.prisma.recipeBookmark.delete({
-      where: { id },
+  async findAllByCond(
+    filterDto: FilterRecipeBookmarkDto,
+  ): Promise<RecipeBookmarkEntity[]> {
+    return await this.prisma.recipeBookmark.findMany({
+      where: {
+        userId: filterDto.userId,
+        recipeId: filterDto.recipeId,
+      },
     });
-    return new RecipeBookmark({
-      id: ret.id,
-      recipeId: ret.recipeId,
-      userId: ret.userId,
-      createdAt: ret.createdAt,
-      updatedAt: ret.updatedAt,
+  }
+
+  async findAll(): Promise<RecipeBookmarkEntity[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  async update(id: number, updateDto: any): Promise<RecipeBookmarkEntity> {
+    throw new Error('Method not implemented.');
+  }
+
+  async deleteOne(id: number): Promise<RecipeBookmarkEntity> {
+    return await this.prisma.recipeBookmark.delete({
+      where: { id },
     });
   }
 }

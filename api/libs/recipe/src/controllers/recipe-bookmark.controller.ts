@@ -24,6 +24,7 @@ import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/create-recipe-bo
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
 import { User } from '@app/user/domain/user.entity';
 import { FilterRecipeBookmarkDto } from '../dto/recipe-bookmark/filter-recipe-bookmark.dto';
+import { RecipeBookmarkDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmark.dto';
 
 @ApiTags('RecipeBookmark')
 @Controller('recipe-bookmark')
@@ -38,7 +39,10 @@ export class RecipeBookmarkController {
     @ReqUser() user: User,
   ) {
     createRecipeBookmarkDto.userId = user.id;
-    return await this.recipeBookmarkService.create(createRecipeBookmarkDto);
+    const ret = await this.recipeBookmarkService.create(
+      createRecipeBookmarkDto,
+    );
+    return RecipeBookmarkDto.fromEntity(ret);
   }
 
   /**

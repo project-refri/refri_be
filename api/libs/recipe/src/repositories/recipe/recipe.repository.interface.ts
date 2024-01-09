@@ -1,7 +1,6 @@
-import { Recipe as PrismaRecipe } from '@app/recipe/domain/recipe.entity';
+import { RecipeEntity as PrismaRecipe } from '@app/recipe/domain/recipe.entity';
 import { Recipe as MongoRecipe } from '@app/recipe/domain/mongo/mongo.recipe.entity';
 import { ICrudRepository } from '@app/common/repository/crud.repository';
-import { FilterRecipeDto } from '../../dto/recipe/filter-recipe.dto';
 import { CreateRecipeDto } from '@app/recipe/dto/recipe/create-recipe.dto';
 import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
 import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';

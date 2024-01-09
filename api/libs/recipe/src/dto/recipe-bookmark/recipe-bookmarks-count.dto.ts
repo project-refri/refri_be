@@ -1,8 +1,11 @@
 import { RecipeBookmarksItemDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-item.dto';
 import { RecipeBookmarksResponseDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-response.dto';
+import { Type } from 'class-transformer';
 
 export class RecipeBookmarksAndCountDto {
+  @Type(() => RecipeBookmarksItemDto)
   recipes: RecipeBookmarksItemDto[];
+
   count: number;
 
   constructor(recipes: RecipeBookmarksItemDto[], count: number) {

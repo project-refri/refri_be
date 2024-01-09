@@ -1,11 +1,12 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { DomainException } from '@app/common/exception-filters/exception';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -16,15 +17,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const ctx = host.switchToHttp();
 
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    let httpStatus: HttpStatus;
+    if (exception instanceof HttpException) {
+      httpStatus = exception.getStatus();
+    } else if (exception instanceof DomainException) {
+      httpStatus = HttpStatus.BAD_REQUEST;
+    } else {
+      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
 
-    const error =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : { message: 'Internal server error' };
+    let error: string | object;
+    if (exception instanceof HttpException) {
+      error = exception.getResponse();
+    } else if (exception instanceof DomainException) {
+      error = exception.getResponse();
+    } else {
+      error = 'Internal server error';
+    }
 
     console.error(exception);
 
