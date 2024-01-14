@@ -1,81 +1,25 @@
 import { TestBed } from '@automock/jest';
 import { RecipeBookmarkRepository } from '@app/recipe/repositories/recipe-bookmark/recipe-bookmark.repository';
 import { RecipeBookmarkService } from '@app/recipe/services/recipe-bookmark.service';
-import { FilterRecipeBookmarkDto } from '@app/recipe/dto/recipe-bookmark/filter-recipe-bookmark.dto';
-import { RecipeBookmarksItemDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-item.dto';
-import { RecipeBookmarksResponseDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-response.dto';
-import { RecipeBookmarksAndCountDto } from '@app/recipe/dto/recipe-bookmark/recipe-bookmarks-count.dto';
 import { RecipeRepository } from '@app/recipe/repositories/recipe/recipe.repository';
 import { UserRepository } from '@app/user/repositories/user.repository';
-import { RecipeEntity } from '@app/recipe/domain/recipe.entity';
-import { UserEntity } from '@app/user/domain/user.entity';
-import { RecipeBookmarkEntity } from '@app/recipe/domain/recipe-bookmark.entity';
 import { RecipeBookmarkDuplicateException } from '@app/recipe/exception/domain.exception';
-import { Diet } from '@prisma/client';
+import { recipeEntity } from '../../fixture/recipe.fixture';
+import { userEntity } from '../../../../user/test/fixture/user.fixture';
+import {
+  filterRecipeBookmarkDto,
+  recipeBookmarkEntity,
+  recipeBookmarksAndCountLast,
+  recipeBookmarksAndCountNotLast,
+  recipeBookmarksResponseDtoLast,
+  recipeBookmarksResponseDtoNotLast,
+} from '../../fixture/recipe-bookmark.fixture';
 
 describe('RecipeBookmarkService', () => {
   let service: RecipeBookmarkService;
   let recipeBookmarkRepository: jest.Mocked<RecipeBookmarkRepository>;
   let recipeRepository: jest.Mocked<RecipeRepository>;
   let userRepository: jest.Mocked<UserRepository>;
-
-  const recipeEntity: RecipeEntity = {
-    id: 1,
-    name: 'recipe',
-    mongoId: 'mongoId',
-    ownerId: 1,
-    description: 'description',
-    thumbnail: 'thumbnail',
-    viewCount: 0,
-    originUrl: 'originUrl',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  const userEntity: UserEntity = {
-    id: 1,
-    email: 'email',
-    username: 'name',
-    introduction: 'introduction',
-    diet: Diet.NORMAL,
-    thumbnail: 'thumbnail',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  const recipeBookmarkEntity: RecipeBookmarkEntity = {
-    id: 1,
-    recipeId: 1,
-    userId: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  const filterRecipeBookmarkDto: FilterRecipeBookmarkDto = {
-    page: 1,
-    limit: 2,
-  };
-  const recipeBookmarksAndCountLast: jest.Mocked<RecipeBookmarksAndCountDto> = {
-    recipes: [new RecipeBookmarksItemDto(), new RecipeBookmarksItemDto()],
-    count: 2,
-    toRecipeBookmarksResponseDto: jest.fn(),
-  };
-  const recipeBookmarksAndCountNotLast: jest.Mocked<RecipeBookmarksAndCountDto> =
-    {
-      recipes: [new RecipeBookmarksItemDto(), new RecipeBookmarksItemDto()],
-      count: 15,
-      toRecipeBookmarksResponseDto: jest.fn(),
-    };
-  const recipeBookmarksResponseDtoLast: RecipeBookmarksResponseDto = {
-    results: recipeBookmarksAndCountLast.recipes,
-    page: 1,
-    count: 2,
-    hasNext: true,
-  };
-  const recipeBookmarksResponseDtoNotLast: RecipeBookmarksResponseDto = {
-    results: recipeBookmarksAndCountNotLast.recipes,
-    page: 1,
-    count: 2,
-    hasNext: false,
-  };
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(RecipeBookmarkService).compile();

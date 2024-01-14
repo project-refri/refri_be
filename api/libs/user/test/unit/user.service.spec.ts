@@ -1,13 +1,11 @@
 import { TestBed } from '@automock/jest';
-import { CreateUserDto } from '@app/user/dto/modify-user.dto';
 import { UserRepository } from '@app/user/repositories/user.repository';
 import { UserService } from '@app/user/user.service';
-import { UserEntity } from '@app/user/domain/user.entity';
-import { Diet } from '@prisma/client';
 import {
   UserEmailDuplicateException,
   UserNameDuplicateException,
 } from '@app/user/exception/domain.exception';
+import { createUserDto, userEntity } from '../fixture/user.fixture';
 
 describe('UserService', () => {
   let service: UserService;
@@ -21,38 +19,18 @@ describe('UserService', () => {
   });
 
   describe('create', () => {
-    const mockUser: UserEntity = {
-      id: 1,
-      email: 'test@example.com',
-      username: 'test',
-      introduction: '',
-      diet: Diet.NORMAL,
-      thumbnail: '',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
     it('should create a new user', async () => {
-      const createUserDto: CreateUserDto = {
-        ...new CreateUserDto(),
-        username: 'test',
-        email: 'test@example.com',
-      };
       userRepository.findByEmail.mockResolvedValue(undefined);
       userRepository.findByUsername.mockResolvedValue(undefined);
-      userRepository.create.mockResolvedValue(mockUser);
+      userRepository.create.mockResolvedValue(userEntity);
 
       const result = await service.create(createUserDto);
 
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual(userEntity);
     });
 
     it('should not create user if the email already exists', async () => {
-      const createUserDto: CreateUserDto = {
-        ...new CreateUserDto(),
-        username: 'test',
-        email: 'test@example.com',
-      };
-      userRepository.findByEmail.mockResolvedValue(mockUser);
+      userRepository.findByEmail.mockResolvedValue(userEntity);
       userRepository.findByUsername.mockResolvedValue(undefined);
 
       await expect(service.create(createUserDto)).rejects.toThrowError(
@@ -63,13 +41,8 @@ describe('UserService', () => {
     });
 
     it('should not create user if the username already exists', async () => {
-      const createUserDto: CreateUserDto = {
-        ...new CreateUserDto(),
-        username: 'test',
-        email: 'test@example.com',
-      };
       userRepository.findByEmail.mockResolvedValue(undefined);
-      userRepository.findByUsername.mockResolvedValue(mockUser);
+      userRepository.findByUsername.mockResolvedValue(userEntity);
 
       await expect(service.create(createUserDto)).rejects.toThrowError(
         UserNameDuplicateException,
@@ -80,24 +53,14 @@ describe('UserService', () => {
   });
 
   describe('findByEmail', () => {
-    const mockUser: UserEntity = {
-      id: 1,
-      email: 'test@example.com',
-      username: 'test',
-      introduction: '',
-      diet: Diet.NORMAL,
-      thumbnail: '',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
     it('should return the user with the given email', async () => {
-      const email = 'test@example.com';
-      userRepository.findByEmail.mockResolvedValue(mockUser);
+      const email = 'test@test.com';
+      userRepository.findByEmail.mockResolvedValue(userEntity);
 
       const result = await service.findByEmail(email);
 
       expect(userRepository.findByEmail).toHaveBeenCalledWith(email);
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual(userEntity);
     });
 
     it('should return undefined if no user is found with the given email', async () => {
