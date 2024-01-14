@@ -1,94 +1,33 @@
-import { FilterRecipeDto } from '@app/recipe/dto/recipe/filter-recipe.dto';
 import { MongoRecipeRepository } from '@app/recipe/repositories/recipe/mongo.recipe.repository';
 import { RecipeRepository } from '@app/recipe/repositories/recipe/recipe.repository';
 import { RecipeService } from '@app/recipe/services/recipe.service';
 import { TestBed } from '@automock/jest';
 import { RecipeViewLogRepository } from '@app/recipe/repositories/recipe-view-log/recipe-view-log.repository';
-import { RecipeViewLogEntity } from '@app/recipe/domain/recipe-view-log.entity';
 import { UserEntity } from '@app/user/domain/user.entity';
-import { RecipeEntity } from '@app/recipe/domain/recipe.entity';
 import { Recipe as MongoRecipe } from '@app/recipe/domain/mongo/mongo.recipe.entity';
 import { RecipeViewerIdentifier } from '@app/recipe/dto/recipe-view-log/recipe-viewer-identifier';
 import { Types } from 'mongoose';
 import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
 import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
-import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';
-import { RecipeDetailDto } from '@app/recipe/dto/recipe/recipe-detail.dto';
 import { RecipesItemDto } from '@app/recipe/dto/recipe/recipes-item.dto';
-import { RecipesResponseDto } from '@app/recipe/dto/recipe/recipes-response.dto';
-import { RecipesAndCountDto } from '@app/recipe/dto/recipe/recipes-count.dto';
 import { Diet } from '@prisma/client';
+import {
+  filterRecipeDto,
+  recipeDetailDto,
+  recipeEntity,
+  recipesAndCountLast,
+  recipesAndCountNotLast,
+  recipesResponseDtoLast,
+  recipesResponseDtoNotLast,
+  textSearchRecipeDto,
+} from '../../fixture/recipe.fixture';
+import { recipeViewLogEntity } from '../../fixture/recipe-view-log.fixture';
 
 describe('RecipeService', () => {
   let service: RecipeService;
   let mongoRecipeRepository: jest.Mocked<MongoRecipeRepository>;
   let recipeRepository: jest.Mocked<RecipeRepository>;
   let recipeViewLogRepository: jest.Mocked<RecipeViewLogRepository>;
-
-  const filterRecipeDto: FilterRecipeDto = {
-    page: 1,
-    limit: 2,
-  };
-  const textSearchRecipeDto: TextSearchRecipeDto = {
-    searchQuery: 'test',
-    page: 1,
-    limit: 10,
-  };
-  const recipesAndCountLast: jest.Mocked<RecipesAndCountDto> = {
-    recipes: [new RecipesItemDto(), new RecipesItemDto()],
-    count: 2,
-    toRecipesResponseDto: jest.fn(),
-  };
-  const recipesAndCountNotLast: jest.Mocked<RecipesAndCountDto> = {
-    recipes: [new RecipesItemDto(), new RecipesItemDto()],
-    count: 15,
-    toRecipesResponseDto: jest.fn(),
-  };
-  const recipesResponseDtoLast: RecipesResponseDto = {
-    results: recipesAndCountLast.recipes,
-    page: 1,
-    count: 2,
-    hasNext: true,
-  };
-  const recipesResponseDtoNotLast: RecipesResponseDto = {
-    results: recipesAndCountNotLast.recipes,
-    page: 1,
-    count: 2,
-    hasNext: false,
-  };
-  const user: UserEntity = {
-    id: 1,
-    email: 'test@test.com',
-    username: 'test',
-    introduction: '',
-    diet: Diet.NORMAL,
-    thumbnail: '',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  const recipe: RecipeEntity = {
-    id: 1,
-    name: 'test',
-    mongoId: 'test',
-    description: 'test',
-    ownerId: user.id,
-    owner: user,
-    thumbnail: 'test',
-    originUrl: 'test',
-    viewCount: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  const recipeViewLog: RecipeViewLogEntity = {
-    id: 1,
-    recipeId: recipe.id,
-    recipe,
-    userId: user.id,
-    user: user,
-    userIp: '::1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(RecipeService).compile();
@@ -116,7 +55,7 @@ describe('RecipeService', () => {
         ...new MongoRecipe(),
         id: mongoId,
       };
-      recipeRepository.create.mockResolvedValue(recipe);
+      recipeRepository.create.mockResolvedValue(recipeEntity);
       mongoRecipeRepository.create.mockResolvedValue(mongoRecipe);
 
       const result = await service.create(createMongoRecipeDto);
@@ -125,7 +64,7 @@ describe('RecipeService', () => {
         createMongoRecipeDto,
       );
       expect(recipeRepository.create).toHaveBeenCalledWith(createRecipeDto);
-      expect(result).toEqual(recipe);
+      expect(result).toEqual(recipeEntity);
     });
   });
 
@@ -253,13 +192,12 @@ describe('RecipeService', () => {
 
   describe('findOne', () => {
     it('should return a recipe', async () => {
-      const recipeDto = new RecipeDetailDto();
-      mongoRecipeRepository.findOneByMysqlId.mockResolvedValue(recipeDto);
-      recipeRepository.increaseViewCount.mockResolvedValue(recipe);
+      mongoRecipeRepository.findOneByMysqlId.mockResolvedValue(recipeDetailDto);
+      recipeRepository.increaseViewCount.mockResolvedValue(recipeEntity);
       mongoRecipeRepository.increaseViewCountByMySqlId.mockResolvedValue(
         new MongoRecipe(),
       );
-      recipeViewLogRepository.create.mockResolvedValue(recipeViewLog);
+      recipeViewLogRepository.create.mockResolvedValue(recipeViewLogEntity);
 
       const result = await service.findOne(1, {
         ip: '::1',
@@ -275,7 +213,7 @@ describe('RecipeService', () => {
         }),
       });
 
-      expect(result).toEqual(recipeDto);
+      expect(result).toEqual(recipeDetailDto);
     });
   });
 
@@ -371,11 +309,11 @@ describe('RecipeService', () => {
 
   describe('viewRecipe', () => {
     it('should return true and create RecipeViewLog', async () => {
-      recipeRepository.increaseViewCount.mockResolvedValue(recipe);
+      recipeRepository.increaseViewCount.mockResolvedValue(recipeEntity);
       mongoRecipeRepository.increaseViewCountByMySqlId.mockResolvedValue(
         new MongoRecipe(),
       );
-      recipeViewLogRepository.create.mockResolvedValue(recipeViewLog);
+      recipeViewLogRepository.create.mockResolvedValue(recipeViewLogEntity);
 
       const result = await service.viewRecipe(1, {
         ip: '::1',
@@ -456,12 +394,12 @@ describe('RecipeService', () => {
 
   describe('update', () => {
     it('should update well', async () => {
-      recipeRepository.update.mockResolvedValue(recipe);
+      recipeRepository.update.mockResolvedValue(recipeEntity);
 
       const result = await service.update(1, {} as UpdateRecipeDto);
 
       expect(recipeRepository.update).toHaveBeenCalledWith(1, {});
-      expect(result).toEqual(recipe);
+      expect(result).toEqual(recipeEntity);
     });
 
     it('should throw NotFoundException', async () => {
@@ -475,7 +413,7 @@ describe('RecipeService', () => {
 
   describe('deleteOne', () => {
     it('should delete well', async () => {
-      recipeRepository.deleteOne.mockResolvedValue(recipe);
+      recipeRepository.deleteOne.mockResolvedValue(recipeEntity);
       mongoRecipeRepository.deleteOneByMysqlId.mockResolvedValue(
         new MongoRecipe(),
       );
@@ -484,7 +422,7 @@ describe('RecipeService', () => {
 
       expect(recipeRepository.deleteOne).toHaveBeenCalledWith(1);
       expect(mongoRecipeRepository.deleteOneByMysqlId).toHaveBeenCalledWith(1);
-      expect(result).toEqual(recipe);
+      expect(result).toEqual(recipeEntity);
     });
 
     it('should throw NotFoundException', async () => {

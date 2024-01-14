@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { SessionEntity } from '@app/auth/domain/session.entity';
 
@@ -6,15 +6,23 @@ export class SessionDto {
   @ApiProperty({ name: 'id' })
   @Expose({ name: 'id' })
   readonly id: number;
+
   @ApiProperty({ name: 'session_token' })
   @Expose({ name: 'session_token' })
   readonly sessionToken: string;
+
   @ApiProperty({ name: 'user_id' })
   @Expose({ name: 'user_id' })
   readonly userId: number;
+
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiProperty({ name: 'created_at' })
   @Expose({ name: 'created_at' })
   readonly createdAt: Date;
+
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiProperty({ name: 'updated_at' })
   @Expose({ name: 'updated_at' })
   readonly updatedAt: Date;

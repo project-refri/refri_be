@@ -1,6 +1,6 @@
 import { Diet } from '@app/user/domain/diet.enum';
 import { $Enums, User as UserType } from '@prisma/client';
-import { CreateUserDto } from '@app/user/dto/modify-user.dto';
+import { CreateUserDto } from '@app/user/dto/create-user.dto';
 
 export class UserEntity implements UserType {
   public readonly id: number;

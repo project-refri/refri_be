@@ -4,7 +4,7 @@ import { AuthRepository } from '@app/auth/repositories/auth.repository';
 import { UserService } from '@app/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '@app/user/domain/user.entity';
-import { CreateUserDto } from '@app/user/dto/modify-user.dto';
+import { CreateUserDto } from '@app/user/dto/create-user.dto';
 import { LoginSessionDto } from '@app/auth/dto/token.dto';
 import { OAuthLoginSessionDto } from '@app/auth/dto/oauth.dto';
 import { UserDto } from '@app/user/dto/user.dto';

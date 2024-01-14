@@ -1,5 +1,5 @@
 export class DomainException extends Error {
-  getResponse(): string | object {
+  getResponse() {
     return {
       name: this.constructor.name,
       message: this.message,

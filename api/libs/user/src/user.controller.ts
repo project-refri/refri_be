@@ -9,13 +9,15 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto } from './dto/modify-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import {
   CreateUserResponseDto,
   FindAllUserResponseDto,
   FindOneUserResponseDto,
   UpdateUserResponseDto,
+  UserEmailDuplicateResponseDto,
+  UserNameDuplicateResponseDto,
 } from './dto/user-response.dto';
 import {
   ApiDeleteNoContent,
@@ -25,6 +27,7 @@ import {
 } from '@app/common/decorators/http-method.decorator';
 import { Auth } from '@app/common/decorators/auth.decorator';
 import { UserDto } from '@app/user/dto/user.dto';
+import { UpdateUserDto } from '@app/user/dto/update-user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -36,7 +39,11 @@ export class UserController {
    *
    * Don't use this API endpoint in production. Only for development and testing.
    */
-  @ApiPostCreated(CreateUserResponseDto)
+  @ApiPostCreated(
+    CreateUserResponseDto,
+    UserEmailDuplicateResponseDto,
+    UserNameDuplicateResponseDto,
+  )
   @Auth()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
@@ -76,7 +83,7 @@ export class UserController {
    * Update user by `id` and return updated user info.
    */
   @Auth()
-  @ApiPatch(UpdateUserResponseDto)
+  @ApiPatch(UpdateUserResponseDto, UserNameDuplicateResponseDto)
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,

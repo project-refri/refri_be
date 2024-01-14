@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-class ErrorResponse {
+export class ErrorResponse {
   success = false;
   timestamp = new Date().toISOString();
   path = '/path/of/the/route/handler';

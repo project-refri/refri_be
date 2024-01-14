@@ -1,8 +1,12 @@
 import { UserService } from '@app/user/user.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from './repositories/auth.repository';
-import { CreateUserDto } from '@app/user/dto/modify-user.dto';
+import { CreateUserDto } from '@app/user/dto/create-user.dto';
 import { HttpService } from '@nestjs/axios';
 import {
   GoogleLoginDto,
@@ -81,15 +85,21 @@ export class AuthService {
     googleLoginDto: GoogleLoginDto,
   ): Promise<OAuthLoginSessionDto> {
     const { accessToken } = googleLoginDto;
-    const { data }: { data: GoogleApiResponseType } =
-      await this.httpService.axiosRef.get(
-        'https://www.googleapis.com/oauth2/v2/userinfo',
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
+    let data: GoogleApiResponseType;
+    try {
+      data = (
+        await this.httpService.axiosRef.get(
+          'https://www.googleapis.com/oauth2/v2/userinfo',
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
           },
-        },
-      );
+        )
+      ).data;
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
     const { email, name: username } = data;
     return await this.OAuthLoginByEmail({ email, username } as UserInfo);
   }
@@ -99,12 +109,21 @@ export class AuthService {
     kakaoLoginDto: KakaoLoginDto,
   ): Promise<OAuthLoginSessionDto> {
     const { accessToken } = kakaoLoginDto;
-    const { data }: { data: KakaoApiResponseType } =
-      await this.httpService.axiosRef.get('https://kapi.kakao.com/v2/user/me', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+    let data: KakaoApiResponseType;
+    try {
+      data = (
+        await this.httpService.axiosRef.get(
+          'https://kapi.kakao.com/v2/user/me',
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        )
+      ).data;
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
     const { email } = data.kakao_account;
     const { nickname: username } = data.kakao_account.profile;
     return await this.OAuthLoginByEmail({ email, username } as UserInfo);

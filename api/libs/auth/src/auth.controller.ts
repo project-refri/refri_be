@@ -14,9 +14,8 @@ import {
   ApiGet,
   ApiPostOk,
 } from '@app/common/decorators/http-method.decorator';
-import { User } from '@app/user/domain/mongo.user.entity';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/modify-user.dto';
+import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/create-user.dto';
 import { Auth, RegisterAuth } from '@app/common/decorators/auth.decorator';
 import {
   LogoutResponseDto,
@@ -25,6 +24,8 @@ import {
 } from './dto/auth-response.dto';
 import { FindOneUserResponseDto } from '@app/user/dto/user-response.dto';
 import { UserInfo } from './types/user-info.type';
+import { UserDto } from '@app/user/dto/user.dto';
+import { UserEntity } from '@app/user/domain/user.entity';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -41,8 +42,8 @@ export class AuthController {
   @ApiGet(FindOneUserResponseDto)
   @Auth()
   @Get('me')
-  async me(@ReqUser() user: User) {
-    return user;
+  async me(@ReqUser() user: UserEntity) {
+    return UserDto.fromEntity(user);
   }
 
   /**

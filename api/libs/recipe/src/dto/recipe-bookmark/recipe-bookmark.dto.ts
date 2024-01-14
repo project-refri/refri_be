@@ -2,6 +2,7 @@ import { RecipeDto } from '@app/recipe/dto/recipe/recipe.dto';
 import { UserDto } from '@app/user/dto/user.dto';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 import { RecipeBookmarkEntity } from '@app/recipe/domain/recipe-bookmark.entity';
+import { Transform } from 'class-transformer';
 
 export class RecipeBookmarkDto {
   id: number;
@@ -16,9 +17,13 @@ export class RecipeBookmarkDto {
 
   user?: UserDto;
 
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiExpose({ name: 'created_at' })
   createdAt: Date;
 
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiExpose({ name: 'updated_at' })
   updatedAt: Date;
 

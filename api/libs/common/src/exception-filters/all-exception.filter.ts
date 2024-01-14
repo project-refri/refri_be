@@ -28,7 +28,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     let error: string | object;
     if (exception instanceof HttpException) {
-      error = exception.getResponse();
+      error = {
+        name: exception.name,
+        message: exception.message,
+      };
     } else if (exception instanceof DomainException) {
       error = exception.getResponse();
     } else {
@@ -39,7 +42,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const responseBody = {
       success: false,
-      statusCode: httpStatus,
       error,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),

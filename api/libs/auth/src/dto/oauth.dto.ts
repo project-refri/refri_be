@@ -1,38 +1,53 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Expose } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
 import { UserDto } from '@app/user/dto/user.dto';
+import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
+import { Type } from 'class-transformer';
 
 export class GoogleLoginDto {
-  @ApiProperty({ name: 'access_token' })
-  @Expose({ name: 'access_token' })
+  @ApiExpose({ name: 'access_token' })
   @IsString()
   @IsNotEmpty()
   readonly accessToken: string;
+
+  constructor(accessToken: string) {
+    this.accessToken = accessToken;
+  }
 }
 
 export class KakaoLoginDto {
-  @ApiProperty({ name: 'access_token' })
-  @Expose({ name: 'access_token' })
+  @ApiExpose({ name: 'access_token' })
   @IsString()
   @IsNotEmpty()
   readonly accessToken: string;
+
+  constructor(accessToken: string) {
+    this.accessToken = accessToken;
+  }
 }
 
 export class OAuthLoginSessionDto {
-  @ApiProperty({ name: 'is_exist' })
-  @Expose({ name: 'is_exist' })
+  @ApiExpose({ name: 'is_exist' })
   readonly isExist: boolean;
 
-  @ApiProperty({ name: 'session_token' })
-  @Expose({ name: 'session_token' })
+  @ApiExpose({ name: 'session_token' })
   readonly sessionToken?: string;
 
-  @ApiProperty({ name: 'user' })
-  @Expose({ name: 'user' })
+  @Type(() => UserDto)
+  @ApiExpose({ name: 'user' })
   readonly user?: UserDto;
 
-  @ApiProperty({ name: 'register_token' })
-  @Expose({ name: 'register_token' })
+  @ApiExpose({ name: 'register_token' })
   readonly registerToken?: string;
+
+  constructor(props: {
+    isExist: boolean;
+    sessionToken?: string;
+    user?: UserDto;
+    registerToken?: string;
+  }) {
+    this.isExist = props.isExist;
+    this.sessionToken = props.sessionToken;
+    this.user = props.user;
+    this.registerToken = props.registerToken;
+  }
 }

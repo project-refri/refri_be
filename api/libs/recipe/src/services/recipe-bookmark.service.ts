@@ -54,6 +54,6 @@ export class RecipeBookmarkService {
   }
 
   async deleteOne(id: number) {
-    await this.recipeBookmarkRespository.deleteOne(id);
+    return await this.recipeBookmarkRespository.deleteOne(id);
   }
 }

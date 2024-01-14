@@ -1,6 +1,7 @@
 import { RecipeEntity } from '@app/recipe/domain/recipe.entity';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 import { UserDto } from '@app/user/dto/user.dto';
+import { Transform } from 'class-transformer';
 
 export class RecipeDto {
   id: number;
@@ -25,9 +26,13 @@ export class RecipeDto {
   @ApiExpose({ name: 'view_count' })
   viewCount: number;
 
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiExpose({ name: 'created_at' })
   createdAt: Date;
 
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiExpose({ name: 'updated_at' })
   updatedAt: Date;
 
@@ -49,7 +54,7 @@ export class RecipeDto {
     this.name = props.name;
     this.description = props.description;
     this.ownerId = props.ownerId;
-    this.owner = props.owner;
+    this.owner = props.owner ?? null;
     this.thumbnail = props.thumbnail;
     this.originUrl = props.originUrl;
     this.viewCount = props.viewCount;
@@ -64,7 +69,7 @@ export class RecipeDto {
       name: recipe.name,
       description: recipe.description,
       ownerId: recipe.ownerId,
-      owner: UserDto.fromEntity(recipe.owner),
+      owner: !!recipe.owner ? UserDto.fromEntity(recipe.owner) : null,
       thumbnail: recipe.thumbnail,
       originUrl: recipe.originUrl,
       viewCount: recipe.viewCount,
