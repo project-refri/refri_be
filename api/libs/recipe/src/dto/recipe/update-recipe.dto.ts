@@ -1,5 +1,3 @@
-import { OmitType, PartialType } from '@nestjs/swagger';
-import { CreateRecipeDto } from './create-recipe.dto';
 import {
   IsInt,
   IsMongoId,
@@ -10,9 +8,7 @@ import {
 } from 'class-validator';
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
 
-export class UpdateRecipeDto extends PartialType(
-  OmitType(CreateRecipeDto, ['ownerId'] as const),
-) {
+export class UpdateRecipeDto {
   @IsString()
   @IsOptional()
   @IsNotEmpty()

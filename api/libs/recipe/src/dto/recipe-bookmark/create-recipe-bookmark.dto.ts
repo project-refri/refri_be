@@ -13,4 +13,9 @@ export class CreateRecipeBookmarkDto {
   @ApiExpose({ name: 'recipe_id' })
   @IsInt()
   recipeId: number;
+
+  constructor(userId: number, recipeId: number) {
+    this.userId = userId;
+    this.recipeId = recipeId;
+  }
 }

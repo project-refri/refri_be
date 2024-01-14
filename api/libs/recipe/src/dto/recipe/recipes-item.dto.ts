@@ -1,4 +1,5 @@
 import { ApiExpose } from '@app/common/decorators/api-expose.decorator';
+import { Transform } from 'class-transformer';
 
 export class RecipesItemDto {
   public readonly id: number;
@@ -12,9 +13,13 @@ export class RecipesItemDto {
   @ApiExpose({ name: 'view_count' })
   public readonly viewCount: number;
 
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiExpose({ name: 'created_at' })
   public readonly createdAt: Date;
 
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
   @ApiExpose({ name: 'updated_at' })
   public readonly updatedAt: Date;
 
