@@ -19,6 +19,9 @@ import { Auth } from '@app/common/decorators/auth.decorator';
 import {
   CreateRecipeBookmarkResponseDto,
   FindRecipeBookmarksResponseDto,
+  RecipeBookmarkDuplicateResponseDto,
+  RecipeNotExistsResponseDto,
+  UserNotExistsResponseDto,
 } from '../dto/recipe-bookmark/recipe-bookmark-response.dto';
 import { CreateRecipeBookmarkDto } from '../dto/recipe-bookmark/create-recipe-bookmark.dto';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
@@ -32,7 +35,12 @@ export class RecipeBookmarkController {
   constructor(private readonly recipeBookmarkService: RecipeBookmarkService) {}
 
   @Auth()
-  @ApiPostCreated(CreateRecipeBookmarkResponseDto)
+  @ApiPostCreated(
+    CreateRecipeBookmarkResponseDto,
+    RecipeNotExistsResponseDto,
+    UserNotExistsResponseDto,
+    RecipeBookmarkDuplicateResponseDto,
+  )
   @Post()
   async create(
     @Body() createRecipeBookmarkDto: CreateRecipeBookmarkDto,
@@ -46,7 +54,7 @@ export class RecipeBookmarkController {
   }
 
   /**
-   * ## Find All Bookmarked Recipe by User with pagenation
+   * ## Find All Bookmarked Recipe by User with pagination
    *
    * Response DTO's id is recipe id.
    * Recipe Bookmark id is recipe_bookmark_id.

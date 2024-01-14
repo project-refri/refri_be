@@ -16,6 +16,8 @@ import {
   FindAllUserResponseDto,
   FindOneUserResponseDto,
   UpdateUserResponseDto,
+  UserEmailDuplicateResponseDto,
+  UserNameDuplicateResponseDto,
 } from './dto/user-response.dto';
 import {
   ApiDeleteNoContent,
@@ -36,7 +38,11 @@ export class UserController {
    *
    * Don't use this API endpoint in production. Only for development and testing.
    */
-  @ApiPostCreated(CreateUserResponseDto)
+  @ApiPostCreated(
+    CreateUserResponseDto,
+    UserEmailDuplicateResponseDto,
+    UserNameDuplicateResponseDto,
+  )
   @Auth()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
@@ -76,7 +82,7 @@ export class UserController {
    * Update user by `id` and return updated user info.
    */
   @Auth()
-  @ApiPatch(UpdateUserResponseDto)
+  @ApiPatch(UpdateUserResponseDto, UserNameDuplicateResponseDto)
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
