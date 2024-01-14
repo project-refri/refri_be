@@ -37,6 +37,7 @@ import { RecipeViewerIdentifier } from '../dto/recipe-view-log/recipe-viewer-ide
 import { CreateMongoRecipeDto } from '@app/recipe/dto/recipe/create-mongo-recipe.dto';
 import { UpdateRecipeDto } from '@app/recipe/dto/recipe/update-recipe.dto';
 import { TextSearchRecipeDto } from '@app/recipe/dto/recipe/text-search.dto';
+import { RecipeDto } from '@app/recipe/dto/recipe/recipe.dto';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -52,7 +53,8 @@ export class RecipeController {
   @ApiPostCreated(CreateRecipeResponseDto)
   @Post()
   async create(@Body() createRecipeDto: CreateMongoRecipeDto) {
-    return this.recipeService.create(createRecipeDto);
+    const recipe = await this.recipeService.create(createRecipeDto);
+    return RecipeDto.fromEntity(recipe);
   }
 
   /**
@@ -139,7 +141,8 @@ export class RecipeController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRecipeDto: UpdateRecipeDto,
   ) {
-    return this.recipeService.update(id, updateRecipeDto);
+    const recipe = await this.recipeService.update(id, updateRecipeDto);
+    return RecipeDto.fromEntity(recipe);
   }
 
   /**
@@ -152,6 +155,7 @@ export class RecipeController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    return this.recipeService.deleteOne(id);
+    const recipe = await this.recipeService.deleteOne(id);
+    return RecipeDto.fromEntity(recipe);
   }
 }
