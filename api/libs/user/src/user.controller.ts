@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto } from './dto/modify-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import {
   CreateUserResponseDto,
@@ -27,6 +27,7 @@ import {
 } from '@app/common/decorators/http-method.decorator';
 import { Auth } from '@app/common/decorators/auth.decorator';
 import { UserDto } from '@app/user/dto/user.dto';
+import { UpdateUserDto } from '@app/user/dto/update-user.dto';
 
 @ApiTags('User')
 @Controller('user')

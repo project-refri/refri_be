@@ -1,7 +1,8 @@
 import { UserEntity } from '@app/user/domain/user.entity';
 import { Diet } from '@prisma/client';
-import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/modify-user.dto';
+import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/create-user.dto';
 import { UserDto } from '@app/user/dto/user.dto';
+import { UpdateUserDto } from '@app/user/dto/update-user.dto';
 
 export const userEntity: UserEntity = {
   id: 1,
@@ -32,4 +33,11 @@ export const createUserDto: CreateUserDto = {
 
 export const createUserApiDto: CreateUserApiDto = {
   username: 'test',
+};
+
+export const updateUserDto: UpdateUserDto = {
+  username: 'test',
+  thumbnail: 'https://test.com/test.jpg',
+  introduction: 'test',
+  diet: Diet.NORMAL,
 };

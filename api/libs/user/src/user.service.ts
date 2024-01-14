@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto/modify-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './repositories/user.repository';
 import { Logable } from '@app/common/log/log.decorator';
 import { ConfigService } from '@nestjs/config';
@@ -8,6 +8,7 @@ import {
   UserEmailDuplicateException,
   UserNameDuplicateException,
 } from '@app/user/exception/domain.exception';
+import { UpdateUserDto } from '@app/user/dto/update-user.dto';
 
 @Injectable()
 export class UserService {

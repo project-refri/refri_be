@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from './repositories/auth.repository';
-import { CreateUserDto } from '@app/user/dto/modify-user.dto';
+import { CreateUserDto } from '@app/user/dto/create-user.dto';
 import { HttpService } from '@nestjs/axios';
 import {
   GoogleLoginDto,

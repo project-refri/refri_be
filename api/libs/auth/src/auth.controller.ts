@@ -15,7 +15,7 @@ import {
   ApiPostOk,
 } from '@app/common/decorators/http-method.decorator';
 import { ReqUser } from '@app/common/decorators/req-user.decorator';
-import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/modify-user.dto';
+import { CreateUserApiDto, CreateUserDto } from '@app/user/dto/create-user.dto';
 import { Auth, RegisterAuth } from '@app/common/decorators/auth.decorator';
 import {
   LogoutResponseDto,

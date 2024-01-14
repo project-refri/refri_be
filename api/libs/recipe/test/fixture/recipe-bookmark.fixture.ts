@@ -42,6 +42,9 @@ export const recipeBookmarksItemDto: RecipeBookmarksItemDto =
     updatedAt: recipeBookmarkEntity.updatedAt,
   });
 
+export const recipeBookmarksResponseDto: RecipeBookmarksResponseDto =
+  new RecipeBookmarksResponseDto([recipeBookmarksItemDto], 1, 1, true);
+
 export const recipeBookmarksAndCountLast: jest.Mocked<RecipeBookmarksAndCountDto> =
   {
     recipes: [recipeBookmarksItemDto, recipeBookmarksItemDto],

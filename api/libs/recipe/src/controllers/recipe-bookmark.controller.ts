@@ -75,7 +75,7 @@ export class RecipeBookmarkController {
   @Auth()
   @ApiDeleteNoContent()
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.recipeBookmarkService.deleteOne(id);
   }
 }

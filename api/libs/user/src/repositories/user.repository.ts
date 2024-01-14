@@ -4,8 +4,8 @@ import { IUserRepository } from './user.repository.interface';
 import { UserEntity } from '@app/user/domain/user.entity';
 import { Logable } from '@app/common/log/log.decorator';
 import { Cacheable } from '@app/common/cache/cache.service';
-import { UpdateUserDto } from '@app/user/dto/modify-user.dto';
 import { Diet } from '@prisma/client';
+import { UpdateUserDto } from '@app/user/dto/update-user.dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
